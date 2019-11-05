@@ -1,0 +1,4 @@
+nose
+mock
+flake8
+sphinx

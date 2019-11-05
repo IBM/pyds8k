@@ -1,0 +1,2 @@
+requests==2.22.0
+httpretty==0.9.6
