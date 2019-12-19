@@ -18,40 +18,20 @@ import os
 from importlib import import_module
 import inspect
 
-_PREFIX = 'ds8k.v1.'
+_PREFIX = 'ds8k.v1.cs.'
 _PATH = os.path.abspath(os.path.dirname(__file__))
 RESOURCES = set([os.path.splitext(resource)[0]
                  for resource in os.listdir(_PATH)
                  if os.path.isfile(os.path.join(_PATH, resource)) and
                  not str(resource).startswith('__init__')
                  ])
-DIR_RESOURCES = \
-    [resource for resource in os.listdir(_PATH) if os.path.isdir(
-        os.path.join(_PATH, resource)
-        ) and not str(resource).startswith('common')
-     ]
 RESOURCE_NAME_CLASS_MAP = {}
 
 for re in RESOURCES:
-    # re_tuple = import_module('{0}.{1}'.format(__name__, re)).RESOURCE_TUPLE
-
     re_tuple = \
         tuple([r[1] for r in inspect.getmembers(
             import_module('{0}.{1}'.format(__name__, re)), inspect.isclass
             ) if inspect.getmodule(r[1]).__name__ ==
             '{0}.{1}'.format(__name__, re)
         ])
-
-    # re_tuple = tuple([r[1]
-    #                  for r in inspect.getmembers(import_module(
-    #                                            '{0}.{1}'.format(__name__, re)
-    #                                             ), inspect.isclass)
-    #                  if r[0]!='Manager' and r[0]!='Resource'])
     RESOURCE_NAME_CLASS_MAP[_PREFIX + re.lower()] = re_tuple
-
-for re in DIR_RESOURCES:
-    if re != '__pycache__':
-        RESOURCE_NAME_CLASS_MAP.update(
-            import_module('{0}.{1}'.format(__name__,
-                                           re)).RESOURCE_NAME_CLASS_MAP
-        )

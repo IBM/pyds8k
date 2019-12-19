@@ -451,6 +451,18 @@ class RootPPRCMixin(object):
                         rebuild_url=True).all(types.DS8K_PPRC).list()
 
 
+class RootCSPPRCMixin(object):
+    def get_cs_pprcs(self, pprc_id=None):
+        if pprc_id:
+            return self.one('{}.{}'.format(
+                types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC
+            ), pprc_id,
+                            rebuild_url=True).get()
+        return self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC), rebuild_url=True).list()
+
+
 class RootEventMixin(object):
     def get_events(self, evt_id=None, evt_filter={}):
         if evt_id:
@@ -503,6 +515,7 @@ class RootEventMixin(object):
 class RootResourceMixin(RootSystemMixin,
                         RootFlashCopyMixin,
                         RootPPRCMixin,
+                        RootCSPPRCMixin,
                         RootNodeMixin,
                         RootMarrayMixin,
                         RootUserMixin,
@@ -599,6 +612,25 @@ class PPRCMixin(object):
         pprc = self.all(types.DS8K_PPRC).list()
         self._start_updating()
         setattr(self, types.DS8K_PPRC, pprc)
+        self._stop_updating()
+        return pprc
+
+
+class CSPPRCMixin(object):
+    def get_cs_pprcs(self, pprc_id=None):
+        if not self.id:
+            raise IDMissingError
+        if pprc_id:
+            return self.one('{}.{}'.format(
+                types.DS8K_COPY_SERVICE_PREFIX,
+                types.DS8K_CS_PPRC), pprc_id).get()
+        pprc = self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC)).list()
+        self._start_updating()
+        setattr(self, '{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC), pprc)
         self._stop_updating()
         return pprc
 
