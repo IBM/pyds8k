@@ -456,8 +456,7 @@ class RootCSPPRCMixin(object):
         if pprc_id:
             return self.one('{}.{}'.format(
                 types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC
-            ), pprc_id,
-                            rebuild_url=True).get()
+            ), pprc_id, rebuild_url=True).get()
         return self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_CS_PPRC), rebuild_url=True).list()

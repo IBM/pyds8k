@@ -26,7 +26,7 @@ class TestPPRC(TestDS8KWithConnect):
 
     def test_related_resource_field(self):
         pprc_info = get_response_data_by_type(
-            'cs_' + DS8K_CS_PPRC
+            DS8K_CS_PPRC
             )['data'][DS8K_CS_PPRC][0]
         sourcevolume_id = pprc_info['source_volume'][Volume.id_field]
         targetvolume_id = pprc_info['target_volume'][Volume.id_field]
