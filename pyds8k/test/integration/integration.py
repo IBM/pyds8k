@@ -136,10 +136,6 @@ class TestIntegration(unittest.TestCase):
                                   types.DS8K_PPRC
                                   )
 
-    def test_cs_pprcs(self):
-        pprcs = self.get_cs_pprcs()
-        self.get_cs_pprcs(pprcs[0].source_volume)
-
     def test_events(self):
         sys = self.client.get_system()
         before = datetime.now()
