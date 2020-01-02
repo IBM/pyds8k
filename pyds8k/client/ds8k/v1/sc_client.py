@@ -108,15 +108,6 @@ class SCClient(object):
         return self.client.get_pprc_by_volume(volume_id)
 
     @dictionarize
-    def list_cs_remotecopies(self):
-        # different with get_pprc(), get_cs_pprcs contains source system
-        return self.client.get_cs_pprcs()
-
-    @dictionarize
-    def get_cs_remotecopy(self, rc_id):
-        return self.client.get_cs_pprcs(rc_id)
-
-    @dictionarize
     def list_logical_subsystems(self):
         return self.client.get_lss()
 

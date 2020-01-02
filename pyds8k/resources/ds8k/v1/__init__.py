@@ -25,11 +25,6 @@ RESOURCES = set([os.path.splitext(resource)[0]
                  if os.path.isfile(os.path.join(_PATH, resource)) and
                  not str(resource).startswith('__init__')
                  ])
-DIR_RESOURCES = \
-    [resource for resource in os.listdir(_PATH) if os.path.isdir(
-        os.path.join(_PATH, resource)
-        ) and not str(resource).startswith('common')
-     ]
 RESOURCE_NAME_CLASS_MAP = {}
 
 for re in RESOURCES:
@@ -48,10 +43,3 @@ for re in RESOURCES:
     #                                             ), inspect.isclass)
     #                  if r[0]!='Manager' and r[0]!='Resource'])
     RESOURCE_NAME_CLASS_MAP[_PREFIX + re.lower()] = re_tuple
-
-for re in DIR_RESOURCES:
-    if re != '__pycache__':
-        RESOURCE_NAME_CLASS_MAP.update(
-            import_module('{0}.{1}'.format(__name__,
-                                           re)).RESOURCE_NAME_CLASS_MAP
-        )
