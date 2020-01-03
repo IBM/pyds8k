@@ -1,3 +1,5 @@
+[![Build Status]](https://travis-ci.com/IBM/pyds8k)
+
 # DS8000 Python Client
 
 This repository contains the IBM RESTful API Python client, which establishes terminal connection with IBM DS8000 storage systems. The Python client protocol enables full management and monitoring of these storage arrays by issuing dedicated RESTful APIs.
