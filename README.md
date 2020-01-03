@@ -1,4 +1,4 @@
-[![Build Status]](https://travis-ci.com/IBM/pyds8k)
+[![Build Status](https://travis-ci.com/IBM/pyds8k.svg?branch=develop)](https://travis-ci.org/kubernetes/utils)
 
 # DS8000 Python Client
 
