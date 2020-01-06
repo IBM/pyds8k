@@ -33,7 +33,7 @@ ALL = {
                     "source_ds8k_0000:remote_ds8k_0001"
         },
         'source_volume': {
-            'id': '0000',
+            'name': '0000',
             'link': {
                 'rel': 'self',
                 'href': 'https://localhost:8088/api/v1/volumes/0000',
@@ -47,7 +47,7 @@ ALL = {
             },
         },
         'target_volume': {
-            'id': '0001',
+            'name': '0001',
             'link': {
                 'rel': 'self',
                 'href': 'https://localhost:8088/api/v1/volumes/0001',

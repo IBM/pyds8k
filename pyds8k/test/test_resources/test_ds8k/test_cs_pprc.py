@@ -14,11 +14,11 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_PPRC
+from pyds8k.resources.ds8k.v1.common.types import DS8K_PPRCS
 from ...data import get_response_data_by_type
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.volumes import Volume
-from pyds8k.resources.ds8k.v1.cs.pprcs import CSPPRC
+from pyds8k.resources.ds8k.v1.cs.pprcs import PPRC
 from pyds8k.resources.ds8k.v1.systems import System
 
 
@@ -26,13 +26,13 @@ class TestPPRC(TestDS8KWithConnect):
 
     def test_related_resource_field(self):
         pprc_info = get_response_data_by_type(
-            DS8K_CS_PPRC
-            )['data'][DS8K_CS_PPRC][0]
+            DS8K_PPRCS
+            )['data'][DS8K_PPRCS][0]
         sourcevolume_id = pprc_info['source_volume'][Volume.id_field]
         targetvolume_id = pprc_info['target_volume'][Volume.id_field]
         targetsystem_id = pprc_info['target_system'][System.id_field]
         sourcesystem_id = pprc_info['source_system'][System.id_field]
-        pprc = CSPPRC(self.client, info=pprc_info)
+        pprc = PPRC(self.client, info=pprc_info)
         self.assertEqual(pprc.source_volume, sourcevolume_id)
         self.assertEqual(pprc.representation['source_volume'], sourcevolume_id)
         self.assertIsInstance(pprc._source_volume, Volume)

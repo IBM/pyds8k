@@ -19,12 +19,12 @@ advanced PPRC interface.
 """
 
 from ..common.base import Base, ReadOnlyManager
-from ..common.types import DS8K_CS_PPRC
+from ..common.types import DS8K_PPRCS
 from ..volumes import Volume, VolumeManager
 from ..systems import System, SystemManager
 
 
-class CSPPRC(Base):
+class PPRC(Base):
     base_url = '/api/v1/cs'
 
     _template = {'id': '',
@@ -42,16 +42,28 @@ class CSPPRC(Base):
                         '_target_system': (System, SystemManager),
                         }
 
+    def _update_volume_info(self, info):
+        # Handle for bug in DS8000 RESTful API /api/v1/cs/pprcs:
+        # When it responds, source_volume and target_volume use
+        # "name" as the key of id field.
+        for key in ['source_volume', 'target_volume']:
+            if 'name' in info[key].keys():
+                info[key]['id'] = info[key].pop('name')
+        return info
+
     def _add_details(self, info, force=False):
-        super(CSPPRC, self)._add_details(info, force=force)
+        self._start_updating()
+        self._update_volume_info(info)
+        self._stop_updating()
+        super(PPRC, self)._add_details(info, force=force)
 
 
-class CSPPRCManager(ReadOnlyManager):
+class PPRCManager(ReadOnlyManager):
     """
     Manage advanced PPRC resources.
     """
-    resource_class = CSPPRC
-    resource_type = DS8K_CS_PPRC
+    resource_class = PPRC
+    resource_type = DS8K_PPRCS
 
 
-RESOURCE_TUPLE = (CSPPRC, CSPPRCManager)
+RESOURCE_TUPLE = (PPRC, PPRCManager)

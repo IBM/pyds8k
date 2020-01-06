@@ -128,7 +128,7 @@ class Resource(UtilsMixin, BaseResource):
             get_resource_by_route = \
                 import_module('{}.resources.utils'.format(__package__)
                               ).get_resource_by_route
-        url = self._set_url(route.split('.')[-1],
+        url = self._set_url(route,
                             resource_id, rebuild_url=rebuild_url)
         return get_resource_by_route(route, self.client,
                                      url, self, resource_id)
@@ -139,7 +139,7 @@ class Resource(UtilsMixin, BaseResource):
             get_resource_by_route = \
                 import_module('{}.resources.utils'.format(__package__)
                               ).get_resource_by_route
-        url = self._set_url(route.split('.')[-1], rebuild_url=rebuild_url)
+        url = self._set_url(route, rebuild_url=rebuild_url)
         return get_resource_by_route(route, self.client, url, self)
 
     def toUrl(self, method, body={}):
