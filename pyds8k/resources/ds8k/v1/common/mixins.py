@@ -450,6 +450,18 @@ class RootPPRCMixin(object):
                         volume_id,
                         rebuild_url=True).all(types.DS8K_PPRC).list()
 
+    def get_cs_pprcs(self, pprc_id=None):
+        if pprc_id:
+            return self.get_cs_pprc(pprc_id)
+        return self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC), rebuild_url=True).list()
+
+    def get_cs_pprc(self, pprc_id):
+        return self.one('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC), pprc_id, rebuild_url=True).get()
+
 
 class RootEventMixin(object):
     def get_events(self, evt_id=None, evt_filter={}):
@@ -601,6 +613,28 @@ class PPRCMixin(object):
         setattr(self, types.DS8K_PPRC, pprc)
         self._stop_updating()
         return pprc
+
+    def get_cs_pprcs(self, pprc_id=None):
+        if not self.id:
+            raise IDMissingError
+        if pprc_id:
+            return self.get_cs_pprc(pprc_id)
+        pprcs = self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC)).list()
+        self._start_updating()
+        setattr(self, '{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC), pprcs)
+        self._stop_updating()
+        return pprcs
+
+    def get_cs_pprc(self, pprc_id):
+        if not self.id:
+            raise IDMissingError
+        return self.one('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_PPRC), pprc_id).get()
 
 
 class VolmapMixin(object):

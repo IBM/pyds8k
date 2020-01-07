@@ -61,7 +61,8 @@ class TestClient(TestUtils, TestCaseWithConnect):
                 self.assertEqual(value, getattr(returned_obj, key))
 
     def _set_resource_list(self, route):
-        resource_response = get_response_data_by_type(route)
+        base_route = route.split('.')[-1]
+        resource_response = get_response_data_by_type(base_route)
         prefix = '{}.{}'.format(self.client.service_type,
                                 self.client.service_version
                                 )
@@ -73,14 +74,14 @@ class TestClient(TestUtils, TestCaseWithConnect):
                 'Can not get resource class from route: {}'.format(route)
                 )
         id_field = res_class.id_field
-        route_id = self._get_resource_id_from_resopnse(route,
+        route_id = self._get_resource_id_from_resopnse(base_route,
                                                        resource_response,
                                                        id_field
                                                        )
-        url = '/{}/{}'.format(route, route_id)
+        url = '/{}/{}'.format(route.replace('.', '/'), route_id)
         httpretty.register_uri(httpretty.GET,
                                self.domain + self.base_url + url,
-                               body=get_response_json_by_type(route),
+                               body=get_response_json_by_type(base_route),
                                content_type='application/json',
                                status=200,
                                )
@@ -114,14 +115,15 @@ class TestClient(TestUtils, TestCaseWithConnect):
 
     @httpretty.activate
     def _test_resource_by_route(self, route, func, sub_resource=[]):
+        base_route = route.split('.')[-1]
         route_id = self._set_resource_list(route)
         if sub_resource:
             for sub_route in sub_resource:
                 self._set_sub_resource(route, route_id, sub_route)
         res = getattr(self.rest_client, func)(route_id)[0]
         self.assertIsInstance(res, dict)
-        rep = ResponseParser(get_response_data_by_type(route),
-                             route).get_representations()[0]
+        rep = ResponseParser(get_response_data_by_type(base_route),
+                             base_route).get_representations()[0]
         self._assert_equal_between_dicts(res, rep)
 
     @httpretty.activate
@@ -147,20 +149,20 @@ class TestClient(TestUtils, TestCaseWithConnect):
             raise Exception(
                 'Can not get resource class from route: {}'.format(route)
                 )
-        url = '/{}'.format(route)
+        url = '/{}'.format(route.replace('.', '/'))
+        base_route = route.split('.')[-1]
         httpretty.register_uri(httpretty.GET,
                                self.domain + self.base_url + url,
-                               body=get_response_list_json_by_type(route),
+                               body=get_response_list_json_by_type(base_route),
                                content_type='application/json',
                                status=200,
                                )
-        func = func or 'get_{}'.format(route)
+        func = func or 'get_{}'.format(route.replace('.', '_'))
         res = getattr(self.rest_client, func)()
         self.assertIsInstance(res, list)
         self.assertIsInstance(res[0], dict)
-        # print "&&&&&&&&&&&{}".format(res[0])
-        rep = ResponseParser(get_response_list_data_by_type(route),
-                             route).get_representations()[0]
+        rep = ResponseParser(get_response_list_data_by_type(base_route),
+                             base_route).get_representations()[0]
         self._assert_equal_between_dicts(res[0], rep)
 
     @httpretty.activate
@@ -222,15 +224,22 @@ class TestClient(TestUtils, TestCaseWithConnect):
                                 )
 
     def test_list_remotecopies(self):
-        self._test_resource_list_by_route(types.DS8K_PPRC,
-                                          'list_remotecopies'
-                                          )
+        self._test_resource_list_by_route('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            'list_remotecopies',
+        )
 
     def test_list_volume_remotecopies(self):
         self._test_sub_resource(types.DS8K_VOLUME,
                                 types.DS8K_PPRC,
                                 'list_volume_remotecopies',
                                 )
+
+    def test_get_cs_remotecopy(self):
+        self._test_resource_by_route('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            'get_remotecopy',
+        )
 
     def test_list_logical_subsystems(self):
         self._test_resource_list_by_route(types.DS8K_LSS,
