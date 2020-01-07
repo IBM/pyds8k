@@ -204,6 +204,8 @@ class Resource(UtilsMixin, BaseResource):
 
     def _set_url(self, route, resource_id='',  rebuild_url=False):
         url = self.url if not rebuild_url else ''
+        # when route contains prefix, like cs.pprcs
+        #       cs.pprcs => cs/pprcs
         route = route.replace('.', '/')
         if resource_id:
             url += '/{}/{}'.format(route, resource_id)
