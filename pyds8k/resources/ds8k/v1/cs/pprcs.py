@@ -46,8 +46,7 @@ class PPRC(Base):
         # When it responds, source_volume and target_volume use
         # "name" as the key of id field.
         for key in ['source_volume', 'target_volume']:
-            if 'name' in info[key].keys() \
-                    and 'id' not in info[key].keys():
+            if 'name' in info[key] and 'id' not in info[key]:
                 info[key]['id'] = info[key].pop('name')
         return info
 
