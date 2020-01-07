@@ -14,7 +14,7 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.resources.ds8k.v1.common.types import DS8K_PPRCS
+from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_PPRC
 from ...data import get_response_data_by_type
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.volumes import Volume
@@ -26,8 +26,8 @@ class TestPPRC(TestDS8KWithConnect):
 
     def test_related_resource_field(self):
         pprc_info = get_response_data_by_type(
-            DS8K_PPRCS
-            )['data'][DS8K_PPRCS][0]
+            DS8K_CS_PPRC
+            )['data'][DS8K_CS_PPRC][0]
         sourcevolume_id = pprc_info['source_volume'][Volume.id_field]
         targetvolume_id = pprc_info['target_volume'][Volume.id_field]
         targetsystem_id = pprc_info['target_system'][System.id_field]

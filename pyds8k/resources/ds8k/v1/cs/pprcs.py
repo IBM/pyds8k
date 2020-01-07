@@ -19,13 +19,12 @@ advanced PPRC interface.
 """
 
 from ..common.base import Base, ReadOnlyManager
-from ..common.types import DS8K_PPRCS
+from ..common.types import DS8K_CS_PPRC
 from ..volumes import Volume, VolumeManager
 from ..systems import System, SystemManager
 
 
 class PPRC(Base):
-    base_url = '/api/v1/cs'
 
     _template = {'id': '',
                  'type': '',
@@ -47,7 +46,8 @@ class PPRC(Base):
         # When it responds, source_volume and target_volume use
         # "name" as the key of id field.
         for key in ['source_volume', 'target_volume']:
-            if 'name' in info[key].keys():
+            if 'name' in info[key].keys() \
+                    and 'id' not in info[key].keys():
                 info[key]['id'] = info[key].pop('name')
         return info
 
@@ -63,7 +63,7 @@ class PPRCManager(ReadOnlyManager):
     Manage advanced PPRC resources.
     """
     resource_class = PPRC
-    resource_type = DS8K_PPRCS
+    resource_type = DS8K_CS_PPRC
 
 
 RESOURCE_TUPLE = (PPRC, PPRCManager)

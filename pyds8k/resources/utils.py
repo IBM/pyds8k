@@ -23,9 +23,6 @@ from logging import getLogger
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
 
-DS8K_PREFIXES = ['cs']
-
-
 def get_resource_by_route(route, client, url, parent=None, resource_id=None):
     prefix = '{}.{}'.format(client.service_type, client.service_version)
     resource_class, manager_class = \
@@ -40,17 +37,12 @@ def get_resource_by_route(route, client, url, parent=None, resource_id=None):
 
 def get_resource_class_by_name(name, prefix):
     full_name = '{}.{}'.format(prefix, str(name).lower())
-    if full_name not in RESOURCE_NAME_CLASS_MAP.keys():
-        for name in map(lambda x: '{}.{}.{}'.format(prefix, x,
-                                                    str(name).lower()),
-                        DS8K_PREFIXES):
-            if name in RESOURCE_NAME_CLASS_MAP.keys():
-                return RESOURCE_NAME_CLASS_MAP[name]
-        logger.debug('Failed to get {} resource by name: {}, return '
-                     'default resource.'.format(prefix, name))
-        return (Resource, DefaultManager)
-    else:
+    try:
         return RESOURCE_NAME_CLASS_MAP[full_name]
+    except KeyError:
+        logger.debug('Failed to get {} resource by name: {}, return \
+default resource.'.format(prefix, name))
+        return (Resource, DefaultManager)
 
 
 def update_resource_id_in_url(old_id, new_id, url, field=''):

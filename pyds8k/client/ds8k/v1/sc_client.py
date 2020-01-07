@@ -101,7 +101,7 @@ class SCClient(object):
 
     @dictionarize
     def list_remotecopies(self):
-        return self.client.get_pprcs()
+        return self.client.get_cs_pprcs()
 
     @dictionarize
     def list_volume_remotecopies(self, volume_id):
@@ -109,7 +109,7 @@ class SCClient(object):
 
     @dictionarize
     def get_remotecopy(self, rc_id):
-        return self.client.get_pprcs(rc_id)
+        return self.client.get_cs_pprcs(rc_id)
 
     @dictionarize
     def list_logical_subsystems(self):
