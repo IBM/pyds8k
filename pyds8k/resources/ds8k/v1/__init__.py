@@ -14,10 +14,20 @@
 # limitations under the License.
 ##############################################################################
 
-from .ioports import *
-from .flashcopy import *
-from .events import *
-from .mappings import *
-from .pprc import *
-from .eserep import *
-from .cs.pprcs import *
+from . import ioports
+from . import flashcopy
+from . import events
+from . import mappings
+from . import pprc
+from . import eserep
+from .cs import pprcs
+
+__all__ = (
+    'ioports',
+    'flashcopy',
+    'events',
+    'mappings',
+    'pprc',
+    'eserep',
+    'pprcs'
+)

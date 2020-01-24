@@ -211,7 +211,9 @@ class TestUtils(object):
         prefix = '{}.{}'.format(self.client.service_type,
                                 self.client.service_version
                                 )
-        res_class, _ = get_resource_and_manager_class_by_route("{}.{}".format(prefix, str(name).lower()))
+        res_class, _ = get_resource_and_manager_class_by_route(
+            "{}.{}".format(prefix, str(name).lower())
+        )
         if res_class.__name__ == Resource.__name__:
             raise Exception(
                 'Can not get resource class from route: {}'.format(name)

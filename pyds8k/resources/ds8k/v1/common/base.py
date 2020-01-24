@@ -20,7 +20,8 @@ DS8K resources base interface.
 from logging import getLogger
 from pyds8k.messages import INVALID_TYPE
 from pyds8k import PYDS8K_DEFAULT_LOGGER
-from pyds8k.base import Resource, Manager, get_resource_and_manager_class_by_route
+from pyds8k.base import Resource, Manager
+from pyds8k.base import get_resource_and_manager_class_by_route
 from .mixins import RootResourceMixin
 from pyds8k.exceptions import OperationNotAllowed, \
     URLNotSpecifiedError, \
@@ -102,7 +103,9 @@ class Base(RootResourceMixin, Resource):
         prefix = '{}.{}'.format(self.client.service_type,
                                 self.client.service_version
                                 )
-        return get_resource_and_manager_class_by_route("{}.{}".format(prefix, resource_type))
+        return get_resource_and_manager_class_by_route(
+            "{}.{}".format(prefix, resource_type)
+        )
 
     def _verify_type(self, new_type, valid_type_list):
         if new_type and not (new_type in valid_type_list):
