@@ -17,12 +17,14 @@
 """
 TSE Rep interface.
 """
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_TSEREP
 from .common.base import SingletonBase, SingletonBaseManager
 from .pools import Pool, PoolManager
 
 
-class TSERep(SingletonBase):
+class TSERep(SingletonBase, metaclass=ResourceMeta):
+    resource_type = DS8K_TSEREP
     # id_field = 'id'
     _template = {'cap': '',
                  'capalloc': '',
@@ -41,7 +43,7 @@ class TSERep(SingletonBase):
         return super(TSERep, self).__getattr__(key)
 
 
-class TSERepManager(SingletonBaseManager):
+class TSERepManager(SingletonBaseManager, metaclass=ManagerMeta):
     """
     Manage TSE Rep resources.
     """
@@ -56,6 +58,3 @@ class TSERepManager(SingletonBaseManager):
 
     def delete(self, url=''):
         return self._delete(url=url)
-
-
-RESOURCE_TUPLE = (TSERep, TSERepManager)

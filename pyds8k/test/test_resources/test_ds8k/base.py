@@ -17,17 +17,16 @@
 import httpretty
 import operator
 from functools import partial, cmp_to_key
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type, \
     get_response_data_by_type, \
     get_response_json_by_type
-from ... import base
-from pyds8k.base import Resource
+from pyds8k.test import base
+from pyds8k.base import Resource, get_resource_and_manager_class_by_route
 from pyds8k.resources.ds8k.v1.common.base import Base
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.resources.ds8k.v1.systems import System, \
     SystemManager
-from pyds8k.resources.utils import get_resource_class_by_name
 
 
 def cmp(a, b):
@@ -212,9 +211,7 @@ class TestUtils(object):
         prefix = '{}.{}'.format(self.client.service_type,
                                 self.client.service_version
                                 )
-        res_class, _ = get_resource_class_by_name(str(name).lower(),
-                                                  prefix
-                                                  )
+        res_class, _ = get_resource_and_manager_class_by_route("{}.{}".format(prefix, str(name).lower()))
         if res_class.__name__ == Resource.__name__:
             raise Exception(
                 'Can not get resource class from route: {}'.format(name)

@@ -15,7 +15,8 @@
 ##############################################################################
 
 import json
-from importlib import import_module
+import os
+import sys
 from . import messages
 from pyds8k.utils import get_response_parser_class, \
     get_request_parser_class
@@ -29,7 +30,9 @@ from pyds8k import PYDS8K_DEFAULT_LOGGER
 from logging import getLogger
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
-get_resource_by_route = None
+
+RESOURCES = {}
+MANAGERS = {}
 
 
 class URLBuilderMixin(object):
@@ -72,7 +75,59 @@ class UtilsMixin(object):
         return new_dict
 
 
+# all the resources are under folder "resources",
+# the route prefix of a resource resources/a/b/c.py is a.b
+def get_resource_route_prefix_by_class(cls):
+    path = os.path.abspath(os.path.dirname(sys.modules[cls.__module__].__file__))
+    route = path.replace("/", ".")
+    route.rsplit(".resources.", 2)
+    return route.rsplit(".resources.", 2)[1]
+
+
+class ResourceMeta(type):
+
+    def __new__(mcs, name, bases, dct):
+
+        new_class = super(ResourceMeta, mcs).__new__(mcs, name, bases, dct)
+        prefix = get_resource_route_prefix_by_class(new_class)
+        if "resource_type" in dct:
+            RESOURCES["{}.{}".format(prefix, dct["resource_type"])] = new_class
+        return new_class
+
+
+class ManagerMeta(type):
+
+    def __new__(mcs, name, bases, dct):
+
+        new_class = super(ManagerMeta, mcs).__new__(mcs, name, bases, dct)
+        prefix = get_resource_route_prefix_by_class(new_class)
+        if "resource_type" in dct:
+            MANAGERS["{}.{}".format(prefix, dct["resource_type"])] = new_class
+        return new_class
+
+
+def get_resource_class_by_route(route):
+    try:
+        return RESOURCES[route]
+    except KeyError:
+        logger.debug('Failed to get resource by name: {}, return default one.'.format(route))
+        return Resource
+
+
+def get_manager_class_by_route(route):
+    try:
+        return MANAGERS[route]
+    except KeyError:
+        logger.debug('Failed to get manager by name: {}, return default one.'.format(route))
+        return DefaultManager
+
+
+def get_resource_and_manager_class_by_route(route):
+    return get_resource_class_by_route(route), get_manager_class_by_route(route)
+
+
 class BaseResource(object):
+
     pass
 
 
@@ -123,23 +178,13 @@ class Resource(UtilsMixin, BaseResource):
         self._finish_init()
 
     def one(self, route, resource_id, rebuild_url=False):
-        global get_resource_by_route
-        if not get_resource_by_route:
-            get_resource_by_route = \
-                import_module('{}.resources.utils'.format(__package__)
-                              ).get_resource_by_route
         url = self._set_url(route, resource_id, rebuild_url=rebuild_url)
-        return get_resource_by_route(route, self.client,
+        return self._get_resource_by_route(route, self.client,
                                      url, self, resource_id)
 
     def all(self, route, rebuild_url=False):
-        global get_resource_by_route
-        if not get_resource_by_route:
-            get_resource_by_route = \
-                import_module('{}.resources.utils'.format(__package__)
-                              ).get_resource_by_route
         url = self._set_url(route, rebuild_url=rebuild_url)
-        return get_resource_by_route(route, self.client, url, self)
+        return self._get_resource_by_route(route, self.client, url, self)
 
     def toUrl(self, method, body={}):
         """
@@ -195,6 +240,17 @@ class Resource(UtilsMixin, BaseResource):
                 res._set_modified_info_dict(key, value)
         res._is_new = True
         return res
+
+    def _get_resource_by_route(self, route, client, url, parent=None, resource_id=None):
+        prefix = '{}.{}'.format(client.service_type, client.service_version)
+        resource_class, manager_class = \
+            get_resource_and_manager_class_by_route("{}.{}".format(prefix, str(route).lower()))
+        return resource_class(client=client,
+                              manager=manager_class(client=client),
+                              url=url,
+                              parent=parent,
+                              resource_id=resource_id
+                              )
 
     def _update_alias(self, res):
         for key, alias in self.alias.items():
@@ -519,6 +575,7 @@ class Resource(UtilsMixin, BaseResource):
 
 
 class BaseManager(object):
+
     pass
 
 

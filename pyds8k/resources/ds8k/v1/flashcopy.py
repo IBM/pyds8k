@@ -17,13 +17,14 @@
 """
 FlashCopy interface.
 """
-
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_FLASHCOPY
 from .volumes import Volume, VolumeManager
 
 
-class FlashCopy(Base):
+class FlashCopy(Base, metaclass=ResourceMeta):
+    resource_type = DS8K_FLASHCOPY
     # id_field = 'id'
     _template = {'id': '',
                  'persistent': '',
@@ -51,12 +52,9 @@ class FlashCopy(Base):
     #    return "<FlashCopy: {}>".format(self.id)
 
 
-class FlashCopyManager(ReadOnlyManager):
+class FlashCopyManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage FlashCopy resources.
     """
     resource_class = FlashCopy
     resource_type = DS8K_FLASHCOPY
-
-
-RESOURCE_TUPLE = (FlashCopy, FlashCopyManager)

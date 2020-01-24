@@ -17,12 +17,14 @@
 """
 ESE Rep interface.
 """
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_ESEREP
 from .common.base import SingletonBase, SingletonBaseManager
 from .pools import Pool, PoolManager
 
 
-class ESERep(SingletonBase):
+class ESERep(SingletonBase, metaclass=ResourceMeta):
+    resource_type = DS8K_ESEREP
     # id_field = 'id'
     _template = {'cap': '',
                  'capalloc': '',
@@ -41,7 +43,7 @@ class ESERep(SingletonBase):
         return super(ESERep, self).__getattr__(key)
 
 
-class ESERepManager(SingletonBaseManager):
+class ESERepManager(SingletonBaseManager, metaclass=ManagerMeta):
     """
     Manage ESE Rep resources.
     """
@@ -56,6 +58,3 @@ class ESERepManager(SingletonBaseManager):
 
     def delete(self, url=''):
         return self._delete(url=url)
-
-
-RESOURCE_TUPLE = (ESERep, ESERepManager)
