@@ -91,8 +91,8 @@ class ResourceMeta(type):
     def __new__(mcs, name, bases, dct):
 
         new_class = super(ResourceMeta, mcs).__new__(mcs, name, bases, dct)
-        prefix = get_resource_route_prefix_by_class(new_class)
         if "resource_type" in dct:
+            prefix = get_resource_route_prefix_by_class(new_class)
             route = "{}.{}".format(prefix, dct["resource_type"])
             RESOURCES[route] = new_class
         return new_class
@@ -103,8 +103,8 @@ class ManagerMeta(type):
     def __new__(mcs, name, bases, dct):
 
         new_class = super(ManagerMeta, mcs).__new__(mcs, name, bases, dct)
-        prefix = get_resource_route_prefix_by_class(new_class)
         if "resource_type" in dct:
+            prefix = get_resource_route_prefix_by_class(new_class)
             route = "{}.{}".format(prefix, dct["resource_type"])
             MANAGERS[route] = new_class
         return new_class
