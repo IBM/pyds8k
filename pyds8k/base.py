@@ -82,7 +82,6 @@ def get_resource_route_prefix_by_class(cls):
         os.path.dirname(sys.modules[cls.__module__].__file__)
     )
     route = path.replace("/", ".")
-    route.rsplit(".resources.", 2)
     return route.rsplit(".resources.", 2)[1]
 
 
