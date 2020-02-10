@@ -15,19 +15,18 @@
 ##############################################################################
 
 from pyds8k.resources.ds8k.v1.common import types
-from ...base import TestCaseWithConnect
-from ...test_resources.test_ds8k.base import TestUtils
+from pyds8k.test.base import TestCaseWithConnect
+from pyds8k.test.test_resources.test_ds8k.base import TestUtils
 from pyds8k.resources.ds8k.v1.common.base import Base
 from pyds8k.dataParser.ds8k import ResponseParser, RequestParser
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type, \
     get_response_json_by_type, \
     get_response_data_by_type, \
     get_request_json_body, create_mappings_response_json
 from pyds8k.client.ds8k.v1.sc_client import SCClient
 import httpretty
-from pyds8k.resources.utils import get_resource_class_by_name
-from pyds8k.base import Resource
+from pyds8k.base import Resource, get_resource_and_manager_class_by_route
 
 system_list_res_json = get_response_list_json_by_type(types.DS8K_SYSTEM)
 system_list_res = get_response_list_data_by_type(types.DS8K_SYSTEM)
@@ -66,9 +65,9 @@ class TestClient(TestUtils, TestCaseWithConnect):
         prefix = '{}.{}'.format(self.client.service_type,
                                 self.client.service_version
                                 )
-        res_class, _ = get_resource_class_by_name(str(route).lower(),
-                                                  prefix
-                                                  )
+        res_class, _ = get_resource_and_manager_class_by_route(
+            "{}.{}".format(prefix, str(route).lower())
+        )
         if res_class.__name__ == Resource.__name__:
             raise Exception(
                 'Can not get resource class from route: {}'.format(route)
@@ -142,9 +141,9 @@ class TestClient(TestUtils, TestCaseWithConnect):
         prefix = '{}.{}'.format(self.client.service_type,
                                 self.client.service_version
                                 )
-        res_class, _ = get_resource_class_by_name(str(route).lower(),
-                                                  prefix
-                                                  )
+        res_class, _ = get_resource_and_manager_class_by_route(
+            "{}.{}".format(prefix, str(route).lower())
+        )
         if res_class.__name__ == Resource.__name__:
             raise Exception(
                 'Can not get resource class from route: {}'.format(route)

@@ -17,13 +17,15 @@
 """
 Host interface.
 """
-
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.base import Base, BaseManager
 from .common.mixins import FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin
 from .common import types
 
 
-class Host(FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin, Base):
+class Host(FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin, Base,
+           metaclass=ResourceMeta):
+    resource_type = types.DS8K_HOST
     id_field = 'name'
     alias = {'id': 'host_id'}
     _template = {'name': '',
@@ -82,7 +84,7 @@ class Host(FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin, Base):
         return [port.id for port in updated]
 
 
-class HostManager(BaseManager):
+class HostManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Host resources.
     """
@@ -107,6 +109,3 @@ class HostManager(BaseManager):
 
     def delete(self, url=''):
         return self._delete(url=url)
-
-
-RESOURCE_TUPLE = (Host, HostManager)

@@ -17,7 +17,7 @@
 """
 Extent pool interface.
 """
-
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_POOL, DS8K_VOLUME, \
     DS8K_TSEREP, DS8K_ESEREP
 from .common.base import Base, ReadOnlyManager
@@ -27,7 +27,8 @@ from pyds8k.exceptions import IDMissingError
 
 # Note: VolumeMixin will override the methods with
 # same name in RootResourceMixin.
-class Pool(VolumeMixin, Base):
+class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
+    resource_type = DS8K_POOL
     # id_field = 'id'
     _template = {'id': '',
                  'name': '',
@@ -110,12 +111,9 @@ class Pool(VolumeMixin, Base):
                         ).update({'threshold': threshold})
 
 
-class PoolManager(ReadOnlyManager):
+class PoolManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Extent Pool resources.
     """
     resource_class = Pool
     resource_type = DS8K_POOL
-
-
-RESOURCE_TUPLE = (Pool, PoolManager)

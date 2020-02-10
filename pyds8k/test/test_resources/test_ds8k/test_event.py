@@ -17,7 +17,7 @@
 import httpretty
 from datetime import datetime
 from .base import TestDS8KWithConnect
-from ...data import get_response_list_json_by_type
+from pyds8k.test.data import get_response_list_json_by_type
 from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
 from pyds8k.exceptions import InvalidArgumentError
 
