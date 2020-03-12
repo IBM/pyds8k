@@ -339,6 +339,12 @@ class RootHostMixin(object):
     def get_host(self, host_name):
         return self.one(types.DS8K_HOST, host_name, rebuild_url=True).get()
 
+    def get_ioports_by_host(self, host_name):
+        return self.one(types.DS8K_HOST,
+                        host_name,
+                        rebuild_url=True
+                        ).all(types.DS8K_IOPORT).list()
+
     def get_mappings_by_host(self, host_name):
         return self.one(types.DS8K_HOST,
                         host_name,
