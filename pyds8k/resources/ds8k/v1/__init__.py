@@ -14,12 +14,9 @@
 # limitations under the License.
 ##############################################################################
 
-from . import ioports
-from . import flashcopy
-from . import events
-from . import mappings
-from . import pprc
-from . import eserep
+from . import ioports, flashcopy, events, mappings, pprc, eserep, \
+    users, systems, nodes, marrays, encryption_groups, io_enclosures, \
+    pools, tserep, lss, volumes, host_ports, hosts
 from .cs import pprcs
 
 __all__ = (
@@ -29,5 +26,17 @@ __all__ = (
     'mappings',
     'pprc',
     'eserep',
-    'pprcs'
+    'pprcs',
+    'users',
+    'systems',
+    'nodes',
+    'marrays',
+    'encryption_groups',
+    'io_enclosures',
+    'pools',
+    'tserep',
+    'lss',
+    'volumes',
+    'host_ports',
+    'hosts'
 )
