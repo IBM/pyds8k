@@ -4,7 +4,7 @@ Additional Third Party Software License Agreements and Notices
 This file details additional Third Party notices and information that 
 are required to be reproduced for the following programs:
    
-IBM DS8000 Python Client version 1.0.0
+IBM DS8000 Python Client version 1.1.0
 
 =========================================================================
 NOTICES and INFORMATION
@@ -38,9 +38,7 @@ APACHE 2.0 LICENSED CODE:  The Program includes all or portions of
 the following software which IBM obtained under the terms and conditions
 of the Apache License Version 2.0:
 
-reqeusts version 2.22.0
-
----------------------------------------------------------------------------
+requests version 2.22.0
 
 ---------------------------------------------------------------------------
 Start of Apache Software License Version 2.0
@@ -252,9 +250,6 @@ limitations under the License.
 End of Apache Software License Version 2.0
 ---------------------------------------------------------------------------
 
-
----------------------------------------------------------------------------
-
  
 ===========================================================================
 END OF APACHE 2.0 NOTICES AND INFORMATION 
@@ -300,6 +295,6 @@ END OF HTTPretty version 0.9.6 NOTICES AND INFORMATION
 
 ===========================================================================
 END OF NOTICES AND INFORMATION FOR IBM DS8000 Python Client
-Version 1.0.0 Third Party Licenses and Notices 
+Version 1.1.0 Third Party Licenses and Notices 
 ===========================================================================
 
