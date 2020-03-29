@@ -14,32 +14,29 @@
 # limitations under the License.
 ##############################################################################
 
-import os
-from importlib import import_module
-import inspect
+from . import ioports, flashcopy, events, mappings, pprc, eserep, \
+    users, systems, nodes, marrays, encryption_groups, io_enclosures, \
+    pools, tserep, lss, volumes, host_ports, hosts
+from .cs import pprcs
 
-_PREFIX = 'ds8k.v1.'
-_PATH = os.path.abspath(os.path.dirname(__file__))
-RESOURCES = set([os.path.splitext(resource)[0]
-                 for resource in os.listdir(_PATH)
-                 if os.path.isfile(os.path.join(_PATH, resource)) and
-                 not str(resource).startswith('__init__')
-                 ])
-RESOURCE_NAME_CLASS_MAP = {}
-
-for re in RESOURCES:
-    # re_tuple = import_module('{0}.{1}'.format(__name__, re)).RESOURCE_TUPLE
-
-    re_tuple = \
-        tuple([r[1] for r in inspect.getmembers(
-            import_module('{0}.{1}'.format(__name__, re)), inspect.isclass
-            ) if inspect.getmodule(r[1]).__name__ ==
-            '{0}.{1}'.format(__name__, re)
-        ])
-
-    # re_tuple = tuple([r[1]
-    #                  for r in inspect.getmembers(import_module(
-    #                                            '{0}.{1}'.format(__name__, re)
-    #                                             ), inspect.isclass)
-    #                  if r[0]!='Manager' and r[0]!='Resource'])
-    RESOURCE_NAME_CLASS_MAP[_PREFIX + re.lower()] = re_tuple
+__all__ = (
+    'ioports',
+    'flashcopy',
+    'events',
+    'mappings',
+    'pprc',
+    'eserep',
+    'pprcs',
+    'users',
+    'systems',
+    'nodes',
+    'marrays',
+    'encryption_groups',
+    'io_enclosures',
+    'pools',
+    'tserep',
+    'lss',
+    'volumes',
+    'host_ports',
+    'hosts'
+)

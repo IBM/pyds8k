@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
    pyds8k.resources.ds8k.v1.common
+   pyds8k.resources.ds8k.v1.cs
 
 Submodules
 ----------

@@ -18,16 +18,18 @@ import os
 from importlib import import_module
 
 _PATH = os.path.abspath(os.path.dirname(__file__))
-RESOURCES = \
-    [resource for resource in os.listdir(_PATH) if os.path.isdir(
-        os.path.join(_PATH, resource)
-        )
-     ]
-RESOURCE_NAME_CLASS_MAP = {}
+mocks = set([os.path.splitext(resource)[0]
+             for resource in os.listdir(_PATH)
+             if os.path.isfile(os.path.join(_PATH, resource)) and
+             not str(resource).startswith('__init__')
+             ])
+success_response_one = {}
+success_response_all = {}
 
-for re in RESOURCES:
-    if re != '__pycache__':
-        RESOURCE_NAME_CLASS_MAP.update(
-            import_module('{0}.{1}'.format(__name__,
-                                           re)).RESOURCE_NAME_CLASS_MAP
-        )
+for re in mocks:
+    success_response_one[re] = import_module(
+        '{0}.{1}'.format(__name__, re)
+    ).ONE
+    success_response_all[re] = import_module(
+        '{0}.{1}'.format(__name__, re)
+    ).ALL

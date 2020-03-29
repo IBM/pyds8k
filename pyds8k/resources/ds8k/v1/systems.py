@@ -17,11 +17,13 @@
 """
 Storage system interface.
 """
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_SYSTEM
 from .common.base import Base, ReadOnlyManager
 
 
-class System(Base):
+class System(Base, metaclass=ResourceMeta):
+    resource_type = DS8K_SYSTEM
     id_field = 'id'
     _template = {'id': '',
                  'name': '',
@@ -44,12 +46,9 @@ class System(Base):
         return self.get_systems()[0]
 
 
-class SystemManager(ReadOnlyManager):
+class SystemManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Storage System resources.
     """
     resource_class = System
     resource_type = DS8K_SYSTEM
-
-
-RESOURCE_TUPLE = (System, SystemManager)

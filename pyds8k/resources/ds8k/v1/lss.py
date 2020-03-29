@@ -17,13 +17,14 @@
 """
 LSS interface.
 """
-
+from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_LSS, DS8K_VOLUME
 from .common.base import Base, ReadOnlyManager
 from .common.mixins import VolumeMixin
 
 
-class LSS(VolumeMixin, Base):
+class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
+    resource_type = DS8K_LSS
     # id_field = 'id'
     _template = {'id': '',
                  'type': '',
@@ -35,12 +36,9 @@ class LSS(VolumeMixin, Base):
     related_resources_collection = (DS8K_VOLUME, )
 
 
-class LSSManager(ReadOnlyManager):
+class LSSManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage LSS resources.
     """
     resource_class = LSS
     resource_type = DS8K_LSS
-
-
-RESOURCE_TUPLE = (LSS, LSSManager)
