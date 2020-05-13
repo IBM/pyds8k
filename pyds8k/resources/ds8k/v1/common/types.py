@@ -54,3 +54,25 @@ DE8K_TPS = (DS8K_TP_NONE, DS8K_TP_ESE, DS8K_TP_TSE)
 
 DS8K_COPY_SERVICE_PREFIX = 'cs'
 DS8K_CS_PPRC = 'pprcs'
+
+DS8K_OPTION_FRCO = "freeze_consistency"
+DS8K_OPTION_ITW = "inhibit_target_writes"
+DS8K_OPTION_RECH = "record_changes"
+DS8K_OPTION_NBC = "no_background_copy"
+DS8K_OPTION_PER = "persistent"
+DS8K_OPTION_APTP = "allow_pprc_target_primary"
+DS8K_OPTION_RERE = "reverse_restore"
+DS8K_OPTION_FRR = "fast_reverse_restore"
+DS8K_OPTION_PSET = "permit_space_efficient_target"
+DS8K_OPTION_FSETOOS = "fail_space_efficient_target_out_of_space"
+
+DS8K_FC_OPTIONS = (DS8K_OPTION_FRCO,
+                   DS8K_OPTION_ITW,
+                   DS8K_OPTION_RECH,
+                   DS8K_OPTION_NBC,
+                   DS8K_OPTION_PER,
+                   DS8K_OPTION_APTP,
+                   DS8K_OPTION_RERE,
+                   DS8K_OPTION_FRR,
+                   DS8K_OPTION_PSET,
+                   DS8K_OPTION_FSETOOS)
