@@ -230,6 +230,7 @@ class HTTPClient(object):
         return self.request(url, 'GET', **kwargs)
 
     def post(self, url, **kwargs):
+        logger.debug("Url: {}, info: {}".format(url, kwargs))
         return self.request(url, 'POST', **kwargs)
 
     def put(self, url, **kwargs):
