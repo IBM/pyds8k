@@ -207,7 +207,7 @@ class HTTPClient(object):
                     logger.info(REDIRECTING.format(old_url, url))
                     continue
                 elif resp.status_code >= 400:
-                    raise exceptions.raise_error(resp, body, self.service_type)
+                    return resp, {url, method, kwargs, resp}
                 return resp, body
 
             except exceptions.Unauthorized as e:
