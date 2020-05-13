@@ -448,17 +448,17 @@ class RootFlashCopyMixin(object):
     def create_flashcopy(self, source_volume, target_volume, options):
         for option in options:
             self._verify_type(option, types.DS8K_FC_OPTIONS)
-        _, res = self.all('{}.{}'.format(
+        return self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_FLASHCOPIES),
-                          rebuild_url=True
-                          ).posta({"volume_pairs": [{"source_volume": source_volume,
-                                                     "target_volume": target_volume}
-                                                    ],
-                                   "options": options
-                                   }
-                                  )
-        return res
+            rebuild_url=True).posta(
+            {"volume_pairs": [
+                {"source_volume": source_volume,
+                 "target_volume": target_volume
+                 }
+            ],
+                "options": options
+            })
 
 
 class RootPPRCMixin(object):
