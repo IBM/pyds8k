@@ -450,7 +450,7 @@ class RootFlashCopyMixin(object):
             self._verify_type(option, types.DS8K_FC_OPTIONS)
         return self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_FLASHCOPIES),
+            "types.DS8K_FLASHCOPIES"),
                         rebuild_url=True).posta(
                                                     {
                                                         "volume_pairs": [
