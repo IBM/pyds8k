@@ -40,9 +40,6 @@ class FlashCopy(Base, metaclass=ResourceMeta):
                         }
 
     def _add_details(self, info, force=False):
-        self._start_updating()
-        self._update_volume_info(info)
-        self._stop_updating()
         super(FlashCopy, self)._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
