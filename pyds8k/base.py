@@ -304,7 +304,7 @@ class Resource(UtilsMixin, BaseResource):
         url_test_before = url
         global url_test_after
         if (self.base_url not in url) and (not is_absolute_url(url)):
-            url_test_after = "{} +{}".format(url, "in")
+            url_test_after = "{} +{}".format(self.base_url + url, "in")
             return self.base_url + url
         url_test_after = "{} +{}".format(url, "out")
         return url
