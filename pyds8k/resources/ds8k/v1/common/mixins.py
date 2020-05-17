@@ -194,6 +194,8 @@ class RootVolumeMixin(object):
         self._verify_type(captype, types.DS8K_CAPTYPES)
         self._verify_type(stgtype, types.DS8K_VOLUME_TYPES)
         self._verify_type(tp, types.DE8K_TPS)
+        import pdb
+        pdb.set_trace()
         _, res = self.all(types.DS8K_VOLUME,
                           rebuild_url=True
                           ).posta({'name': name,
