@@ -140,6 +140,9 @@ class BaseResource(object):
 
 
 url_test1 = None
+url_test0 = None
+url_test_before = None
+url_test_after = None
 
 
 class Resource(UtilsMixin, BaseResource):
@@ -297,8 +300,12 @@ class Resource(UtilsMixin, BaseResource):
         return self.url
 
     def _add_base_to_url(self, url):
+        global url_test_before
+        url_test_before = url
         if (self.base_url not in url) and (not is_absolute_url(url)):
             return self.base_url + url
+        global url_test_after
+        url_test_before = url
         return url
 
     def _set_custom_url(self, url):
@@ -451,6 +458,8 @@ class Resource(UtilsMixin, BaseResource):
         return resp, data
 
     def posta(self, body=None):
+        global url_test0
+        url_test0 = self.url
         _url = self._rm_id_in_url()
         global url_test1
         url_test1 = _url
