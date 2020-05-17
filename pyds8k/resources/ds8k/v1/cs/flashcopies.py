@@ -58,3 +58,6 @@ class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
     """
     resource_class = FlashCopy
     resource_type = DS8K_FLASHCOPIES
+
+    def posta(self, url='', body=None):
+        return self._posta(url=url, body=body)
