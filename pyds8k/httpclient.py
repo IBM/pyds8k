@@ -38,7 +38,7 @@ DEFAULT_TIMEOUT_SEC = 25
 DEFAULT_SERVICE_VERSION = 'v1'
 
 disable_warnings(InsecureRequestWarning)
-
+url_test = None
 
 class HTTPClient(object):
     """
@@ -183,6 +183,8 @@ class HTTPClient(object):
                     (absolute_url, method,),
                     kwargs
                  )
+            global url_test
+            url_test = absolute_url
             try:
                 resp = requests.request(
                     method,
