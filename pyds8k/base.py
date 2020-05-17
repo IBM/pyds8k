@@ -305,7 +305,7 @@ class Resource(UtilsMixin, BaseResource):
         if (self.base_url not in url) and (not is_absolute_url(url)):
             return self.base_url + url
         global url_test_after
-        url_test_before = url
+        url_test_after = url
         return url
 
     def _set_custom_url(self, url):
