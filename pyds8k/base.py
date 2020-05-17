@@ -143,7 +143,7 @@ url_test1 = None
 url_test0 = None
 url_test_before = None
 url_test_after = None
-
+url_test_base = None
 
 class Resource(UtilsMixin, BaseResource):
     """
@@ -303,6 +303,8 @@ class Resource(UtilsMixin, BaseResource):
         global url_test_before
         url_test_before = url
         global url_test_after
+        global url_test_base
+        url_test_base = self.base_url
         if (self.base_url not in url) and (not is_absolute_url(url)):
             url_test_after = "{} +{}".format(self.base_url + url, "in")
             return self.base_url + url
