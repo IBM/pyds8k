@@ -100,6 +100,10 @@ class SCClient(object):
         return self.client.get_flashcopies_by_volume(volume_id)
 
     @dictionarize
+    def create_flashcopy(self, source_volume, target_volume, options):
+        return self.client.create_flashcopy(source_volume, target_volume, options)
+
+    @dictionarize
     def list_remotecopies(self):
         return self.client.get_cs_pprcs()
 
