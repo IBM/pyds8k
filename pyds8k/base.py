@@ -139,13 +139,6 @@ class BaseResource(object):
     pass
 
 
-url_test1 = None
-url_test0 = None
-url_test_before = None
-url_test_after = None
-url_test_base = None
-test_manager = None
-
 
 class Resource(UtilsMixin, BaseResource):
     """
@@ -304,15 +297,8 @@ class Resource(UtilsMixin, BaseResource):
         return self.url
 
     def _add_base_to_url(self, url):
-        global url_test_before
-        url_test_before = url
-        global url_test_after
-        global url_test_base
-        url_test_base = self.base_url
         if (self.base_url not in url) and (not is_absolute_url(url)):
-            url_test_after = "{} +{}".format(self.base_url + url, "in")
             return self.base_url + url
-        url_test_after = "{} +{}".format(url, "out")
         return url
 
     def _set_custom_url(self, url):
@@ -465,11 +451,7 @@ class Resource(UtilsMixin, BaseResource):
         return resp, data
 
     def posta(self, body=None):
-        global url_test0
-        url_test0 = self.url
         _url = self._rm_id_in_url()
-        global url_test1
-        url_test1 = _url
         resp, resources = self.manager.posta(url=_url, body=body)
         self._set_modified_info_dict()
         return resp, resources

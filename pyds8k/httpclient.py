@@ -38,8 +38,7 @@ DEFAULT_TIMEOUT_SEC = 25
 DEFAULT_SERVICE_VERSION = 'v1'
 
 disable_warnings(InsecureRequestWarning)
-url_test2 = None
-url_test3 = None
+
 
 
 class HTTPClient(object):
@@ -179,16 +178,12 @@ class HTTPClient(object):
             if self.authenticate.get_auth_url() in url:
                 attempts += 1
                 log_required = False
-            global url_test2
-            url_test2 = url
             absolute_url = url if is_absolute_url(url) else self.domain + url
             if log_required:
                 self.log_req(
                     (absolute_url, method,),
                     kwargs
                  )
-            global url_test3
-            url_test3 = absolute_url
             try:
                 resp = requests.request(
                     method,
