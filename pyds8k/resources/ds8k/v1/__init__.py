@@ -17,9 +17,10 @@
 from . import ioports, flashcopy, events, mappings, pprc, eserep, \
     users, systems, nodes, marrays, encryption_groups, io_enclosures, \
     pools, tserep, lss, volumes, host_ports, hosts
-from .cs import pprcs
+from .cs import pprcs, flashcopies
 
 __all__ = (
+    'flashcopies',
     'ioports',
     'flashcopy',
     'events',
