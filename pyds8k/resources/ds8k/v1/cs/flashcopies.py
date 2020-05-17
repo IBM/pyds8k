@@ -55,7 +55,7 @@ class FlashCopy(Base, metaclass=ResourceMeta):
     #    return "<FlashCopy: {}>".format(self.id)
 
 
-class FlashCopiesManager(ReadOnlyManager, metaclass=ManagerMeta):
+class FlashCopyManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage FlashCopies resources.
     """
