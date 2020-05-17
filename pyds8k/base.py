@@ -302,10 +302,11 @@ class Resource(UtilsMixin, BaseResource):
     def _add_base_to_url(self, url):
         global url_test_before
         url_test_before = url
-        if (self.base_url not in url) and (not is_absolute_url(url)):
-            return self.base_url + url
         global url_test_after
-        url_test_after = url
+        if (self.base_url not in url) and (not is_absolute_url(url)):
+            url_test_after = "{} +{}".format(url, "in")
+            return self.base_url + url
+        url_test_after = "{} +{}".format(url, "out")
         return url
 
     def _set_custom_url(self, url):
