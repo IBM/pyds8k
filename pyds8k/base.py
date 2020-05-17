@@ -588,7 +588,6 @@ class Resource(UtilsMixin, BaseResource):
 
     @classmethod
     def set_base_url(cls, base):
-        tf
         url = base
         if url.endswith('/'):
             url = url[:-1]

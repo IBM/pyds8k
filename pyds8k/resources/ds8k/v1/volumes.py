@@ -138,8 +138,8 @@ class VolumeManager(BaseManager, metaclass=ManagerMeta):
     # def post(self, url='', body=None):
     #    return self._post(url, body)
 
-    def posta(self, url='', body=None):
-        return self._posta(url=url, body=body)
+    # def posta(self, url='', body=None):
+    #     return self._posta(url=url, body=body)
 
     def put(self, url='', body=None):
         return self._put(url=url, body=body)
