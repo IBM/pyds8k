@@ -139,6 +139,9 @@ class BaseResource(object):
     pass
 
 
+url_test1 = None
+
+
 class Resource(UtilsMixin, BaseResource):
     """
     A resource represents a particular representation of
@@ -449,6 +452,8 @@ class Resource(UtilsMixin, BaseResource):
 
     def posta(self, body=None):
         _url = self._rm_id_in_url()
+        global url_test1
+        url_test1 = _url
         resp, resources = self.manager.posta(url=_url, body=body)
         self._set_modified_info_dict()
         return resp, resources
@@ -757,6 +762,7 @@ class Manager(UtilsMixin, BaseManager):
             self.url = url
             post_body = body or self.managed_object.representation
         post_body = self.remove_None_fields_from_dict(post_body)
+
         resp, body = self.client.post(self.url,
                                       body=self._get_request_data(post_body)
                                       )
