@@ -18,7 +18,7 @@
 FlashCopies interface.
 """
 from pyds8k.base import ManagerMeta, ResourceMeta
-from ..common.base import Base, ReadOnlyManager
+from ..common.base import Base, BaseManager
 from ..common.types import DS8K_FLASHCOPIES
 from ..volumes import Volume, VolumeManager
 
@@ -55,7 +55,7 @@ class FlashCopy(Base, metaclass=ResourceMeta):
     #    return "<FlashCopy: {}>".format(self.id)
 
 
-class FlashCopyManager(ReadOnlyManager, metaclass=ManagerMeta):
+class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage FlashCopies resources.
     """
