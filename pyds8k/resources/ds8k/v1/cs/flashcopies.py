@@ -23,7 +23,7 @@ from ..common.types import DS8K_FLASHCOPIES
 from ..volumes import Volume, VolumeManager
 
 
-class FlashCopies(Base, metaclass=ResourceMeta):
+class FlashCopy(Base, metaclass=ResourceMeta):
     resource_type = DS8K_FLASHCOPIES
     # id_field = 'id'
     _template = {'id': '',
@@ -43,7 +43,7 @@ class FlashCopies(Base, metaclass=ResourceMeta):
         self._start_updating()
         self._update_volume_info(info)
         self._stop_updating()
-        super(FlashCopies, self)._add_details(info, force=force)
+        super(FlashCopy, self)._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
         self._id = self.representation['id'] = '{}:{}'.format(
@@ -59,5 +59,5 @@ class FlashCopiesManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage FlashCopies resources.
     """
-    resource_class = FlashCopies
+    resource_class = FlashCopy
     resource_type = DS8K_FLASHCOPIES
