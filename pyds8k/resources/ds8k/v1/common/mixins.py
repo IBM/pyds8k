@@ -558,22 +558,21 @@ class RootResourceMixin(RootSystemMixin,
 
 
 class VolumeMixin(object):
-    # def get_volumes(self, volume_id=None):
-    #     if volume_id:
-    #         return self.get_volume(volume_id)
-    #     if not self.id:
-    #         raise IDMissingError()
-    #     volumes = self.all(types.DS8K_VOLUME).list()
-    #     self._start_updating()
-    #     setattr(self, types.DS8K_VOLUME, volumes)
-    #     self._stop_updating()
-    #     return volumes
-    #
-    # def get_volume(self, volume_id):
-    #     if not self.id:
-    #         raise IDMissingError()
-    #     return self.one(types.DS8K_VOLUME, volume_id).get()
-    pass
+    def get_volumes(self, volume_id=None):
+        if volume_id:
+            return self.get_volume(volume_id)
+        if not self.id:
+            raise IDMissingError()
+        volumes = self.all(types.DS8K_VOLUME).list()
+        self._start_updating()
+        setattr(self, types.DS8K_VOLUME, volumes)
+        self._stop_updating()
+        return volumes
+
+    def get_volume(self, volume_id):
+        if not self.id:
+            raise IDMissingError()
+        return self.one(types.DS8K_VOLUME, volume_id).get()
 
 
 class FCPortMixin(object):
