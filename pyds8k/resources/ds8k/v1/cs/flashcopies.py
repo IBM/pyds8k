@@ -15,7 +15,7 @@
 ##############################################################################
 
 """
-FlashCopy interface.
+FlashCopies interface.
 """
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, ReadOnlyManager
@@ -40,6 +40,9 @@ class FlashCopies(Base, metaclass=ResourceMeta):
                         }
 
     def _add_details(self, info, force=False):
+        self._start_updating()
+        self._update_volume_info(info)
+        self._stop_updating()
         super(FlashCopies, self)._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
@@ -52,9 +55,9 @@ class FlashCopies(Base, metaclass=ResourceMeta):
     #    return "<FlashCopy: {}>".format(self.id)
 
 
-class FlashCopyManager(ReadOnlyManager, metaclass=ManagerMeta):
+class FlashCopiesManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
-    Manage FlashCopy resources.
+    Manage FlashCopies resources.
     """
     resource_class = FlashCopies
     resource_type = DS8K_FLASHCOPIES
