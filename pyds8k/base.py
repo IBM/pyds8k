@@ -144,6 +144,8 @@ url_test0 = None
 url_test_before = None
 url_test_after = None
 url_test_base = None
+test_manager = None
+
 
 class Resource(UtilsMixin, BaseResource):
     """
@@ -179,6 +181,8 @@ class Resource(UtilsMixin, BaseResource):
         self.manager = manager
         if self.manager:
             self.manager.managed_object = self
+        global test_manager
+        test_manager = self.manager
         self.client = client
         self.representation = {}
         self.url = self._add_base_to_url(url)
