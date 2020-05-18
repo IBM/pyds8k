@@ -26,10 +26,11 @@ from pyds8k.resources.ds8k.v1.volumes import Volume, \
 from pyds8k.resources.ds8k.v1.pools import Pool
 from pyds8k.resources.ds8k.v1.hosts import Host
 from pyds8k.resources.ds8k.v1.flashcopy import FlashCopy
+from pyds8k.resources.ds8k.v1.cs.flashcopies import FlashCopy as FlashCopies
 from pyds8k.resources.ds8k.v1.pprc import PPRC
 from pyds8k.resources.ds8k.v1.lss import LSS
-from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME
-from ...data import get_response_json_by_type, get_response_data_by_type
+from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME, DS8K_FLASHCOPIES
+from ...data import get_response_json_by_type, get_response_data_by_type, create_flashcopy_response_json
 from ...data import action_response_json, action_response, \
     create_volumes_response_json, create_volume_response_json, \
     create_volumes_partial_failed_response_json, \
@@ -469,3 +470,52 @@ class TestVolume(TestDS8KWithConnect):
             self.system.create_volume('name', '10', 'testpool_0',
                                       types.DS8K_VOLUME_TYPE_FB,
                                       tp='fake_tp')
+
+    @httpretty.activate
+    def test_flashcopy_volume(self):
+        url = '/cs/flashcopies'
+
+        source_volume = '0000'
+        target_volume = '0001'
+
+        def _verify_request(request, uri, headers):
+            self.assertEqual(uri, self.domain + self.base_url + url)
+
+            req = RequestParser({"volume_pairs": [{"source_volume": source_volume,
+                                                   "target_volume": target_volume
+                                                   }],
+                                 "options": []
+                                 })
+            self.assertDictContainsSubset(
+                req.get_request_data().get('request').get('params'),
+                json.loads(request.body).get('request').get('params'),
+            )
+            return (201, headers, create_flashcopy_response_json)
+
+        httpretty.register_uri(httpretty.POST,
+                               self.domain + self.base_url + url,
+                               body=_verify_request,
+                               content_type='application/json',
+                               )
+        # Way 1
+        resp1 = self.system.create_flashcopy(source_volume=source_volume, target_volume=target_volume, options=[])
+        self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        self.assertIsInstance(resp1[0], FlashCopies)
+
+        # Way 2
+        flashcopies = self.system.all('{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_FLASHCOPIES),
+                                      rebuild_url=True)
+        new_fc2 = flashcopies.create(source_volume=source_volume, target_volume=target_volume, options=[])
+        resp2, data2 = new_fc2.posta()
+        self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        self.assertIsInstance(data2[0], FlashCopies)
+        self.assertEqual(resp2.status_code, 201)
+
+        # Way 3
+        flashcopies = self.system.all('{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_FLASHCOPIES),
+                                      rebuild_url=True)
+        new_fc3 = flashcopies.create(source_volume=source_volume, target_volume=target_volume, options=[])
+        resp3, data3 = new_fc3.save()
+        self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        self.assertIsInstance(data3[0], FlashCopies)
+        self.assertEqual(resp3.status_code, 201)

@@ -301,3 +301,17 @@ default_request = {
                                           }
                                }
                    }
+
+create_flashcopy_response = {
+    'server': {
+        'status': 'ok',
+        'code': '',
+        'message': 'Operation done successfully.'
+    },
+    'link': {
+        'rel': 'self',
+        'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/0000:0001'
+    }
+}
+
+create_flashcopy_response_json = json.dumps(create_flashcopy_response)

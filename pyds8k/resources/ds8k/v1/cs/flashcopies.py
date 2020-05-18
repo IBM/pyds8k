@@ -61,3 +61,6 @@ class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
 
     def posta(self, url='', body=None):
         return self._posta(url=url, body=body)
+
+    def delete(self, url=''):
+        return self._delete(url=url)
