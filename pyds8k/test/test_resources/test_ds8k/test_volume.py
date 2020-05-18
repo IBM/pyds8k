@@ -14,28 +14,28 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
+
+import httpretty
 from nose.tools import nottest
+
+from pyds8k.dataParser.ds8k import RequestParser
+from pyds8k.exceptions import FieldReadOnly
 from pyds8k.messages import INVALID_TYPE
 from pyds8k.resources.ds8k.v1.common import types
-from pyds8k.dataParser.ds8k import RequestParser
-from .base import TestDS8KWithConnect
+from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME, DS8K_FLASHCOPIES, DS8K_COPY_SERVICE_PREFIX
+from pyds8k.resources.ds8k.v1.cs.flashcopies import FlashCopy as FlashCopies
+from pyds8k.resources.ds8k.v1.flashcopy import FlashCopy
+from pyds8k.resources.ds8k.v1.hosts import Host
+from pyds8k.resources.ds8k.v1.lss import LSS
+from pyds8k.resources.ds8k.v1.pools import Pool
+from pyds8k.resources.ds8k.v1.pprc import PPRC
 from pyds8k.resources.ds8k.v1.volumes import Volume, \
     VolumeManager
-from pyds8k.resources.ds8k.v1.pools import Pool
-from pyds8k.resources.ds8k.v1.hosts import Host
-from pyds8k.resources.ds8k.v1.flashcopy import FlashCopy
-from pyds8k.resources.ds8k.v1.cs.flashcopies import FlashCopy as FlashCopies
-from pyds8k.resources.ds8k.v1.pprc import PPRC
-from pyds8k.resources.ds8k.v1.lss import LSS
-from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME, DS8K_FLASHCOPIES, DS8K_COPY_SERVICE_PREFIX
-from ...data import get_response_json_by_type, get_response_data_by_type, create_flashcopy_response_json
-from ...data import action_response_json, action_response, \
-    create_volumes_response_json, create_volume_response_json, \
-    create_volumes_partial_failed_response_json, \
-    create_volumes_partial_failed_response
-from pyds8k.exceptions import FieldReadOnly
+from pyds8k.test.data import get_response_json_by_type, get_response_data_by_type, action_response_json, \
+    action_response, create_volume_response_json, create_volumes_response_json, \
+    create_volumes_partial_failed_response_json, create_volumes_partial_failed_response, create_flashcopy_response_json
+from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 
 class TestVolume(TestDS8KWithConnect):
