@@ -318,6 +318,8 @@ class TestVolume(TestDS8KWithConnect):
         new_vol2 = volume.create(name=name, cap=cap,
                                  pool=pool, stgtype=stgtype,
                                  captype=captype, lss=lss, tp=tp, )
+        # import pdb
+        # pdb.set_trace()
         resp2, data2 = new_vol2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], Volume)
@@ -498,14 +500,15 @@ class TestVolume(TestDS8KWithConnect):
                                content_type='application/json',
                                )
         # Way 1
-        resp1 = self.system.create_flashcopy(source_volume=source_volume, target_volume=target_volume, options=[])
+        resp1 = self.system.create_flashcopy(
+            volume_pairs=[{'source_volume': source_volume, 'target_volume': target_volume}])
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp1[0], FlashCopies)
 
         # Way 2
         flashcopies = self.system.all('{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_FLASHCOPIES),
                                       rebuild_url=True)
-        new_fc2 = flashcopies.create(source_volume=source_volume, target_volume=target_volume, options=[])
+        new_fc2 = flashcopies.create(volume_pairs=[{'source_volume': source_volume, 'target_volume': target_volume}])
         resp2, data2 = new_fc2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], FlashCopies)
@@ -514,9 +517,8 @@ class TestVolume(TestDS8KWithConnect):
         # Way 3
         flashcopies = self.system.all('{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_FLASHCOPIES),
                                       rebuild_url=True)
-        new_fc3 = flashcopies.create(source_volume=source_volume, target_volume=target_volume, options=[])
+        new_fc3 = flashcopies.create(volume_pairs=[{'source_volume': source_volume, 'target_volume': target_volume}])
         resp3, data3 = new_fc3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], FlashCopies)
         self.assertEqual(resp3.status_code, 201)
-

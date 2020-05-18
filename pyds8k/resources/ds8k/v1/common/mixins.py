@@ -445,18 +445,22 @@ class RootFlashCopyMixin(object):
                         volume_id,
                         rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
 
-    def create_flashcopy(self, source_volume, target_volume, options):
-        for option in options:
-            self._verify_type(option, types.DS8K_FC_OPTIONS)
+    def create_flashcopy(self, volume_pairs, options=[]):
+        '''
+
+        :param volume_pairs: [{"source_volume": source_volume,"target_volume": target_volume},...]
+        :param options:
+        :return:
+        '''
+        if options:
+            for option in options:
+                self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_FLASHCOPIES),
-            rebuild_url=True).posta({"volume_pairs": [{
-                                                        "source_volume": source_volume,
-                                                        "target_volume": target_volume
-                                    }],
-                                        "options": options
-                                    })
+            rebuild_url=True).posta({"volume_pairs": volume_pairs,
+                                     "options": options
+                                     })
         return res
 
     def delete_flashcopy(self, flashcopy_id):

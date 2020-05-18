@@ -19,37 +19,71 @@ FlashCopies interface.
 """
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, BaseManager
-from ..common.types import DS8K_FLASHCOPIES
+from ..common.types import DS8K_FLASHCOPIES, DS8K_HOST
+from ..hosts import Host, HostManager
 from ..volumes import Volume, VolumeManager
 
 
 class FlashCopy(Base, metaclass=ResourceMeta):
     resource_type = DS8K_FLASHCOPIES
-    # id_field = 'id'
-    _template = {'id': '',
-                 'persistent': '',
-                 'recording': '',
-                 'backgroundcopy': '',
-                 'state': '',
-                 'sourcevolume': '',
-                 'targetvolume': '',
+    _template = {'id': None,
+                 'persistent': None,
+                 'recording': None,
+                 'backgroundcopy': None,
+                 'state': None,
+                 'options': [],
+                 'volume_pairs': []
                  }
 
-    related_resource = {'_sourcevolume': (Volume, VolumeManager),
-                        '_targetvolume': (Volume, VolumeManager)
+    related_resource = {'sourcevolume': (Volume, VolumeManager),
+                        'targetvolume': (Volume, VolumeManager)
                         }
+
+    def __init__(self, client, manager=None, url='', info={},
+                 resource_id=None,
+                 parent=None,
+                 loaded=False,
+                 ):
+        super(FlashCopy, self).__init__(client,
+                                        manager=manager,
+                                        url=url,
+                                        info=info,
+                                        resource_id=resource_id,
+                                        parent=parent,
+                                        loaded=loaded,
+                                        )
+
+    def __repr__(self):
+        return "<FlashCopy: {0}>".format(self._get_id())
 
     def _add_details(self, info, force=False):
         super(FlashCopy, self)._add_details(info, force=force)
 
+        # import pdb
+        # pdb.set_trace()
         # Temporarily, remove this line when flashcopy resource has id field.
-        self._id = self.representation['id'] = '{}:{}'.format(
-            info['sourcevolume']['id'],
-            info['targetvolume']['id']
+        self._id = '{}:{}'.format(
+            info['volume_pairs'][0]['source_volume'],
+            info['volume_pairs'][0]['target_volume']
         )
 
-    # def __repr__(self):
-    #    return "<FlashCopy: {}>".format(self.id)
+    def __repr__(self):
+        return "<FlashCopy: {}>".format(self.id)
+
+    def _set_hosts(self):
+        host_list = self.representation.get('host', [])
+        if host_list:
+            host_obj_list = []
+            for host in host_list:
+                host_obj = Host(self.client,
+                                manager=HostManager(self.client),
+                                info=host,
+                                loaded=False,
+                                )
+                host_obj_list.append(host_obj)
+            self.representation[DS8K_HOST] = [
+                h.host_id for h in host_obj_list]
+            setattr(self, DS8K_HOST, host_obj_list)
 
 
 class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
