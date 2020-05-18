@@ -519,4 +519,4 @@ class TestVolume(TestDS8KWithConnect):
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], FlashCopies)
         self.assertEqual(resp3.status_code, 201)
-        self.assertEqual(1, 3)
+
