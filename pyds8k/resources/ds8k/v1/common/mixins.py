@@ -451,15 +451,15 @@ class RootFlashCopyMixin(object):
         :param options:
         :return:
         """
-        # for option in options:
-        #     self._verify_type(option, types.DS8K_FC_OPTIONS)
-        _, res = self.all('{}.{}'.format(
+        for option in options:
+            self._verify_type(option, types.DS8K_FC_OPTIONS)
+        a, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_FLASHCOPIES),
             rebuild_url=True).posta({"volume_pairs": volume_pairs,
                                      "options": options
                                      })
-        return res
+        return a,res
 
     def delete_flashcopy(self, flashcopy_id):
         _, res = self.one('{}.{}'.format(
