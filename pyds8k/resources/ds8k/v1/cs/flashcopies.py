@@ -61,9 +61,6 @@ class FlashCopy(Base, metaclass=ResourceMeta):
         if info.get(DS8K_FLASHCOPY):
             self._id = info[DS8K_FLASHCOPY][0]['id']
 
-    def __repr__(self):
-        return "<FlashCopy: {}>".format(self.id)
-
     def _set_hosts(self):
         host_list = self.representation.get('host', [])
         if host_list:

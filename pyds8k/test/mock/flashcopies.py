@@ -30,7 +30,8 @@ ALL = {
                 'id': '0000:0001',
                 'link': {
                     'rel': 'self',
-                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/0000:0001'
+                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/'
+                            '0000:0001'
                 },
                 'source_volume': {
                     'id': '0000',
@@ -53,7 +54,8 @@ ALL = {
                 'id': '1000:1001',
                 'link': {
                     'rel': 'self',
-                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/1000:1001'
+                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/'
+                            '1000:1001'
                 },
                 'source_volume': {
                     'id': '1000',
@@ -92,7 +94,8 @@ ONE = {
                 'id': '0000:0001',
                 'link': {
                     'rel': 'self',
-                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/0000:0001'
+                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/'
+                            '0000:0001'
                 },
                 'source_volume': {
                     'id': '0000',

@@ -44,10 +44,9 @@ class FlashCopy(Base, metaclass=ResourceMeta):
 
         # Temporarily, remove this line when flashcopy resource has id field.
         self._id = self.representation['id']
-        
 
-    # def __repr__(self):
-    #    return "<FlashCopy: {}>".format(self.id)
+    def __repr__(self):
+        return "<FlashCopy: {}>".format(self.id)
 
 
 class FlashCopyManager(ReadOnlyManager, metaclass=ManagerMeta):
