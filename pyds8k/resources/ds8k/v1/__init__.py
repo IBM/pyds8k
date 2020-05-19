@@ -20,9 +20,9 @@ from . import ioports, flashcopy, events, mappings, pprc, eserep, \
 from .cs import pprcs, flashcopies
 
 __all__ = (
-    'flashcopies',
     'ioports',
     'flashcopy',
+    'flashcopies',
     'events',
     'mappings',
     'pprc',

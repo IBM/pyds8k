@@ -439,10 +439,10 @@ class RootFlashCopyMixin(object):
         if fcid:
             return self.one('{}.{}'.format(
                 types.DS8K_COPY_SERVICE_PREFIX,
-                types.DS8K_FLASHCOPIES), fcid, rebuild_url=True).get()
+                types.DS8K_CS_FLASHCOPIES), fcid, rebuild_url=True).get()
         return self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_FLASHCOPIES), rebuild_url=True).list()
+            types.DS8K_CS_FLASHCOPIES), rebuild_url=True).list()
 
     def get_flashcopies_by_volume(self, volume_id):
         return self.one(types.DS8K_VOLUME,
@@ -459,7 +459,7 @@ class RootFlashCopyMixin(object):
             self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_FLASHCOPIES),
+            types.DS8K_CS_FLASHCOPIES),
             rebuild_url=True).posta({"volume_pairs": volume_pairs,
                                      "options": options
                                      })
@@ -468,7 +468,7 @@ class RootFlashCopyMixin(object):
     def delete_flashcopy(self, flashcopy_id):
         _, res = self.one('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_FLASHCOPIES),
+            types.DS8K_CS_FLASHCOPIES),
             flashcopy_id,
             rebuild_url=True).delete()
         return res
@@ -631,12 +631,12 @@ class FlashCopyMixin(object):
         if fcid:
             return self.one('{}.{}'.format(
                 types.DS8K_COPY_SERVICE_PREFIX,
-                types.DS8K_FLASHCOPIES), fcid).get()
+                types.DS8K_CS_FLASHCOPIES), fcid).get()
         flashcopies = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_FLASHCOPIES)).list()
+            types.DS8K_CS_FLASHCOPIES)).list()
         self._start_updating()
-        setattr(self, types.DS8K_FLASHCOPIES, flashcopies)
+        setattr(self, types.DS8K_CS_FLASHCOPIES, flashcopies)
         self._stop_updating()
         return flashcopies
 

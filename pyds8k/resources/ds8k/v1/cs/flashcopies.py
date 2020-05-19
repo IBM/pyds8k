@@ -15,16 +15,16 @@
 ##############################################################################
 
 """
-FlashCopies interface.
+advanced FlashCopies interface.
 """
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, BaseManager
-from ..common.types import DS8K_FLASHCOPIES, DS8K_FLASHCOPY
+from ..common.types import DS8K_CS_FLASHCOPIES, DS8K_FLASHCOPY
 from ..volumes import Volume, VolumeManager
 
 
 class FlashCopy(Base, metaclass=ResourceMeta):
-    resource_type = DS8K_FLASHCOPIES
+    resource_type = DS8K_CS_FLASHCOPIES
     _template = {'id': None,
                  'persistent': None,
                  'recording': None,
@@ -49,10 +49,10 @@ class FlashCopy(Base, metaclass=ResourceMeta):
 
 class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
     """
-    Manage FlashCopies resources.
+    Manage advanced FlashCopies resources.
     """
     resource_class = FlashCopy
-    resource_type = DS8K_FLASHCOPIES
+    resource_type = DS8K_CS_FLASHCOPIES
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
         return self._get(resource_id=resource_id, url=url,

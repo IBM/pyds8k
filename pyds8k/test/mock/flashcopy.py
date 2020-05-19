@@ -30,21 +30,21 @@ ALL = {
                 'id': '0000:0001',
                 'link': {
                     'rel': 'self',
-                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/'
+                    'href': 'https://localhost:8088/api/v1/cs/flashcopies/'
                             '0000:0001'
                 },
                 'source_volume': {
                     'id': '0000',
                     'link': {
                         'rel': 'self',
-                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0000'
+                        'href': 'https://localhost:8088/api/v1/volumes/0000'
                     }
                 },
                 'target_volume': {
                     'id': '0001',
                     'link': {
                         'rel': 'self',
-                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0001'
+                        'href': 'https://localhost:8088/api/v1/volumes/0001'
                     }
                 },
                 'out_of_sync_tracks': '0',
@@ -54,21 +54,21 @@ ALL = {
                 'id': '1000:1001',
                 'link': {
                     'rel': 'self',
-                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/'
+                    'href': 'https://localhost:8088/api/v1/cs/flashcopies/'
                             '1000:1001'
                 },
                 'source_volume': {
                     'id': '1000',
                     'link': {
                         'rel': 'self',
-                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/1000'
+                        'href': 'https://localhost:8088/api/v1/volumes/1000'
                     }
                 },
                 'target_volume': {
                     'id': '1001',
                     'link': {
                         'rel': 'self',
-                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/1001'
+                        'href': 'https://localhost:8088/api/v1/volumes/1001'
                     }
                 },
                 'out_of_sync_tracks': '0',
@@ -94,21 +94,21 @@ ONE = {
                 'id': '0000:0001',
                 'link': {
                     'rel': 'self',
-                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/'
+                    'href': 'https://localhost:8088/api/v1/cs/flashcopies/'
                             '0000:0001'
                 },
                 'source_volume': {
                     'id': '0000',
                     'link': {
                         'rel': 'self',
-                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0000'
+                        'href': 'https://localhost:8088/api/v1/volumes/0000'
                     }
                 },
                 'target_volume': {
                     'id': '0001',
                     'link': {
                         'rel': 'self',
-                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0001'
+                        'href': 'https://localhost:8088/api/v1/volumes/0001'
                     }
                 },
                 'out_of_sync_tracks': '0',
