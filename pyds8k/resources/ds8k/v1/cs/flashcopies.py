@@ -19,8 +19,7 @@ FlashCopies interface.
 """
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, BaseManager
-from ..common.types import DS8K_FLASHCOPIES, DS8K_HOST, DS8K_FLASHCOPY
-from ..hosts import Host, HostManager
+from ..common.types import DS8K_FLASHCOPIES, DS8K_FLASHCOPY
 from ..volumes import Volume, VolumeManager
 
 
@@ -39,20 +38,6 @@ class FlashCopy(Base, metaclass=ResourceMeta):
                         'targetvolume': (Volume, VolumeManager)
                         }
 
-    def __init__(self, client, manager=None, url='', info={},
-                 resource_id=None,
-                 parent=None,
-                 loaded=False,
-                 ):
-        super(FlashCopy, self).__init__(client,
-                                        manager=manager,
-                                        url=url,
-                                        info=info,
-                                        resource_id=resource_id,
-                                        parent=parent,
-                                        loaded=loaded,
-                                        )
-
     def __repr__(self):
         return "<FlashCopy: {0}>".format(self._get_id())
 
@@ -60,21 +45,6 @@ class FlashCopy(Base, metaclass=ResourceMeta):
         super(FlashCopy, self)._add_details(info, force=force)
         if info.get(DS8K_FLASHCOPY):
             self._id = info[DS8K_FLASHCOPY][0]['id']
-
-    def _set_hosts(self):
-        host_list = self.representation.get('host', [])
-        if host_list:
-            host_obj_list = []
-            for host in host_list:
-                host_obj = Host(self.client,
-                                manager=HostManager(self.client),
-                                info=host,
-                                loaded=False,
-                                )
-                host_obj_list.append(host_obj)
-            self.representation[DS8K_HOST] = [
-                h.host_id for h in host_obj_list]
-            setattr(self, DS8K_HOST, host_obj_list)
 
 
 class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
