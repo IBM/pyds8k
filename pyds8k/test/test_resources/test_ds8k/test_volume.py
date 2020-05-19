@@ -23,7 +23,8 @@ from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.exceptions import FieldReadOnly
 from pyds8k.messages import INVALID_TYPE
 from pyds8k.resources.ds8k.v1.common import types
-from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME, DS8K_FLASHCOPIES, DS8K_COPY_SERVICE_PREFIX
+from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME, DS8K_FLASHCOPIES, DS8K_COPY_SERVICE_PREFIX, \
+    DS8K_FLASHCOPY
 from pyds8k.resources.ds8k.v1.cs.flashcopies import FlashCopy as FlashCopies
 from pyds8k.resources.ds8k.v1.flashcopy import FlashCopy
 from pyds8k.resources.ds8k.v1.hosts import Host
@@ -522,3 +523,35 @@ class TestVolume(TestDS8KWithConnect):
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], FlashCopies)
         self.assertEqual(resp3.status_code, 201)
+
+    @httpretty.activate
+    def test_delete_flashcopy(self):
+        response_a_json = get_response_json_by_type(DS8K_FLASHCOPY)
+        response_a = get_response_data_by_type(DS8K_FLASHCOPY)
+        name = self._get_resource_id_from_resopnse(DS8K_FLASHCOPY, response_a,
+                                                   FlashCopy.id_field
+                                                   )
+        url = '/cs/flashcopies/{}'.format(name)
+        httpretty.register_uri(httpretty.GET,
+                               self.domain + self.base_url + url,
+                               body=response_a_json,
+                               content_type='application/json',
+                               status=200,
+                               )
+        httpretty.register_uri(httpretty.DELETE,
+                               self.domain + self.base_url + url,
+                               body=action_response_json,
+                               content_type='application/json',
+                               status=204,
+                               )
+        # Way 1
+        _ = self.system.delete_flashcopy(name)
+        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        # self.assertEqual(resp1, action_response['server'])
+
+        # Way 2
+        flashcopy = self.system.get_flashcopies(name)
+        self.assertIsInstance(flashcopy, FlashCopies)
+        resp2, _ = flashcopy.delete()
+        self.assertEqual(resp2.status_code, 204)
+        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)

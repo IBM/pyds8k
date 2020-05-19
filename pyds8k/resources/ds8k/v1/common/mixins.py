@@ -437,8 +437,12 @@ class RootFlashCopyMixin(object):
 
     def get_flashcopy(self, fcid=None):
         if fcid:
-            return self.one(types.DS8K_FLASHCOPY, fcid, rebuild_url=True).get()
-        return self.all(types.DS8K_FLASHCOPY, rebuild_url=True).list()
+            return self.one('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_FLASHCOPIES), fcid, rebuild_url=True).get()
+        return self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_FLASHCOPIES), rebuild_url=True).list()
 
     def get_flashcopies_by_volume(self, volume_id):
         return self.one(types.DS8K_VOLUME,
@@ -453,13 +457,13 @@ class RootFlashCopyMixin(object):
         """
         for option in options:
             self._verify_type(option, types.DS8K_FC_OPTIONS)
-        a, res = self.all('{}.{}'.format(
+        _, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_FLASHCOPIES),
             rebuild_url=True).posta({"volume_pairs": volume_pairs,
                                      "options": options
                                      })
-        return a,res
+        return res
 
     def delete_flashcopy(self, flashcopy_id):
         _, res = self.one('{}.{}'.format(
