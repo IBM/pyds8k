@@ -40,7 +40,6 @@ DEFAULT_SERVICE_VERSION = 'v1'
 disable_warnings(InsecureRequestWarning)
 
 
-
 class HTTPClient(object):
     """
     A HTTP client interacting with a RESTful web service.
