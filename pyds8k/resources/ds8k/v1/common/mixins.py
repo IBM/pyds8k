@@ -628,10 +628,14 @@ class FlashCopyMixin(object):
         if not self.id:
             raise IDMissingError()
         if fcid:
-            return self.one(types.DS8K_FLASHCOPY, fcid).get()
-        flashcopies = self.all(types.DS8K_FLASHCOPY).list()
+            return self.one('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_FLASHCOPIES), fcid).get()
+        flashcopies = self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_FLASHCOPIES)).list()
         self._start_updating()
-        setattr(self, types.DS8K_FLASHCOPY, flashcopies)
+        setattr(self, types.DS8K_FLASHCOPIES, flashcopies)
         self._stop_updating()
         return flashcopies
 
