@@ -60,37 +60,37 @@ def get_request_json_body(body):
 
 # actions fail/success response
 action_response = {
-  "server": {
-    "status": "ok",
-    "code": "",
-    "message": "Operation done successfully."
-  },
+    "server": {
+        "status": "ok",
+        "code": "",
+        "message": "Operation done successfully."
+    },
 }
 action_response_json = json.dumps(action_response)
 
 action_response_failed = {
-  "server": {
-    "status": "failed",
-    "code": "888",
-    "message": "Operation done unsuccessfully."
-  },
+    "server": {
+        "status": "failed",
+        "code": "888",
+        "message": "Operation done unsuccessfully."
+    },
 }
 action_response_failed_json = json.dumps(action_response_failed)
 _delete_response = {
-  "server": {
-    "status": "ok",
-    "code": "",
-    "message": "Operation done successfully."
-  },
+    "server": {
+        "status": "ok",
+        "code": "",
+        "message": "Operation done successfully."
+    },
 }
 _delete_response_json = json.dumps(_delete_response)
 
 _put_post_response = {
-  "server": {
-    "status": "ok",
-    "code": "",
-    "message": "Operation done successfully."
-  },
+    "server": {
+        "status": "ok",
+        "code": "",
+        "message": "Operation done successfully."
+    },
 }
 _put_post_response_json = json.dumps(_put_post_response)
 
@@ -105,34 +105,34 @@ create_volumes_response = {
             "status": "ok",
             "code": "",
             "message": "Operation done successfully."
+        },
+            "data": {
+                "volumes": [{"name": "lou_test1",
+                             "id": "0010"
+                             }
+                            ]
             },
-         "data": {
-            "volumes": [{"name": "lou_test1",
-                         "id": "0010"
-                         }
-                        ]
-            },
-         "link": {
-            "rel": "self",
-            "href": "https://localhost:8088/api/v1/volumes/0010"
+            "link": {
+                "rel": "self",
+                "href": "https://localhost:8088/api/v1/volumes/0010"
             }
-         },
+        },
         {"server": {
             "status": "ok",
             "code": "",
             "message": "Operation done successfully."
+        },
+            "data": {
+                "volumes": [{"name": "lou_test2",
+                             "id": "0011"
+                             }
+                            ]
             },
-         "data": {
-            "volumes": [{"name": "lou_test2",
-                         "id": "0011"
-                         }
-                        ]
-            },
-         "link": {
-            "rel": "self",
-            "href": "https://localhost:8088/api/v1/volumes/0011"
+            "link": {
+                "rel": "self",
+                "href": "https://localhost:8088/api/v1/volumes/0011"
             }
-         },
+        },
     ]
 }
 create_volumes_response_json = json.dumps(create_volumes_response)
@@ -148,24 +148,24 @@ create_volumes_partial_failed_response = {
             "status": "ok",
             "code": "",
             "message": "Operation done successfully."
+        },
+            "data": {
+                "volumes": [{"name": "lou_test1",
+                             "id": "0010"
+                             }
+                            ]
             },
-         "data": {
-            "volumes": [{"name": "lou_test1",
-                         "id": "0010"
-                         }
-                        ]
-            },
-         "link": {
-            "rel": "self",
-            "href": "https://localhost:8088/api/v1/volumes/0010"
+            "link": {
+                "rel": "self",
+                "href": "https://localhost:8088/api/v1/volumes/0010"
             }
-         },
+        },
         {"server": {
             "status": "failed",
             "code": "error_code",
             "message": "something wrong"
-            },
-         },
+        },
+        },
     ]
 }
 create_volumes_partial_failed_response_json = json.dumps(
@@ -186,7 +186,7 @@ create_volume_response = {
                     "id": "0010"
                 }
             ]
-        },
+    },
     "link": {
         "rel": "self",
         "href": "https://localhost:8088/api/v1/volumes/0010"
@@ -205,22 +205,22 @@ create_mappings_response = {
             "status": "ok",
             "code": "",
             "message": "Operation done successfully."
-            },
-         "link": {
-            "rel": "self",
-            "href": "https://localhost:8088/api/v1/hosts/host1/mappings/00"
+        },
+            "link": {
+                "rel": "self",
+                "href": "https://localhost:8088/api/v1/hosts/host1/mappings/00"
             }
-         },
+        },
         {"server": {
             "status": "ok",
             "code": "",
             "message": "Operation done successfully."
-            },
-         "link": {
-            "rel": "self",
-            "href": "https://localhost:8088/api/v1/hosts/host1/mappings/01"
+        },
+            "link": {
+                "rel": "self",
+                "href": "https://localhost:8088/api/v1/hosts/host1/mappings/01"
             }
-         },
+        },
     ]
 }
 create_mappings_response_json = json.dumps(create_mappings_response)
@@ -264,7 +264,6 @@ create_host_port_response = {
 }
 create_host_port_response_json = json.dumps(create_host_port_response)
 
-
 # Templates
 volume_template = {'name': 'vol1',
                    'type': 'fb',
@@ -282,25 +281,23 @@ default_template = {'name': 'vol1',
                     'pool_id': 'P0',
                     }
 
-
 # fail response
 token_response_error = {
-  "server": {
-    "status": "failed",
-    "code": "NIServerException",
-    "message": "Operation done successfully."
-  }
+    "server": {
+        "status": "failed",
+        "code": "NIServerException",
+        "message": "Operation done successfully."
+    }
 }
-
 
 # request
 default_request = {
-                   'request': {
-                               'params': {
-                                          'param1': 'test',
-                                          }
-                               }
-                   }
+    'request': {
+        'params': {
+            'param1': 'test',
+        }
+    }
+}
 
 create_flashcopy_response = {
     'server': {
