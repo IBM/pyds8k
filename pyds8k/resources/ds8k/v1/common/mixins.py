@@ -455,7 +455,7 @@ class RootFlashCopyMixin(object):
         :param options:
         :return:
         """
-        for option in list(options):
+        for option in [options]:
             self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
