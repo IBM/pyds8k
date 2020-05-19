@@ -446,15 +446,13 @@ class RootFlashCopyMixin(object):
                         rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
 
     def create_flashcopy(self, volume_pairs, options=[]):
-        '''
-
-        :param volume_pairs: [{"source_volume": source_volume,"target_volume": target_volume},...]
+        """
+        :param volume_pairs: [{"source_volume": 0000,"target_volume": 1100},...]
         :param options:
         :return:
-        '''
-        if options:
-            for option in options:
-                self._verify_type(option, types.DS8K_FC_OPTIONS)
+        """
+        # for option in options:
+        #     self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_FLASHCOPIES),
