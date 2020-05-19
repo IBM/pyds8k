@@ -59,8 +59,8 @@ class FlashCopy(Base, metaclass=ResourceMeta):
     def _add_details(self, info, force=False):
         super(FlashCopy, self)._add_details(info, force=force)
 
-        # import pdb
-        # pdb.set_trace()
+        import pdb
+        pdb.set_trace()
         # Temporarily, remove this line when flashcopy resource has id field.
         self._id = '{}:{}'.format(
             info['volume_pairs'][0]['source_volume'],
