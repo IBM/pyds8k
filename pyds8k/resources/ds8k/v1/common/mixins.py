@@ -449,7 +449,7 @@ class RootFlashCopyMixin(object):
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_FLASHCOPIES),
                         volume_id,
-                        rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
+                        rebuild_url=True).all(types.DS8K_FLASHCOPIES).list()
 
     def create_flashcopy(self, volume_pairs, options=[]):
         """
