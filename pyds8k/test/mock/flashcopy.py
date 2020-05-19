@@ -27,44 +27,50 @@ ALL = {
     'data': {
         'flashcopy': [
             {
-                'sourcevolume': {
+                'id': '0000:0001',
+                'link': {
+                    'rel': 'self',
+                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/0000:0001'
+                },
+                'source_volume': {
                     'id': '0000',
                     'link': {
                         'rel': 'self',
-                        'href': 'https://localhost:8088/api/v1/volumes/0000',
-                    },
+                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0000'
+                    }
                 },
-                'targetvolume': {
+                'target_volume': {
                     'id': '0001',
                     'link': {
                         'rel': 'self',
-                        'href': 'https://localhost:8088/api/v1/volumes/0001',
-                    },
+                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0001'
+                    }
                 },
-                'persistent': 'enabled',
-                'recording': 'enabled',
-                'backgroundcopy': 'enabled',
-                'state': 'valid',
+                'out_of_sync_tracks': '0',
+                'state': 'valid'
             },
             {
-                'sourcevolume': {
+                'id': '1000:1001',
+                'link': {
+                    'rel': 'self',
+                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/1000:1001'
+                },
+                'source_volume': {
                     'id': '1000',
                     'link': {
                         'rel': 'self',
-                        'href': 'https://localhost:8088/api/v1/volumes/1000',
-                    },
+                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/1000'
+                    }
                 },
-                'targetvolume': {
+                'target_volume': {
                     'id': '1001',
                     'link': {
                         'rel': 'self',
-                        'href': 'https://localhost:8088/api/v1/volumes/1001',
-                    },
+                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/1001'
+                    }
                 },
-                'persistent': 'enabled',
-                'recording': 'enabled',
-                'backgroundcopy': 'enabled',
-                'state': 'valid',
+                'out_of_sync_tracks': '0',
+                'state': 'valid'
             },
         ]
     }
@@ -83,24 +89,27 @@ ONE = {
     'data': {
         'flashcopy': [
             {
-                'sourcevolume': {
+                'id': '0000:0001',
+                'link': {
+                    'rel': 'self',
+                    'href': 'https:/9.151.159.203:8452/api/v1/cs/flashcopies/0000:0001'
+                },
+                'source_volume': {
                     'id': '0000',
                     'link': {
                         'rel': 'self',
-                        'href': 'https://localhost:8088/api/v1/volumes/0000',
-                    },
+                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0000'
+                    }
                 },
-                'targetvolume': {
+                'target_volume': {
                     'id': '0001',
                     'link': {
                         'rel': 'self',
-                        'href': 'https://localhost:8088/api/v1/volumes/0001',
-                    },
+                        'href': 'https:/9.151.159.203:8452/api/v1/volumes/0001'
+                    }
                 },
-                'persistent': 'enabled',
-                'recording': 'enabled',
-                'backgroundcopy': 'enabled',
-                'state': 'valid',
+                'out_of_sync_tracks': '0',
+                'state': 'valid'
             },
         ]
     }

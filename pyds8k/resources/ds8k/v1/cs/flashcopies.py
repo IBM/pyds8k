@@ -19,7 +19,7 @@ FlashCopies interface.
 """
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, BaseManager
-from ..common.types import DS8K_FLASHCOPIES, DS8K_HOST
+from ..common.types import DS8K_FLASHCOPIES, DS8K_HOST, DS8K_FLASHCOPY
 from ..hosts import Host, HostManager
 from ..volumes import Volume, VolumeManager
 
@@ -59,13 +59,10 @@ class FlashCopy(Base, metaclass=ResourceMeta):
     def _add_details(self, info, force=False):
         super(FlashCopy, self)._add_details(info, force=force)
 
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
         # Temporarily, remove this line when flashcopy resource has id field.
-        self._id = '{}:{}'.format(
-            info['volume_pairs'][0]['source_volume'],
-            info['volume_pairs'][0]['target_volume']
-        )
+        # self._id = info[DS8K_FLASHCOPY][0]['id']
 
     def __repr__(self):
         return "<FlashCopy: {}>".format(self.id)
