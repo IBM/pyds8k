@@ -139,7 +139,6 @@ class BaseResource(object):
     pass
 
 
-
 class Resource(UtilsMixin, BaseResource):
     """
     A resource represents a particular representation of
@@ -174,8 +173,6 @@ class Resource(UtilsMixin, BaseResource):
         self.manager = manager
         if self.manager:
             self.manager.managed_object = self
-        global test_manager
-        test_manager = self.manager
         self.client = client
         self.representation = {}
         self.url = self._add_base_to_url(url)
@@ -760,7 +757,6 @@ class Manager(UtilsMixin, BaseManager):
             self.url = url
             post_body = body or self.managed_object.representation
         post_body = self.remove_None_fields_from_dict(post_body)
-
         resp, body = self.client.post(self.url,
                                       body=self._get_request_data(post_body)
                                       )
