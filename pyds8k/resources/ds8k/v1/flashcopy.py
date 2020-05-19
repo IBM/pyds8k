@@ -43,10 +43,8 @@ class FlashCopy(Base, metaclass=ResourceMeta):
         super(FlashCopy, self)._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
-        self._id = self.representation['id'] = '{}:{}'.format(
-            info['sourcevolume']['id'],
-            info['targetvolume']['id']
-        )
+        self._id = self.representation['id']
+        
 
     # def __repr__(self):
     #    return "<FlashCopy: {}>".format(self.id)
