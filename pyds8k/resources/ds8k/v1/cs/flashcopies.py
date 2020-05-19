@@ -58,11 +58,8 @@ class FlashCopy(Base, metaclass=ResourceMeta):
 
     def _add_details(self, info, force=False):
         super(FlashCopy, self)._add_details(info, force=force)
-
-        # import pdb
-        # pdb.set_trace()
-        # Temporarily, remove this line when flashcopy resource has id field.
-        # self._id = info[DS8K_FLASHCOPY][0]['id']
+        if info.get(DS8K_FLASHCOPY):
+            self._id = info[DS8K_FLASHCOPY][0]['id']
 
     def __repr__(self):
         return "<FlashCopy: {}>".format(self.id)
