@@ -212,7 +212,9 @@ class TestClient(TestUtils, TestCaseWithConnect):
                                 )
 
     def test_list_flashcopies(self):
-        self._test_resource_list_by_route(types.DS8K_FLASHCOPIES,
+        self._test_resource_list_by_route('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_FLASHCOPIES),
                                           'list_flashcopies'
                                           )
 
