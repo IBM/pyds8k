@@ -93,6 +93,13 @@ class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
     resource_class = FlashCopy
     resource_type = DS8K_FLASHCOPIES
 
+    def get(self, resource_id='', url='', obj_class=None, **kwargs):
+        return self._get(resource_id=resource_id, url=url,
+                         obj_class=obj_class, **kwargs)
+
+    def list(self, url='', obj_class=None, body=None, **kwargs):
+        return self._list(url=url, obj_class=obj_class, body=body, **kwargs)
+
     def posta(self, url='', body=None):
         return self._posta(url=url, body=body)
 
