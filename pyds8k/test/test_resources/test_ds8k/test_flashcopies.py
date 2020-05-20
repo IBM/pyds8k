@@ -20,7 +20,7 @@ class TestFlashCopies(TestDS8KWithConnect):
         self.maxDiff = None
 
     @httpretty.activate
-    def test_create_flashcopy(self):
+    def test_create_cs_flashcopy(self):
         url = '/cs/flashcopies'
 
         source_volume = '0000'
@@ -47,7 +47,7 @@ class TestFlashCopies(TestDS8KWithConnect):
                                content_type='application/json',
                                )
         # Way 1
-        resp1 = self.system.create_flashcopy(
+        resp1 = self.system.create_cs_flashcopy(
             volume_pairs=[{'source_volume': source_volume,
                            'target_volume': target_volume}])
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
@@ -76,10 +76,11 @@ class TestFlashCopies(TestDS8KWithConnect):
         self.assertEqual(resp3.status_code, 201)
 
     @httpretty.activate
-    def test_delete_flashcopy(self):
-        response_a_json = get_response_json_by_type(DS8K_FLASHCOPY)
-        response_a = get_response_data_by_type(DS8K_FLASHCOPY)
-        name = self._get_resource_id_from_resopnse(DS8K_FLASHCOPY, response_a,
+    def test_delete_cs_flashcopy(self):
+        response_a_json = get_response_json_by_type(DS8K_CS_FLASHCOPIES)
+        response_a = get_response_data_by_type(DS8K_CS_FLASHCOPIES)
+        name = self._get_resource_id_from_resopnse(DS8K_FLASHCOPY,
+                                                   response_a,
                                                    FlashCopy.id_field
                                                    )
         url = '/cs/flashcopies/{}'.format(name)
@@ -96,11 +97,11 @@ class TestFlashCopies(TestDS8KWithConnect):
                                status=204,
                                )
         # Way 1
-        _ = self.system.delete_flashcopy(name)
+        _ = self.system.delete_cs_flashcopy(name)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
 
         # Way 2
-        flashcopy = self.system.get_flashcopies(name)
+        flashcopy = self.system.get_cs_flashcopies(name)
         self.assertIsInstance(flashcopy, FlashCopies)
         resp2, _ = flashcopy.delete()
         self.assertEqual(resp2.status_code, 204)

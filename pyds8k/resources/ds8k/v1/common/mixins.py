@@ -437,6 +437,19 @@ class RootFlashCopyMixin(object):
 
     def get_flashcopy(self, fcid=None):
         if fcid:
+            return self.one(types.DS8K_FLASHCOPY, fcid, rebuild_url=True).get()
+        return self.all(types.DS8K_FLASHCOPY, rebuild_url=True).list()
+
+    def get_flashcopies_by_volume(self, volume_id):
+        return self.one(types.DS8K_VOLUME,
+                        volume_id,
+                        rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
+
+    def get_cs_flashcopies(self, fcid=None):
+        return self.get_cs_flashcopy(fcid)
+
+    def get_cs_flashcopy(self, fcid=None):
+        if fcid:
             return self.one('{}.{}'.format(
                 types.DS8K_COPY_SERVICE_PREFIX,
                 types.DS8K_CS_FLASHCOPIES), fcid, rebuild_url=True).get()
@@ -444,12 +457,7 @@ class RootFlashCopyMixin(object):
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_CS_FLASHCOPIES), rebuild_url=True).list()
 
-    def get_flashcopies_by_volume(self, volume_id):
-        return self.one(types.DS8K_VOLUME,
-                        volume_id,
-                        rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
-
-    def create_flashcopy(self, volume_pairs, options=[]):
+    def create_cs_flashcopy(self, volume_pairs, options=[]):
         """
         :param volume_pairs: [{"source_volume": 0000,"target_volume": 1100},..]
         :param options:
@@ -465,7 +473,7 @@ class RootFlashCopyMixin(object):
                                      })
         return res
 
-    def delete_flashcopy(self, flashcopy_id):
+    def delete_cs_flashcopy(self, flashcopy_id):
         _, res = self.one('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
             types.DS8K_CS_FLASHCOPIES),
@@ -626,6 +634,20 @@ class FlashCopyMixin(object):
         return self.get_flashcopy(fcid)
 
     def get_flashcopy(self, fcid=None):
+        if not self.id:
+            raise IDMissingError()
+        if fcid:
+            return self.one(types.DS8K_FLASHCOPY, fcid).get()
+        flashcopies = self.all(types.DS8K_FLASHCOPY).list()
+        self._start_updating()
+        setattr(self, types.DS8K_FLASHCOPY, flashcopies)
+        self._stop_updating()
+        return flashcopies
+
+    def get_cs_flashcopies(self, fcid=None):
+        return self.get_cs_flashcopy(fcid)
+
+    def get_cs_flashcopy(self, fcid=None):
         if not self.id:
             raise IDMissingError()
         if fcid:
