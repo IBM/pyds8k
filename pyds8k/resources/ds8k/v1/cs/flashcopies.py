@@ -34,8 +34,8 @@ class FlashCopy(Base, metaclass=ResourceMeta):
                  'volume_pairs': []
                  }
 
-    related_resource = {'_source_volume': (Volume, VolumeManager),
-                        '_target_volume': (Volume, VolumeManager)
+    related_resource = {'_volume_pairs': [{'source_volume': (Volume, VolumeManager),
+                                           'target_volume': (Volume, VolumeManager)}]
                         }
 
     def __repr__(self):
