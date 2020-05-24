@@ -3,7 +3,7 @@ import json
 import httpretty
 
 from pyds8k.dataParser.ds8k import RequestParser
-from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_FLASHCOPIES, \
+from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_FLASHCOPY, \
     DS8K_COPY_SERVICE_PREFIX, DS8K_FLASHCOPY
 from pyds8k.resources.ds8k.v1.cs.flashcopies import FlashCopy as FlashCopies
 from pyds8k.resources.ds8k.v1.flashcopy import FlashCopy
@@ -55,7 +55,7 @@ class TestFlashCopies(TestDS8KWithConnect):
 
         # Way 2
         flashcopies = self.system.all(
-            '{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_CS_FLASHCOPIES),
+            '{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_CS_FLASHCOPY),
             rebuild_url=True)
         new_fc2 = flashcopies.create(volume_pairs=[
             {'source_volume': source_volume, 'target_volume': target_volume}])
@@ -66,7 +66,7 @@ class TestFlashCopies(TestDS8KWithConnect):
 
         # Way 3
         flashcopies = self.system.all(
-            '{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_CS_FLASHCOPIES),
+            '{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_CS_FLASHCOPY),
             rebuild_url=True)
         new_fc3 = flashcopies.create(volume_pairs=[
             {'source_volume': source_volume, 'target_volume': target_volume}])
@@ -77,8 +77,8 @@ class TestFlashCopies(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_cs_flashcopy(self):
-        response_a_json = get_response_json_by_type(DS8K_CS_FLASHCOPIES)
-        response_a = get_response_data_by_type(DS8K_CS_FLASHCOPIES)
+        response_a_json = get_response_json_by_type(DS8K_CS_FLASHCOPY)
+        response_a = get_response_data_by_type(DS8K_CS_FLASHCOPY)
         name = self._get_resource_id_from_resopnse(DS8K_FLASHCOPY,
                                                    response_a,
                                                    FlashCopy.id_field

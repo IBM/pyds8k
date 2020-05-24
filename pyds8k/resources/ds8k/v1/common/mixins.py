@@ -452,10 +452,10 @@ class RootFlashCopyMixin(object):
         if fcid:
             return self.one('{}.{}'.format(
                 types.DS8K_COPY_SERVICE_PREFIX,
-                types.DS8K_CS_FLASHCOPIES), fcid, rebuild_url=True).get()
+                types.DS8K_CS_FLASHCOPY), fcid, rebuild_url=True).get()
         return self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPIES), rebuild_url=True).list()
+            types.DS8K_CS_FLASHCOPY), rebuild_url=True).list()
 
     def create_cs_flashcopy(self, volume_pairs, options=[]):
         """
@@ -467,7 +467,7 @@ class RootFlashCopyMixin(object):
             self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPIES),
+            types.DS8K_CS_FLASHCOPY),
             rebuild_url=True).posta({"volume_pairs": volume_pairs,
                                      "options": options
                                      })
@@ -476,7 +476,7 @@ class RootFlashCopyMixin(object):
     def delete_cs_flashcopy(self, flashcopy_id):
         _, res = self.one('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPIES),
+            types.DS8K_CS_FLASHCOPY),
             flashcopy_id,
             rebuild_url=True).delete()
         return res
@@ -653,12 +653,12 @@ class FlashCopyMixin(object):
         if fcid:
             return self.one('{}.{}'.format(
                 types.DS8K_COPY_SERVICE_PREFIX,
-                types.DS8K_CS_FLASHCOPIES), fcid).get()
+                types.DS8K_CS_FLASHCOPY), fcid).get()
         flashcopies = self.all('{}.{}'.format(
             types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPIES)).list()
+            types.DS8K_CS_FLASHCOPY)).list()
         self._start_updating()
-        setattr(self, types.DS8K_CS_FLASHCOPIES, flashcopies)
+        setattr(self, types.DS8K_CS_FLASHCOPY, flashcopies)
         self._stop_updating()
         return flashcopies
 
