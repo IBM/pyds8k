@@ -91,6 +91,10 @@ class SCClient(object):
         return self.client.get_flashcopies()
 
     @dictionarize
+    def list_cs_flashcopies(self):
+        return self.client.get_cs_flashcopies()
+
+    @dictionarize
     def list_volume_flashcopies(self, volume_id):
         # two requests
         # volume = self.client.get_volumes(volume_id)

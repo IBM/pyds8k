@@ -27,6 +27,7 @@ FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 class RootBaseMixin(object):
     pass
 
+
 # Note: the format of all the get list methods should be:
 #           get_{right type in types}
 #       the format of all the get single methods should be:
@@ -134,8 +135,8 @@ class RootPoolMixin(object):
                           pool_id,
                           rebuild_url=True
                           ).all(
-                              types.DS8K_TSEREP
-                              ).update({'cap': cap, 'captype': captype})
+            types.DS8K_TSEREP
+        ).update({'cap': cap, 'captype': captype})
         return res
 
     def update_eserep_cap_by_pool(self, pool_id, cap, captype=''):
@@ -143,8 +144,8 @@ class RootPoolMixin(object):
                           pool_id,
                           rebuild_url=True
                           ).all(
-                              types.DS8K_ESEREP
-                              ).update({'cap': cap, 'captype': captype})
+            types.DS8K_ESEREP
+        ).update({'cap': cap, 'captype': captype})
         return res
 
     def update_tserep_threshold_by_pool(self, pool_id, threshold):
@@ -152,8 +153,8 @@ class RootPoolMixin(object):
                           pool_id,
                           rebuild_url=True
                           ).all(
-                              types.DS8K_TSEREP
-                              ).update({'threshold': threshold})
+            types.DS8K_TSEREP
+        ).update({'threshold': threshold})
         return res
 
     def update_eserep_threshold_by_pool(self, pool_id, threshold):
@@ -161,8 +162,8 @@ class RootPoolMixin(object):
                           pool_id,
                           rebuild_url=True
                           ).all(
-                              types.DS8K_ESEREP
-                              ).update({'threshold': threshold})
+            types.DS8K_ESEREP
+        ).update({'threshold': threshold})
         return res
 
     def get_volumes_by_pool(self, pool_id):
@@ -272,8 +273,8 @@ class RootVolumeMixin(object):
         _, res = self.one(types.DS8K_VOLUME,
                           volume_id,
                           rebuild_url=True).update(
-                              {'cap': new_size, 'captype': captype}
-                              )
+            {'cap': new_size, 'captype': captype}
+        )
         return res
 
     def update_volume_move(self, volume_id, new_pool):
@@ -392,8 +393,8 @@ class RootHostMixin(object):
                           host_name,
                           rebuild_url=True
                           ).all(types.DS8K_VOLMAP).posta(
-                              post_data
-                              )
+            post_data
+        )
         return res
 
     def unmap_volume_from_host(self, host_name, lunid):
@@ -414,8 +415,8 @@ class RootLSSMixin(object):
             raise ValueError(
                 INVALID_TYPE.format(
                     ', '.join(types.DS8K_VOLUME_TYPES)
-                    )
                 )
+            )
         return self.all(types.DS8K_LSS, rebuild_url=True).list(
             params={'type': lss_type}
         )
@@ -443,6 +444,42 @@ class RootFlashCopyMixin(object):
         return self.one(types.DS8K_VOLUME,
                         volume_id,
                         rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
+
+    def get_cs_flashcopies(self, fcid=None):
+        return self.get_cs_flashcopy(fcid)
+
+    def get_cs_flashcopy(self, fcid=None):
+        if fcid:
+            return self.one('{}.{}'.format(
+                types.DS8K_COPY_SERVICE_PREFIX,
+                types.DS8K_CS_FLASHCOPY), fcid, rebuild_url=True).get()
+        return self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_FLASHCOPY), rebuild_url=True).list()
+
+    def create_cs_flashcopy(self, volume_pairs, options=[]):
+        """
+        :param volume_pairs: [{"source_volume": 0000,"target_volume": 1100},..]
+        :param options:
+        :return:
+        """
+        for option in options:
+            self._verify_type(option, types.DS8K_FC_OPTIONS)
+        _, res = self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_FLASHCOPY),
+            rebuild_url=True).posta({"volume_pairs": volume_pairs,
+                                     "options": options
+                                     })
+        return res
+
+    def delete_cs_flashcopy(self, flashcopy_id):
+        _, res = self.one('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_FLASHCOPY),
+            flashcopy_id,
+            rebuild_url=True).delete()
+        return res
 
 
 class RootPPRCMixin(object):
@@ -505,7 +542,7 @@ class RootEventMixin(object):
                 if not isinstance(v, datetime):
                     raise InvalidArgumentError(
                         'before/after must be an datetime instance.'
-                        )
+                    )
                 dttz = datetime(year=v.year,
                                 month=v.month,
                                 day=v.day,
@@ -604,6 +641,24 @@ class FlashCopyMixin(object):
         flashcopies = self.all(types.DS8K_FLASHCOPY).list()
         self._start_updating()
         setattr(self, types.DS8K_FLASHCOPY, flashcopies)
+        self._stop_updating()
+        return flashcopies
+
+    def get_cs_flashcopies(self, fcid=None):
+        return self.get_cs_flashcopy(fcid)
+
+    def get_cs_flashcopy(self, fcid=None):
+        if not self.id:
+            raise IDMissingError()
+        if fcid:
+            return self.one('{}.{}'.format(
+                types.DS8K_COPY_SERVICE_PREFIX,
+                types.DS8K_CS_FLASHCOPY), fcid).get()
+        flashcopies = self.all('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_FLASHCOPY)).list()
+        self._start_updating()
+        setattr(self, types.DS8K_CS_FLASHCOPY, flashcopies)
         self._stop_updating()
         return flashcopies
 
