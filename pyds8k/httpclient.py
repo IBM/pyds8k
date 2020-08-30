@@ -113,6 +113,7 @@ class HTTPClient(object):
             service_type=self.service_type,
             service_version=self.service_version
         )
+        self.session = requests.session()
 
         if not secure:
             self.verify_cert = False
@@ -184,7 +185,7 @@ class HTTPClient(object):
                     kwargs
                  )
             try:
-                resp = requests.request(
+                resp = self.session.request(
                     method,
                     absolute_url,
                     verify=self.verify_cert,
