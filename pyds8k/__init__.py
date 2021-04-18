@@ -22,7 +22,7 @@ IBM DS8K CLI Client Module
 """
 PYDS8K_DEFAULT_LOGGER = "pyds8k"
 
-version_tuple = (1, 2, 0)
+version_tuple = (1, 3, 0)
 
 
 def get_version_string():
