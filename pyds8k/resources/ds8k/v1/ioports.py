@@ -17,13 +17,15 @@
 """
 IO Ports interface.
 """
+import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_IOPORT
 from .common.base import Base, ReadOnlyManager
 from .io_enclosures import IOEnclosure, IOEnclosureManager
 
 
-class IOPort(Base, metaclass=ResourceMeta):
+@six.add_metaclass(ResourceMeta)
+class IOPort(Base):
     resource_type = DS8K_IOPORT
     # id_field = 'id'
     _template = {'id': '',
@@ -43,7 +45,8 @@ class IOPort(Base, metaclass=ResourceMeta):
     #    return "<FCPort: {0}>".format(self.id)
 
 
-class IOPortManager(ReadOnlyManager, metaclass=ManagerMeta):
+@six.add_metaclass(ManagerMeta)
+class IOPortManager(ReadOnlyManager):
     """
     Manage IO Ports resources.
     """

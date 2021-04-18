@@ -17,12 +17,14 @@
 """
 IO Enclosure interface.
 """
+import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_IOENCLOSURE
 from .common.base import Base, ReadOnlyManager
 
 
-class IOEnclosure(Base, metaclass=ResourceMeta):
+@six.add_metaclass(ResourceMeta)
+class IOEnclosure(Base):
     resource_type = DS8K_IOENCLOSURE
     # id_field = 'id'
     _template = {'id': '',
@@ -31,7 +33,8 @@ class IOEnclosure(Base, metaclass=ResourceMeta):
                  }
 
 
-class IOEnclosureManager(ReadOnlyManager, metaclass=ManagerMeta):
+@six.add_metaclass(ManagerMeta)
+class IOEnclosureManager(ReadOnlyManager):
     """
     Manage IO Enclosure resources.
     """
