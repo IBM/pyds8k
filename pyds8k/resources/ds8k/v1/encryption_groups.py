@@ -18,10 +18,11 @@
 Encryption Group interface.
 """
 import six
-
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_ENCRYPTION_GROUP
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_ENCRYPTION_GROUP
+
 
 @six.add_metaclass(ResourceMeta)
 class EncryptionGroup(Base):
@@ -30,6 +31,7 @@ class EncryptionGroup(Base):
     _template = {'id': '',
                  'state': '',
                  }
+
 
 @six.add_metaclass(ManagerMeta)
 class EncryptionGroupManager(ReadOnlyManager):
