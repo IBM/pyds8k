@@ -13,17 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################################################
+import json
 
 import httpretty
 from functools import cmp_to_key
 from pyds8k.resources.ds8k.v1.common.types import DS8K_LSS, \
     DS8K_VOLUME
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type, \
-    get_response_json_by_type
+    get_response_json_by_type, \
+    create_lss_response
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.lss import LSS, LSSManager
 from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.messages import INVALID_TYPE
+from pyds8k.resources.ds8k.v1.common import types
+from pyds8k.dataParser.ds8k import RequestParser
 
 
 class TestLSS(TestDS8KWithConnect):
@@ -125,3 +130,59 @@ class TestLSS(TestDS8KWithConnect):
 
         self.assertEqual('0000', lss.representation.get('volumes')[0])
         self.assertEqual('0000', lss.volumes[0].id)
+
+    def test_invalid_lss_type(self):
+        with self.assertRaises(ValueError) as holder_exception:
+            LSS(self.client, lss_type="fake")
+        self.assertEqual(
+            INVALID_TYPE.format(', '.join(types.DS8K_LSS_TYPES)),
+            str(holder_exception.exception)
+        )
+
+    def test_invalid_ckd_based_cu_type(self):
+        with self.assertRaises(ValueError) as holder_exception:
+            LSS(self.client, lcu_type="fake")
+        self.assertEqual(
+            INVALID_TYPE.format(', '.join(types.DS8K_LCU_TYPES)),
+            str(holder_exception.exception)
+        )
+
+    @httpretty.activate
+    def test_create_lss_ckd(self):
+        url = '/lss'
+        full_url = self.domain + self.base_url + url
+        struct_request = {
+            'id': 'FE',
+            'type': 'ckd',
+            'sub_system_identifier': 'FE00',
+            'ckd_base_cu_type': types.DS8K_LCU_TYPE_3990_6,
+        }
+
+        def _verify_request(request, uri, headers):
+            self.assertEqual(
+                uri,
+                full_url
+            )
+
+            req = RequestParser(struct_request)
+            self.assertDictContainsSubset(
+                req.get_request_data().get('request').get('params'),
+                json.loads(request.body).get('request').get('params')
+            )
+            return 201, headers, json.dumps(create_lss_response)
+
+        httpretty.register_uri(
+            httpretty.POST,
+            full_url,
+            body=_verify_request,
+            content_type='application/json'
+        )
+
+        resp = self.system.create_lss_ckd(
+            lss_id=struct_request['id'],
+            lss_type=struct_request['type'],
+            lcu_type=struct_request['ckd_base_cu_type'],
+            ss_id=struct_request['sub_system_identifier']
+        )
+        self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        self.assertIsInstance(resp[0], LSS)

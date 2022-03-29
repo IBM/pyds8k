@@ -29,10 +29,9 @@ success_status = ('ok', 'successful', )
 
 
 class RequestParser(BaseRequestParser):
-    """
-    Parse the data user wants to send to server,
-    in the right format that server defined.
-    """
+    # Parse the data user wants to send to server,
+    # in the right format that server defined.
+
     request_key = 'request'
     request_key_multi = 'request'
     param_key = 'params'
@@ -60,9 +59,8 @@ class RequestParser(BaseRequestParser):
 
 
 class ResponseParser(BaseResponseParser):
-    """
-    Parse response data, to get resource link, representation, etc.
-    """
+    # Parse response data, to get resource link, representation, etc.
+
     response_key = 'data'
     status_key = 'server'
     url_field = 'link'

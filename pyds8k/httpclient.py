@@ -42,41 +42,39 @@ disable_warnings(InsecureRequestWarning)
 
 class HTTPClient(object):
     """
-    A HTTP client interacting with a RESTful web service.
+    An HTTP client interacting with RESTAPI web service.
 
-    :param service_address: Hostname/IP address of the web service. Required.
-    :type service_address: string
-    :param user: Username for connecting to the web service. Required.
-    :type user: string
-    :param password: Password for connecting to the web service. Required.
-    :type password: string
-    :param hostname: It is required when the service has a
+    Args:
+     service_address (str): Hostname/IP address of the web service. Required.
+     user (str): Username for connecting to the web service. Required.
+     password (str): Password for connecting to the web service. Required.
+     hostname (str): It is required when the service has a
                      remote backend (eg: a storage system)
-    :param port: Port number of the server.
-    :type port: int
-    :type hostname: string
-    :param service_type: It is used to decide which series of resources, which
+     port (int): Port number of the server.
+     service_type (str): It is used to decide which series of resources, which
                          auth functions, and which data parsers will take
                          effect when a HTTPClient instance is instantiated.
                          Required. Currently, only 'ds8k' is supported.
-    :type service_type: string
-    :param service_version: It is used to decide which version of resources,
+     service_version (str): It is used to decide which version of resources,
                             which auth functions, and which data parsers will
                             take effect when a HTTPClient instance is
                             instantiated. Default is "v1"
                             Currently, only "v1" is supported.
-    :type service_version: string
-    :param timeout: How long to wait for the server to send data before giving
-                    up, as a float. In seconds.
+     timeout (float): How long to wait for the server to send data
+                    before giving up, as a float. In seconds.
                     Default is 25, and 0 means no limitation.
-    :type timeout: float
-    :param secure: Use HTTPS if it is True, Default is True.
-    :type secure: boolean
-    :param cert: If string, path to ssl client cert file(.pem).
-                 If tuple, ('cert', 'key') pair.
-    :type cert: string or tuple
-    :param defaultHeaders: The extra http headers in every request.
-    :type defaultHeaders: dict
+     secure (bool): Use HTTPS if it is True, Default is True.
+     cert (str/tuple): If str, path to ssl client cert file(.pem).
+                 If tuple, ('cert', 'key') pair. Defaults to None.
+     verify (bool/str): (optional) Either a bool, in which case it controls
+                 whether we verify the server's TLS certificate, or a string,
+                 in which case it must be a path to a CA bundle to use.
+                 Defaults to ``True``.
+     default_headers (dict): The extra http headers in every request.
+
+    Returns:
+        object: An HTTP client interacting with RESTAPI web service.
+
     """
 
     USER_AGENT = 'python-restclient'
@@ -91,35 +89,63 @@ class HTTPClient(object):
                  hostname=None,
                  secure=True,
                  timeout=DEFAULT_TIMEOUT_SEC,
-                 defaultHeaders={},
+                 default_headers=None,
                  cert=None,
+                 verify=True
                  ):
         self.user = user
         self.password = password
-        self.schema = secure and 'https' or 'http'
-        self.service_address = service_address
-        self.hostname = hostname
-        self.port = port
-        self.cert = cert
-        self.domain = self.schema + '://' + self.service_address \
-            + (':' + str(self.port) if self.port else '')
-        self.timeout = timeout
-        self.defaultHeaders = self.DefaultHeaders.copy()
-        self.defaultHeaders.update(defaultHeaders)
-        self.defaultQuerystrings = {}
         self.service_type = service_type
         self.service_version = service_version
+        self.service_address = service_address.rstrip('/')
+        self.hostname = hostname
+        self.port = port
+        url_service_point = self.service_address
+        list_uri = [self.service_address]
+        self.schema = None
+        if ":" in self.service_address:
+            list_uri = self.service_address.split(':')
+            if list_uri[0].strip().lower() in ["http", "https"]:
+                # found schema string
+                self.schema = list_uri[0].strip().lower()
+                list_uri = list_uri[1:]
+
+        # if no schema provide, default secure as True set schema to https
+        self.schema = self.schema or secure and "https" or "http"
+        prefix_http = f"{self.schema}://"
+
+        list_uri[0] = list_uri[0].lstrip("//")
+        if len(list_uri) > 1 and "/" != list_uri[1][0]:
+            # found embedded port
+            self.port = int(list_uri[1].split('/')[0])
+            url_service_point = ":".join(list_uri)
+        elif len(list_uri) == 1:
+            # no port in service address, add port if defined port is not 80
+            if "80" != self.port:
+                list_seg_sp = list_uri[0].split('/')
+                list_seg_sp[0] = f"{list_seg_sp[0]}:{self.port}"
+                url_service_point = "/".join(list_seg_sp)
+        list_uri = url_service_point.split('/')
+        # if context root is provided, default to /api
+        if len(list_uri) == 1:
+            list_uri.append('api')
+        list_uri.append(self.service_version)
+        self.service_address = f"{prefix_http}{'/'.join(list_uri)}"
+        self.domain = f"{prefix_http}{list_uri[0]}"
+        self.base_url = f"/{'/'.join(list_uri[1:])}"
+        self.verify = verify if "https" == self.schema else False
+        self.cert = cert
+        self.timeout = timeout
+        self.defaultHeaders = self.DefaultHeaders.copy()
+        self.defaultHeaders = dict()
+        if default_headers is not None and isinstance(default_headers, dict):
+            self.defaultHeaders.update(default_headers)
+        self.defaultQuerystrings = {}
         self.authenticate = get_authenticate(
             service_type=self.service_type,
             service_version=self.service_version
         )
-
-        if not secure:
-            self.verify_cert = False
-        elif self.cert is not None:
-            self.verify_cert = True
-        else:
-            self.verify_cert = False
+        self.session = requests.session()
 
     @classmethod
     def log_req(cls, args, kwargs):
@@ -177,17 +203,18 @@ class HTTPClient(object):
             if self.authenticate.get_auth_url() in url:
                 attempts += 1
                 log_required = False
-            absolute_url = url if is_absolute_url(url) else self.domain + url
+            absolute_url = url if is_absolute_url(url) \
+                else self.service_address + url
             if log_required:
                 self.log_req(
                     (absolute_url, method,),
                     kwargs
                  )
             try:
-                resp = requests.request(
+                resp = self.session.request(
                     method,
                     absolute_url,
-                    verify=self.verify_cert,
+                    verify=self.verify,
                     cert=self.cert,
                     **kwargs)
                 self.log_resp(resp)
@@ -206,7 +233,8 @@ class HTTPClient(object):
                     url = self._parse_url(link)
                     logger.info(REDIRECTING.format(old_url, url))
                     continue
-                elif resp.status_code >= 400:
+
+                if resp.status_code >= 400:
                     raise exceptions.raise_error(resp, body, self.service_type)
                 return resp, body
 
@@ -220,6 +248,7 @@ class HTTPClient(object):
             except exceptions.BadRequest as e:
                 raise e
             except requests.exceptions.ConnectionError as e:
+                logger.error(f"Error When Requesting Url: {absolute_url}")
                 raise exceptions.ConnectionError(CONNECTION_ERROR.format(e))
             except Timeout as e:
                 logger.debug(e)

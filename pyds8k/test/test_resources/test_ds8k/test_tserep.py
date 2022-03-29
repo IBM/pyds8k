@@ -20,9 +20,9 @@ from pyds8k.resources.ds8k.v1.common.types import DS8K_TSEREP
 from pyds8k.resources.ds8k.v1.pools import Pool
 from pyds8k.resources.ds8k.v1.tserep import TSERep
 from .base import TestDS8KWithConnect
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type
-from ...data import action_response_json
+from pyds8k.test.data import action_response_json
 from pyds8k.dataParser.ds8k import RequestParser
 
 tserep_list_response_json = get_response_list_json_by_type(DS8K_TSEREP)

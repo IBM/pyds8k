@@ -43,7 +43,6 @@ class TestResource(base.TestCaseWithConnect):
 
     def setUp(self):
         super(TestResource, self).setUp()
-        self.base_url = ''
 
     def test_one_all(self):
         url1 = '/default/a/default/b/default'
@@ -81,9 +80,9 @@ class TestResource(base.TestCaseWithConnect):
         self.assertIsInstance(vol2.parent, Resource)
         self.assertIsInstance(vol3.parent, Resource)
 
-        self.assertEqual(vol1.url, self.base_url + url1)
-        self.assertEqual(vol2.url, self.base_url + url2)
-        self.assertEqual(vol3.url, self.base_url + url1)
+        self.assertEqual(vol1.url, url1)
+        self.assertEqual(vol2.url, url2)
+        self.assertEqual(vol3.url, url1)
 
     @httpretty.activate
     def test_toUrl(self):
@@ -107,11 +106,11 @@ class TestResource(base.TestCaseWithConnect):
                                       'b'
                                       ).one(DEFAULT, 'c')
         _, body1 = vol.toUrl(method)
-        self.assertEqual(vol.url, self.base_url + url)
+        self.assertEqual(vol.url, url)
         self.assertEqual(body1, custom_method_get)
 
         _, body2 = vol.toUrl(method, body)
-        self.assertEqual(vol.url, self.base_url + url)
+        self.assertEqual(vol.url, url)
         self.assertEqual(body2, action_response['server'])
 
     @httpretty.activate
@@ -167,14 +166,15 @@ class TestResource(base.TestCaseWithConnect):
         self.assertIsInstance(vol1, Resource)
         self.assertIsInstance(vol1.manager, DefaultManager)
         self.assertEqual(vol1.name, default_template['name'])
-        self.assertEqual(vol1.url, self.base_url + url)
+        self.assertEqual(vol1.url, url)
         self.assertEqual(vol1.representation, default_template)
         resp1, data1 = vol1.save()
         self.assertIsInstance(data1[0], Resource)
         self.assertEqual(resp1.status_code, 201)
-        self.assertEqual(resp1.headers['Location'],
-                         self.base_url + url + '/vol1_id'
-                         )
+        self.assertEqual(
+            resp1.headers['Location'],
+            self.base_url + url + '/vol1_id'
+        )
         self.assertEqual(resp1.headers['Location'], vol1.url)
 
         vol2 = self.resource.one(
@@ -192,16 +192,17 @@ class TestResource(base.TestCaseWithConnect):
         self.assertIsInstance(vol2, Resource)
         self.assertIsInstance(vol2.manager, DefaultManager)
         self.assertEqual(vol2.name, 'vol2')
-        self.assertEqual(vol2.url, self.base_url + url)
+        self.assertEqual(vol2.url, url)
         rep = default_template.copy()
         rep.update({'name': 'vol2'})
         self.assertEqual(vol2.representation, rep)
         resp2, data2 = vol2.save()
         self.assertIsInstance(data2[0], Resource)
         self.assertEqual(resp2.status_code, 201)
-        self.assertEqual(resp2.headers['Location'],
-                         self.base_url + url + '/vol2_id'
-                         )
+        self.assertEqual(
+            resp2.headers['Location'],
+            self.base_url + url + '/vol2_id'
+        )
         self.assertEqual(resp2.headers['Location'], vol2.url)
 
         rep_with_id = default_template.copy()
@@ -218,15 +219,16 @@ class TestResource(base.TestCaseWithConnect):
         self.assertIsInstance(vol3.manager, DefaultManager)
         self.assertEqual(vol3.name, 'vol3')
         self.assertEqual(vol3.id, 'vol3_id')
-        self.assertEqual(vol3.url, self.base_url + url + '/vol3_id')
+        self.assertEqual(vol3.url, url + '/vol3_id')
         self.assertEqual(vol3.representation, rep_with_id)
         resp3, data3 = vol3.save()
         # default create method is put if id is specified.
         self.assertEqual(data3, action_response.get('server'))
         self.assertEqual(resp3.status_code, 201)
-        self.assertEqual(resp3.headers['Location'],
-                         self.base_url + url + '/vol3_id'
-                         )
+        self.assertEqual(
+            resp3.headers['Location'],
+            self.base_url + url + '/vol3_id'
+        )
 
     def test_create(self):
         pass
@@ -376,12 +378,12 @@ class TestResource(base.TestCaseWithConnect):
         httpretty.register_uri(httpretty.GET, domain + self.base_url + url,
                                body=default_list_response_json,
                                content_type='application/json')
-        httpretty.register_uri(httpretty.GET, domain + url1,
+        httpretty.register_uri(httpretty.GET, domain + self.base_url + url1,
                                body=default_a_response_json,
                                content_type='application/json')
 
         vol = self.resource.all(DEFAULT)
-        self.assertEqual(vol.url, self.base_url + url)
+        self.assertEqual(vol.url, url)
         self.assertRaises(AttributeError, getattr, vol, 'id')
         vol_list = vol.list()
         self.assertIsInstance(vol_list, list)
@@ -407,7 +409,7 @@ class TestResource(base.TestCaseWithConnect):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(httpretty.GET, domain + url,
+        httpretty.register_uri(httpretty.GET, domain + self.base_url + url,
                                body=default_a_response_json,
                                content_type='application/json')
 
@@ -449,10 +451,10 @@ class TestResource(base.TestCaseWithConnect):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(httpretty.GET, domain + url,
+        httpretty.register_uri(httpretty.GET, domain + self.base_url + url,
                                body=default_a_response_json,
                                content_type='application/json')
-        httpretty.register_uri(httpretty.PUT, domain + url,
+        httpretty.register_uri(httpretty.PUT, domain + self.base_url + url,
                                body=json.dumps({'status': 'updated'}),
                                content_type='application/json',
                                status=200)
@@ -471,10 +473,10 @@ class TestResource(base.TestCaseWithConnect):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(httpretty.GET, domain + url,
+        httpretty.register_uri(httpretty.GET, domain + self.base_url + url,
                                body=default_a_response_json,
                                content_type='application/json')
-        httpretty.register_uri(httpretty.PATCH, domain + url,
+        httpretty.register_uri(httpretty.PATCH, domain + self.base_url + url,
                                body=json.dumps({'status': 'updated'}),
                                content_type='application/json',
                                status=200)
@@ -499,10 +501,10 @@ class TestResource(base.TestCaseWithConnect):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(httpretty.GET, domain + url,
+        httpretty.register_uri(httpretty.GET, domain + self.base_url + url,
                                body=default_a_response_json,
                                content_type='application/json')
-        httpretty.register_uri(httpretty.DELETE, domain + url,
+        httpretty.register_uri(httpretty.DELETE, domain + self.base_url + url,
                                content_type='application/json',
                                status=204)
 

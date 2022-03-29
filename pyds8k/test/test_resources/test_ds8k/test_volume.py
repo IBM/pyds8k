@@ -124,9 +124,9 @@ class TestVolume(TestDS8KWithConnect):
             self.assertEqual(value,
                              getattr(flashcopies[k], flashcopies[k].id_field)
                              )
-        for l, value in enumerate(volume.representation[types.DS8K_PPRC]):
+        for vol, value in enumerate(volume.representation[types.DS8K_PPRC]):
             self.assertEqual(value,
-                             getattr(pprc[l], pprc[l].id_field)
+                             getattr(pprc[vol], pprc[vol].id_field)
                              )
 
     @httpretty.activate
@@ -309,9 +309,15 @@ class TestVolume(TestDS8KWithConnect):
                                content_type='application/json',
                                )
         # Way 1
-        resp1 = self.system.create_volume(name=name, cap=cap,
-                                          pool=pool, stgtype=stgtype,
-                                          captype=captype, lss=lss, tp=tp, )
+        resp1 = self.system.create_volume(
+            name=name,
+            cap=cap,
+            pool=pool,
+            stgtype=stgtype,
+            captype=captype,
+            lss=lss,
+            tp=tp
+        )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp1[0], Volume)
 
@@ -359,7 +365,7 @@ class TestVolume(TestDS8KWithConnect):
             resq = RequestParser({'name': name, 'cap': cap,
                                   'pool': pool, 'stgtype': stgtype,
                                   'captype': captype, 'lss': lss, 'tp': tp,
-                                  'quantity': quantity, 'namecol': '',
+                                  'quantity': quantity
                                   })
             self.assertEqual(json.loads(request.body), resq.get_request_data())
             return (201, headers, create_volumes_response_json)
@@ -389,24 +395,35 @@ class TestVolume(TestDS8KWithConnect):
         )
 
         resp1 = self.system.create_volumes_with_same_prefix(
-            name=name,
-            cap=cap,
-            pool=pool, stgtype=stgtype,
-            captype=captype, lss=lss,
-            tp=tp, quantity=quantity,
+            name, cap, pool,
+            quantity=quantity,
+            stgtype=stgtype,
+            captype=captype,
+            lss=lss,
+            tp=tp
         )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp1[0], Volume)
 
         resp2 = self.system.create_volumes_without_same_prefix(
-            name_col=namecol,
-            cap=cap,
-            pool=pool, stgtype=stgtype,
-            captype=captype, lss=lss,
-            tp=tp,
+            namecol, cap, pool,
+            stgtype=stgtype,
+            captype=captype,
+            lss=lss,
+            tp=tp
         )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp2[0], Volume)
+
+        resp3 = self.system.create_volumes_with_names(
+            namecol, cap, pool,
+            stgtype=stgtype,
+            captype=captype,
+            lss=lss,
+            tp=tp
+        )
+        self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        self.assertIsInstance(resp3[0], Volume)
 
     @httpretty.activate
     def test_create_volumes_partial_failed(self):
@@ -427,7 +444,7 @@ class TestVolume(TestDS8KWithConnect):
             resq = RequestParser({'name': name, 'cap': cap,
                                   'pool': pool, 'stgtype': stgtype,
                                   'captype': captype, 'lss': lss, 'tp': tp,
-                                  'quantity': quantity, 'namecol': '',
+                                  'quantity': quantity
                                   })
             self.assertEqual(json.loads(request.body), resq.get_request_data())
             return (201, headers, create_volumes_partial_failed_response_json)
@@ -443,11 +460,12 @@ class TestVolume(TestDS8KWithConnect):
         )
 
         resp1 = self.system.create_volumes_with_same_prefix(
-            name=name,
-            cap=cap,
-            pool=pool, stgtype=stgtype,
-            captype=captype, lss=lss,
-            tp=tp, quantity=quantity,
+            name, cap, pool,
+            quantity=quantity,
+            stgtype=stgtype,
+            captype=captype,
+            lss=lss,
+            tp=tp
         )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         # return 1 created volume and 1 error status
@@ -455,20 +473,23 @@ class TestVolume(TestDS8KWithConnect):
         self.assertIsInstance(resp1[1], dict)
         self.assertEqual(
             resp1[1],
-            create_volumes_partial_failed_response.get('responses'
-                                                       )[1].get('server')
+            create_volumes_partial_failed_response.get('responses')[1].get(
+                'server'
+            )
         )
 
     def test_create_volume_type_error(self):
         with self.assertRaises(ValueError):
-            self.system.create_volume('name', '10', 'testpool_0',
-                                      'fake_stgtype'
-                                      )
+            self.system.create_volume(
+                'name', '10', 'testpool_0', 'fake_stgtype'
+            )
         with self.assertRaises(ValueError):
-            self.system.create_volume('name', '10', 'testpool_0',
-                                      types.DS8K_VOLUME_TYPE_FB,
-                                      captype='fake_captype')
+            self.system.create_volume(
+                'name', '10', 'testpool_0', types.DS8K_VOLUME_TYPE_FB,
+                captype='fake_captype'
+            )
         with self.assertRaises(ValueError):
-            self.system.create_volume('name', '10', 'testpool_0',
-                                      types.DS8K_VOLUME_TYPE_FB,
-                                      tp='fake_tp')
+            self.system.create_volume(
+                'name', '10', 'testpool_0', types.DS8K_VOLUME_TYPE_FB,
+                tp='fake_tp'
+            )

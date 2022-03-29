@@ -25,8 +25,9 @@ from pyds8k.resources.ds8k.v1.host_ports import HostPort, \
 from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.hosts import Host
 from .base import TestDS8KWithConnect
-from ...data import get_response_json_by_type, get_response_data_by_type
-from ...data import action_response, action_response_json, \
+from pyds8k.test.data import get_response_json_by_type, \
+    get_response_data_by_type
+from pyds8k.test.data import action_response, action_response_json, \
     action_response_failed, action_response_failed_json, \
     create_host_port_response_json
 from pyds8k.dataParser.ds8k import RequestParser

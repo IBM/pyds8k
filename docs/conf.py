@@ -4,9 +4,11 @@
 # list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
 
-import sys, os
+import os
+import sys
 
-sys.path.insert(0,os.path.realpath(os.path.abspath('../')))
+sys.path.insert(0, os.path.realpath(os.path.abspath('../')))
+sys.path.append(os.path.abspath('../..'))
 
 import pyds8k
 
@@ -22,7 +24,13 @@ import pyds8k
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.coverage', 'sphinx.ext.todo']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.coverage',
+    'sphinx.ext.todo',
+    'sphinx.ext.napoleon'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -37,8 +45,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'IBM Storage'
-copyright = '2012-2019 IBM'
+project = 'IBM DS8000 pyds8k'
+copyright = '2012-2022 IBM'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -88,12 +96,20 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+#
+html_theme_options = {
+    'body_max_width': '75%',
+    'page_width': '95%',
+    'fixed_sidebar': True,
+    'sidebar_width': '20%',
+    'body_text_align': 'justify'
+
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -238,9 +254,9 @@ texinfo_documents = [ ('index', 'pyds8k', 'pyds8k Documentation',
 
 # Bibliographic Dublin Core info.
 epub_title = 'pyds8k'
-epub_author = 'Author'
-epub_publisher = 'Author'
-epub_copyright = '2019, Author'
+epub_author = 'IBM'
+epub_publisher = 'IBM'
+epub_copyright = '2022, IBM'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

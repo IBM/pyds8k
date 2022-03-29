@@ -27,7 +27,7 @@ class SCClient(object):
     """
     SC side client. Used to interaction with current side client.
 
-    !--important: the id field of all resources are case insensitive--!
+    !--important: the id field of all resources are case-insensitive--!
     """
 
     def __init__(self, service_address, user, password,

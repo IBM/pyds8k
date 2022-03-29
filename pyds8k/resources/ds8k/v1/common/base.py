@@ -35,7 +35,7 @@ class Base(RootResourceMixin, Resource):
     # the id_field can't be set to value other than "id"
     id_field = 'id'
     url_field = 'link'
-    base_url = '/api/v1'
+    base_url = ''
     create_method = 'posta'
     # Required only in writable resources, fileds are from _template
     # Resource id is exclude.

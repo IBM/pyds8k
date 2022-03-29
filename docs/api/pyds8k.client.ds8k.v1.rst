@@ -5,17 +5,9 @@ Submodules
 ----------
 
 pyds8k.client.ds8k.v1.client module
---------------------------------------
+-----------------------------------
 
 .. automodule:: pyds8k.client.ds8k.v1.client
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyds8k.client.ds8k.v1.sc\_client module
---------------------------------------
-
-.. automodule:: pyds8k.client.ds8k.v1.sc_client
    :members:
    :undoc-members:
    :show-inheritance:
