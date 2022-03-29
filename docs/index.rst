@@ -1,4 +1,4 @@
-IBMStorage |release| Documentation
+pyds8k |release| Documentation
 ========================================
 
 Overview

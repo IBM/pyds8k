@@ -15,7 +15,7 @@
 ##############################################################################
 
 from pyds8k.resources.ds8k.v1.common.types import DS8K_PPRC
-from ...data import get_response_data_by_type
+from pyds8k.test.data import get_response_data_by_type
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.volumes import Volume
 from pyds8k.resources.ds8k.v1.pprc import PPRC

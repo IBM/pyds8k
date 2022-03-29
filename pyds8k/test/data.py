@@ -101,11 +101,12 @@ create_volumes_response = {
         "message": "Operation done successfully."
     },
     "responses": [
-        {"server": {
-            "status": "ok",
-            "code": "",
-            "message": "Operation done successfully."
-        },
+        {
+            "server": {
+                "status": "ok",
+                "code": "",
+                "message": "Operation done successfully."
+            },
             "data": {
                 "volumes": [{"name": "lou_test1",
                              "id": "0010"
@@ -117,11 +118,12 @@ create_volumes_response = {
                 "href": "https://localhost:8088/api/v1/volumes/0010"
             }
         },
-        {"server": {
-            "status": "ok",
-            "code": "",
-            "message": "Operation done successfully."
-        },
+        {
+            "server": {
+                "status": "ok",
+                "code": "",
+                "message": "Operation done successfully."
+            },
             "data": {
                 "volumes": [{"name": "lou_test2",
                              "id": "0011"
@@ -136,6 +138,48 @@ create_volumes_response = {
     ]
 }
 create_volumes_response_json = json.dumps(create_volumes_response)
+
+create_lss_response = {
+    "server": {
+        "status": "ok",
+        "code": "",
+        "message": ""
+    },
+    "data": {
+        "lss": [
+            {
+                "id": "FE",
+                "link": {
+                    "rel": "self",
+                    "href": "http://rest_url/v1/lss/FE"
+                },
+                "group": "0",
+                "addrgrp": "",
+                "type": "ckd",
+                "sub_system_identifier": "FE00",
+                "ckd_base_cu_type": "3990-6",
+                "pprc_consistency_group": "disabled",
+                "critical_mode": "disabled",
+                "extended_long_busy_time": "120",
+                "cc_session_timeout": "300",
+                "xrc_session_timeout": "300",
+                "configvols": "0",
+                "volumes": {
+                    "link": {
+                        "rel": "self",
+                        "href": "http://rest_url/v1/lss/FE/volumes"
+                    }
+                }
+            }
+        ]
+    },
+    "link": {
+        "rel": "self",
+        "href": "http://localhost:8080/ds8000-rest-api/v1/lss/FE"
+    }
+}
+create_lss_response_json = json.dumps(create_lss_response)
+
 
 create_volumes_partial_failed_response = {
     "server": {
@@ -201,21 +245,23 @@ create_mappings_response = {
         "message": "Operation done successfully."
     },
     "responses": [
-        {"server": {
-            "status": "ok",
-            "code": "",
-            "message": "Operation done successfully."
-        },
+        {
+            "server": {
+                "status": "ok",
+                "code": "",
+                "message": "Operation done successfully."
+            },
             "link": {
                 "rel": "self",
                 "href": "https://localhost:8088/api/v1/hosts/host1/mappings/00"
             }
         },
-        {"server": {
-            "status": "ok",
-            "code": "",
-            "message": "Operation done successfully."
-        },
+        {
+            "server": {
+                "status": "ok",
+                "code": "",
+                "message": "Operation done successfully."
+            },
             "link": {
                 "rel": "self",
                 "href": "https://localhost:8088/api/v1/hosts/host1/mappings/01"

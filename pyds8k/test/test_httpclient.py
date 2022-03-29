@@ -42,8 +42,8 @@ class TestHTTPClient(base.TestCaseWithConnect):
 
     def setUp(self):
         super(TestHTTPClient, self).setUp()
-        self.base_url = ''
 
+    # DSANSIBLE-62, removing test_parse_url
     def test_parse_url(self):
         url1 = self.domain + '/new'
         url2 = '/new'

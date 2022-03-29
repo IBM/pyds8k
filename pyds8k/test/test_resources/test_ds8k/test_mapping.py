@@ -19,9 +19,9 @@ import json
 from pyds8k.exceptions import InternalServerError
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HOST, \
     DS8K_VOLMAP
-from ...data import get_response_json_by_type, \
+from pyds8k.test.data import get_response_json_by_type, \
     get_response_data_by_type
-from ...data import action_response_json, \
+from pyds8k.test.data import action_response_json, \
     create_mappings_response_json, create_mapping_response_json, \
     action_response_failed, action_response_failed_json
 from .base import TestDS8KWithConnect

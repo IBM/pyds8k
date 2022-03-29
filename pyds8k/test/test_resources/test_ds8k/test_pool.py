@@ -22,11 +22,11 @@ from pyds8k.resources.ds8k.v1.common.types import DS8K_POOL, \
     DS8K_VOLUME, \
     DS8K_TSEREP, \
     DS8K_ESEREP
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type, \
     get_response_json_by_type, \
     get_response_data_by_type
-from ...data import action_response, action_response_json
+from pyds8k.test.data import action_response, action_response_json
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.volumes import Volume
 from pyds8k.resources.ds8k.v1.pools import Pool

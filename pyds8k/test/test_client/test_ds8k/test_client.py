@@ -16,9 +16,8 @@
 
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM, \
     DS8K_VOLUME
-from ...base import TestCaseWithConnect
-from pyds8k.resources.ds8k.v1.common.base import Base
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.base import TestCaseWithConnect
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type
 from pyds8k.client.ds8k.v1.client import Client
 from pyds8k.resources.ds8k.v1.volumes import Volume
@@ -33,8 +32,11 @@ class TestClient(TestCaseWithConnect):
 
     def setUp(self):
         super(TestClient, self).setUp()
-        self.base_url = Base.base_url
-        self.rest_client = Client('localhost', 'admin', 'admin', '8088')
+        self.rest_client = Client(
+            'http://localhost:8088/api/',
+            'admin',
+            'admin'
+        )
 
     @httpretty.activate
     def test_get_array_method(self):

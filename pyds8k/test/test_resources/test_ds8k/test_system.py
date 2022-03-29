@@ -19,7 +19,7 @@ from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.systems import System, \
     SystemManager
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type
 from pyds8k.exceptions import OperationNotAllowed
 
