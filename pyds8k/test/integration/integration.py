@@ -109,9 +109,9 @@ class TestIntegration(unittest.TestCase):
 
     def test_lss(self):
         lss_list = self.get_lss()
-        for l in lss_list:
-            lss = self.get_lss(l.id)
-            volumes = self._get_volumes_by(types.DS8K_LSS, lss)
+        for lss in lss_list:
+            _lss = self.get_lss(lss.id)
+            volumes = self._get_volumes_by(types.DS8K_LSS, _lss)
             if volumes:
                 self.get_volumes(volumes[0].id)
                 return

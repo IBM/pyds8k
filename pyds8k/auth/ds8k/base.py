@@ -17,7 +17,7 @@
 from pyds8k.dataParser.ds8k import RequestParser, ResponseParser
 
 AUTH_URL = '/tokens'
-DEFAULT_BASE_URL = '/api/v1'
+DEFAULT_BASE_URL = ''
 
 
 class Auth(object):

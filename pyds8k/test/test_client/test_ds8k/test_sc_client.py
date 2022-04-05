@@ -17,7 +17,6 @@
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.test.base import TestCaseWithConnect
 from pyds8k.test.test_resources.test_ds8k.base import TestUtils
-from pyds8k.resources.ds8k.v1.common.base import Base
 from pyds8k.dataParser.ds8k import ResponseParser, RequestParser
 from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type, \
@@ -40,8 +39,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
 
     def setUp(self):
         super(TestClient, self).setUp()
-        self.base_url = Base.base_url
-        self.rest_client = SCClient('localhost', 'admin', 'admin', '8088')
+        self.rest_client = SCClient('localhost:8088/api/', 'admin', 'admin')
 
     def _assert_equal_between_dicts(self,
                                     returned_dict,
@@ -214,6 +212,13 @@ class TestClient(TestUtils, TestCaseWithConnect):
     def test_list_flashcopies(self):
         self._test_resource_list_by_route(types.DS8K_FLASHCOPY,
                                           'list_flashcopies'
+                                          )
+
+    def test_list_cs_flashcopies(self):
+        self._test_resource_list_by_route('{}.{}'.format(
+            types.DS8K_COPY_SERVICE_PREFIX,
+            types.DS8K_CS_FLASHCOPY),
+                                          'list_cs_flashcopies'
                                           )
 
     def test_list_volume_flashcopies(self):

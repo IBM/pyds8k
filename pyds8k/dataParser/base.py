@@ -16,12 +16,13 @@
 
 from abc import ABCMeta, abstractmethod
 
+import six
 
-class BaseRequestParser(object, metaclass=ABCMeta):
-    """
-    Parse the data user wants to send to server,
-    in the right format that server defined.
-    """
+
+@six.add_metaclass(ABCMeta)
+class BaseRequestParser(object):
+    # Parse the data user wants to send to server,
+    # in the right format that server defined.
 
     @abstractmethod
     def get_raw_data(self):
@@ -32,10 +33,9 @@ class BaseRequestParser(object, metaclass=ABCMeta):
         pass
 
 
-class BaseResponseParser(object, metaclass=ABCMeta):
-    """
-    Parser response data, to get resource link, representation, etc.
-    """
+@six.add_metaclass(ABCMeta)
+class BaseResponseParser(object):
+    # Parser response data, to get resource link, representation, etc.
 
     response_key = ''
     success_status = ('ok', 'successful', )
@@ -56,20 +56,19 @@ class BaseResponseParser(object, metaclass=ABCMeta):
 
     @abstractmethod
     def get_posta_response_data(self):
-        """
-        Return a list of ({resource_data_key:resource_data}, resource_uri)
-        or ({error_status_key:status_data}, None) if the rest server returns
-        a partial failure response.
+        # Return a list of ({resource_data_key:resource_data}, resource_uri)
+        # or ({error_status_key:status_data}, None) if the rest server returns
+        # a partial failure response.
 
-        For example:
-        If you create two resources(res1, res2) at a time, you should return
-        [({resource_data_key:res1_data}, res1_uri),
-         ({error_status_key:res2_status_data}, None)
-         ]
-        or
-        [({resource_data_key:res1_data}, res1_uri), ] if you only care about
-        success ones.
-        """
+        # For example:
+        # If you create two resources(res1, res2) at a time, you should return
+        # [({resource_data_key:res1_data}, res1_uri),
+        # ({error_status_key:res2_status_data}, None)
+        #  ]
+        # or
+        # [({resource_data_key:res1_data}, res1_uri), ] if you only care about
+        # success ones.
+
         pass
 
     @abstractmethod

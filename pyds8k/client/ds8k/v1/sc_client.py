@@ -27,7 +27,7 @@ class SCClient(object):
     """
     SC side client. Used to interaction with current side client.
 
-    !--important: the id field of all resources are case insensitive--!
+    !--important: the id field of all resources are case-insensitive--!
     """
 
     def __init__(self, service_address, user, password,
@@ -89,6 +89,10 @@ class SCClient(object):
     @dictionarize
     def list_flashcopies(self):
         return self.client.get_flashcopies()
+
+    @dictionarize
+    def list_cs_flashcopies(self):
+        return self.client.get_cs_flashcopies()
 
     @dictionarize
     def list_volume_flashcopies(self, volume_id):

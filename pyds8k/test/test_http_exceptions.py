@@ -19,7 +19,6 @@ import json
 from . import base
 from pyds8k import exceptions
 from .data import get_response_data_by_type
-from pyds8k.resources.ds8k.v1.common.base import Base
 
 default_a_response = get_response_data_by_type('default')
 response_401 = {
@@ -58,7 +57,6 @@ class TestHTTPException(base.TestCaseWithConnect):
 
     def setUp(self):
         super(TestHTTPException, self).setUp()
-        self.base_url = ''
 
     @httpretty.activate
     def test_response_status_400(self):
@@ -81,10 +79,9 @@ class TestHTTPException(base.TestCaseWithConnect):
     def test_response_status_401(self):
         domain = self.client.domain
         url = '/default/a'
-        _base_url = Base.base_url
         httpretty.register_uri(
             httpretty.POST,
-            domain + _base_url + '/tokens',
+            domain + self.base_url + '/tokens',
             body=json.dumps(response_token),
             content_type='application/json',
             status=200
@@ -124,9 +121,8 @@ class TestHTTPException(base.TestCaseWithConnect):
     def test_auth_fail(self):
         domain = self.client.domain
         url = '/default/a'
-        _base_url = Base.base_url
         httpretty.register_uri(httpretty.POST,
-                               domain + _base_url + '/tokens',
+                               domain + self.base_url + '/tokens',
                                body=json.dumps(response_token_error),
                                content_type='application/json',
                                status=401)

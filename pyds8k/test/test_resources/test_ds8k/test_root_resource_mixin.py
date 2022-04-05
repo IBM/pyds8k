@@ -17,17 +17,18 @@
 import httpretty
 from nose.tools import nottest
 from pyds8k.resources.ds8k.v1.common import types
-from ...data import get_response_list_json_by_type, \
+from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_list_data_by_type, \
     get_response_data_by_type, \
     get_response_json_by_type
-from ...data import action_response_json
+from pyds8k.test.data import action_response_json
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.systems import System
 from pyds8k.resources.ds8k.v1.lss import LSS
 # from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.tserep import TSERep
 from pyds8k.resources.ds8k.v1.eserep import ESERep
+from pyds8k.resources.ds8k.v1.volumes import Volume
 
 system_list_response = get_response_list_data_by_type(types.DS8K_SYSTEM)
 system_list_response_json = get_response_list_json_by_type(types.DS8K_SYSTEM)
@@ -41,6 +42,8 @@ ioport_a_response = get_response_data_by_type(types.DS8K_IOPORT)
 ioport_a_response_json = get_response_json_by_type(types.DS8K_IOPORT)
 tserep_list_response_json = get_response_list_json_by_type(types.DS8K_TSEREP)
 eserep_list_response_json = get_response_list_json_by_type(types.DS8K_ESEREP)
+volume_list_response = get_response_list_data_by_type(types.DS8K_VOLUME)
+volume_list_response_json = get_response_list_json_by_type(types.DS8K_VOLUME)
 
 
 class TestRootResourceMixin(TestDS8KWithConnect):
@@ -232,8 +235,56 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     def test_get_volume(self):
         self._test_resource_by_route(types.DS8K_VOLUME)
 
-    def test_get_volumes_by_lss(self):
-        pass
+    @httpretty.activate
+    def test_get_volumes_by_host(self):
+        host_name = 'testhost'
+        url = '/hosts/{}/volumes'.format(host_name)
+        httpretty.register_uri(httpretty.GET,
+                               self.domain + self.base_url + url,
+                               body=volume_list_response_json,
+                               content_type='application/json',
+                               status=200,
+                               )
+        vol_list = self.system.get_volumes_by_host(host_name=host_name)
+        self.assertIsInstance(vol_list, list)
+        self.assertIsInstance(vol_list[0], Volume)
+        self.assertEqual(
+                         len(vol_list),
+                         len(volume_list_response['data']['volumes'])
+                         )
 
+    @httpretty.activate
+    def test_get_volumes_by_lss(self):
+        lss_id = '00'
+        url = '/lss/{}/volumes'.format(lss_id)
+        httpretty.register_uri(httpretty.GET,
+                               self.domain + self.base_url + url,
+                               body=volume_list_response_json,
+                               content_type='application/json',
+                               status=200,
+                               )
+        vol_list = self.system.get_volumes_by_lss(lss_id=lss_id)
+        self.assertIsInstance(vol_list, list)
+        self.assertIsInstance(vol_list[0], Volume)
+        self.assertEqual(
+                         len(vol_list),
+                         len(volume_list_response['data']['volumes'])
+                         )
+
+    @httpretty.activate
     def test_get_volumes_by_pool(self):
-        pass
+        pool_id = 'P0'
+        url = '/pools/{}/volumes'.format(pool_id)
+        httpretty.register_uri(httpretty.GET,
+                               self.domain + self.base_url + url,
+                               body=volume_list_response_json,
+                               content_type='application/json',
+                               status=200,
+                               )
+        vol_list = self.system.get_volumes_by_pool(pool_id=pool_id)
+        self.assertIsInstance(vol_list, list)
+        self.assertIsInstance(vol_list[0], Volume)
+        self.assertEqual(
+                         len(vol_list),
+                         len(volume_list_response['data']['volumes'])
+                         )

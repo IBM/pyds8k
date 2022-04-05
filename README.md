@@ -4,6 +4,10 @@
 
 This repository contains the IBM RESTful API Python client, which establishes terminal connection with IBM DS8000 storage systems. The Python client protocol enables full management and monitoring of these storage arrays by issuing dedicated RESTful APIs.
 
+## Python Compatibility
+
+The content in this collection supports Python 3.6 and newer.
+
 ## Getting started
 
 Clone the repository, and then add it to your PYTHONPATH directory. The Python client is then ready for import and use.

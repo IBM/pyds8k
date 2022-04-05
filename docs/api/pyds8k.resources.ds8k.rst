@@ -5,10 +5,9 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    pyds8k.resources.ds8k.v1
-
-
 
 Module contents
 ---------------

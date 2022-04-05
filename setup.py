@@ -14,10 +14,11 @@
 # limitations under the License.
 ##############################################################################
 
-import pyds8k
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-install_requires = ['requests', 'httpretty']
+import pyds8k
+
+install_requires = ['requests', 'httpretty', 'configparser', 'six']
 
 setup(
     name='pyds8k',

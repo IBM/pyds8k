@@ -23,7 +23,6 @@ from pyds8k.test.data import get_response_list_json_by_type, \
     get_response_json_by_type
 from pyds8k.test import base
 from pyds8k.base import Resource, get_resource_and_manager_class_by_route
-from pyds8k.resources.ds8k.v1.common.base import Base
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.resources.ds8k.v1.systems import System, \
     SystemManager
@@ -225,5 +224,5 @@ class TestDS8KWithConnect(TestUtils, base.TestCaseWithConnect):
 
     def setUp(self):
         super(TestDS8KWithConnect, self).setUp()
-        self.base_url = Base.base_url
+        self.base_url = self.client.base_url
         self.system = System(self.client, SystemManager(self.client))
