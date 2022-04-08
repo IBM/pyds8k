@@ -13,18 +13,14 @@ The content in this collection supports Python 3.6 and newer.
 ## Getting started
 
 Clone the repository, and then add it to your PYTHONPATH directory. The Python client is then ready for import and use.
-The library is also available to install using pip.  The pypi project can be found at the following link: 
-
-https://pypi.org/project/pyds8k/
+The library is also available to install using pip.  See [the pypi pyds8k project](https://pypi.org/project/pyds8k/)
 
 To install via pip run the following command:
 ```pip install pyds8k```
 
 ## Documentation
 Documentation for the pyds8k library can be generated using sphinx.
-The documentation for the latest release is also available via read the docs at the following link:
-
-https://pyds8k.readthedocs.io/en/latest/
+The documentation for the latest release is also available via [pyds8k.readthedocs.io](https://pyds8k.readthedocs.io/en/latest)
 
 NOTE: To view older versions of the doc, click on the link at the bottom right corner in the readthedocs link and select the desired version.
 
