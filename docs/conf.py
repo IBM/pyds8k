@@ -11,7 +11,6 @@ sys.path.insert(0, os.path.realpath(os.path.abspath('../')))
 sys.path.append(os.path.abspath('../..'))
 
 import pyds8k
-import sphinx_rtd_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
