@@ -371,7 +371,8 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            id=''):
         """
         Create One Volume
 
@@ -386,6 +387,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      valid options include `none`, `ese`, `tse`
+            id (str): volume id to be created
 
         Returns:
             object: :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
@@ -403,6 +405,7 @@ class RootVolumeMixin(object):
                                    'pool': pool,
                                    'lss': lss,
                                    'tp': tp,
+                                   'id': id
                                    }
                                   )
         return res
@@ -417,7 +420,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a group of volumes with different names
 
@@ -435,6 +440,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      in ``none``, ``ese``, ``tse``
+            ids (list): list of volume ids to be created.
 
         Returns:
             list: A list of
@@ -455,12 +461,13 @@ class RootVolumeMixin(object):
                                    'pool': pool,
                                    'lss': lss,
                                    'tp': tp,
+                                   'ids': ids
                                    }
                                   )
         return res
 
     def create_volume_ckd(self, name, cap, pool,
-                          captype='', lss='', tp='',
+                          captype='', lss='', tp='', id=''
                           ):
         """
         Create One CKD Volume
@@ -474,6 +481,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      valid options include `none`, `ese`, `tse`
+            id (str): volume id to be created
 
         Returns:
             list: A list of
@@ -485,11 +493,12 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_CKD,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            id=id
         )
 
     def create_volume_fb(self, name, cap, pool,
-                         captype='', lss='', tp='',
+                         captype='', lss='', tp='', id=''
                          ):
         """
         Create One FB Volume
@@ -504,6 +513,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      valid options include `none`, `ese`, `tse`
+            id (str): volume id to be created
 
         Returns:
             list: A list of
@@ -515,7 +525,8 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            id=id
         )
 
     def create_volumes_with_same_prefix(
@@ -527,7 +538,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a volume with a name or a group of
         volumes with the same prefix
@@ -545,6 +558,7 @@ class RootVolumeMixin(object):
                           default to ``'gib'``
             lss (str): logical subsystem id
             tp (str): storage allocation method, in none, ese, tse
+            ids (list): list of volume ids to be created
 
         Returns:
             list: A list of
@@ -558,7 +572,8 @@ class RootVolumeMixin(object):
             stgtype=stgtype,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            ids=ids
         )
 
     def create_volumes_without_same_prefix(
@@ -569,7 +584,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a group of volumes with specified names
 
@@ -583,6 +600,7 @@ class RootVolumeMixin(object):
                          default to ``'gib'``
             lss (str): logical subsystem id
             tp (str): storage allocation method, in none, ese, tse
+            ids (list): list of volume ids to be created
 
         Returns:
             list: A list of
@@ -597,7 +615,8 @@ class RootVolumeMixin(object):
             stgtype=stgtype,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            ids=ids
         )
 
     def create_volumes_with_names(
@@ -608,7 +627,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a group of volumes with specified names
 
@@ -622,6 +643,7 @@ class RootVolumeMixin(object):
                          default to ``'gib'``
             lss (str): logical subsystem id
             tp (str): storage allocation method, in none, ese, tse
+            ids (list): list of volume ids to be created
 
         Returns:
             list: A list of
@@ -636,7 +658,8 @@ class RootVolumeMixin(object):
             stgtype=stgtype,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            ids=ids
         )
 
     def update_volume_rename(self, volume_id, new_name):
