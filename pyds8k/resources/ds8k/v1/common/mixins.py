@@ -15,12 +15,11 @@
 ##############################################################################
 
 from datetime import datetime
-
-from pyds8k.dateutil import LocalTimezone
-from pyds8k.exceptions import IDMissingError, InvalidArgumentError
-from pyds8k.messages import INVALID_TYPE
-
 from . import types
+from pyds8k.messages import INVALID_TYPE
+from pyds8k.exceptions import IDMissingError, \
+    InvalidArgumentError
+from pyds8k.dateutil import LocalTimezone
 
 FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 
@@ -857,18 +856,6 @@ class RootHostMixin(object):
                         host_name,
                         rebuild_url=True
                         ).all(types.DS8K_IOPORT).list()
-
-    def get_host_ports_by_host(self, host_name):
-        return self.one(types.DS8K_HOST,
-                        host_name,
-                        rebuild_url=True
-                        ).all(types.DS8K_HOST_PORT).list()
-
-    def get_volumes_by_host(self, host_name):
-        return self.one(types.DS8K_HOST,
-                        host_name,
-                        rebuild_url=True
-                        ).all(types.DS8K_VOLUME).list()
 
     def get_mappings_by_host(self, host_name):
         """
