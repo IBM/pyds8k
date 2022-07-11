@@ -7,8 +7,13 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.realpath(os.path.abspath('../')))
-sys.path.append(os.path.abspath('../..'))
+sys.path.insert(
+    0,
+    os.path.realpath(
+        os.path.abspath(f"..{os.sep}")
+    )
+)
+sys.path.append(os.path.abspath(f"..{os.sep}.."))
 
 import pyds8k
 
