@@ -511,11 +511,16 @@ class TestVolume(TestDS8KWithConnect):
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
 
-            req = RequestParser({'name': name, 'cap': cap,
-                                 'pool': pool, 'stgtype': stgtype,
-                                 'captype': captype, 'lss': lss, 'tp': tp, 'id': id
-                                 }
-                                )
+            req = RequestParser({
+                'name': name,
+                'cap': cap,
+                'pool': pool,
+                'stgtype': stgtype,
+                'captype': captype,
+                'lss': lss,
+                'tp': tp,
+                'id': id
+            })
 
             self.assertDictContainsSubset(
                 req.get_request_data().get('request').get('params'),
@@ -588,15 +593,25 @@ class TestVolume(TestDS8KWithConnect):
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
 
-            req = RequestParser({'name_col': name_col, 'cap': cap,
-                                 'pool': pool, 'stgtype': stgtype,
-                                 'captype': captype, 'lss': lss, 'tp': tp, 'ids': ids
-                                 }
-                                )
+            req = RequestParser({
+                'name_col': name_col,
+                'cap': cap,
+                'pool': pool,
+                'stgtype': stgtype,
+                'captype': captype,
+                'lss': lss,
+                'tp': tp,
+                'ids': ids
+            })
 
-            prepared_request = req.get_request_data().get('request').get('params')
+            prepared_request = req.\
+                get_request_data().\
+                get('request').\
+                get('params')
             req_name_col = prepared_request.pop('name_col')
-            received_request = json.loads(request.body).get('request').get('params')
+            received_request = json.loads(request.body).\
+                get('request').\
+                get('params')
             rec_namecol = received_request.pop('namecol')
 
             self.assertEqual(req_name_col, rec_namecol)
@@ -631,8 +646,3 @@ class TestVolume(TestDS8KWithConnect):
         )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp1[0], Volume)
-
-
-        # Way 4
-        # Don't init a resource instance by yourself when create new.
-        # use .create() instead.
