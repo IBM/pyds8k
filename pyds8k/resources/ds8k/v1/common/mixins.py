@@ -857,6 +857,23 @@ class RootHostMixin(object):
                         rebuild_url=True
                         ).all(types.DS8K_IOPORT).list()
 
+    def get_host_ports_by_host(self, host_name):
+        """
+        Get Host Ports by the name of the Host.
+
+        Args:
+            host_name (str): Required. name of the host.
+
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.host_ports.HostPort`.
+
+        """
+        return self.one(types.DS8K_HOST,
+                        host_name,
+                        rebuild_url=True
+                        ).all(types.DS8K_HOST_PORT).list()
+
     def get_mappings_by_host(self, host_name):
         """
         Get Volume Mappings by the name fo the Host.
