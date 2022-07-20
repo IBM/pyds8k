@@ -9,12 +9,10 @@ jobs:
       env: TOXENV=py36
     - python: 3.7
       env: TOXENV=py37
-    - python: 3.7
-      env: TOXENV=cover,docs,flake8
     - python: 3.8
       env: TOXENV=py38
     - python: 3.9
-      env: TOXENV=py39
+      env: TOXENV=cover,docs,flake8
     - python: "3.10"
       dist: focal
       env: TOXENV=py310
