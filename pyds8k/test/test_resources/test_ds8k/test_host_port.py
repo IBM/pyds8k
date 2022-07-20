@@ -232,10 +232,10 @@ class TestHostPort(TestDS8KWithConnect):
             self.assertEqual(uri, self.domain + self.base_url + url)
 
             req = RequestParser({'wwpn': self.wwpn, 'host': host_name})
-            self.assertDictContainsSubset(
-                req.get_request_data().get('request').get('params'),
-                json.loads(request.body).get('request').get('params'),
-            )
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                    } == json.loads(request.body).get('request').get('params')
             return (200, headers, create_host_port_response_json)
 
         httpretty.register_uri(httpretty.POST,

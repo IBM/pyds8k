@@ -18,8 +18,8 @@ from pyds8k.exceptions import URLParseError
 from . import base
 import httpretty
 import json
+import pytest
 import time
-from nose.tools import nottest
 from pyds8k.httpclient import HTTPClient
 from pyds8k.base import Resource, DefaultManager
 from .data import get_response_list_json_by_type, \
@@ -77,8 +77,7 @@ class TestHTTPClient(base.TestCaseWithConnect):
         de = self.resource.one(DEFAULT, 'old').get(allow_redirects=False)
         self.assertEqual(new_url, de.url)
 
-    # Not work in this way.
-    @nottest
+    @pytest.mark.skip(reason="Not work in this way")
     @httpretty.activate
     def test_timeout(self):
         url = '/default/a'

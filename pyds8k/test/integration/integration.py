@@ -17,8 +17,8 @@
 from functools import wraps, partial
 from logging import getLogger
 from contextlib import contextmanager
+import pytest
 import unittest
-from nose.tools import nottest
 from datetime import datetime
 from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.utils import res_timer_recorder
@@ -164,8 +164,7 @@ class TestIntegration(unittest.TestCase):
             if vols:
                 return
 
-    # Skipped, because get all volumes is not allowed.
-    @nottest
+    @pytest.mark.skip(reason="get all volumes is not allowed.")
     def test_volumes(self):
         volumes = self.get_volumes()
         self.get_volumes(volumes[0].id)
