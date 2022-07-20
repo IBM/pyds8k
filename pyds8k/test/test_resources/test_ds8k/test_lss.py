@@ -165,10 +165,10 @@ class TestLSS(TestDS8KWithConnect):
             )
 
             req = RequestParser(struct_request)
-            self.assertDictContainsSubset(
-                req.get_request_data().get('request').get('params'),
-                json.loads(request.body).get('request').get('params')
-            )
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                   } == json.loads(request.body).get('request').get('params')
             return 201, headers, json.dumps(create_lss_response)
 
         httpretty.register_uri(

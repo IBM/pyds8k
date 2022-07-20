@@ -1,0 +1,2 @@
+[run]
+omit = pyds8k/test/*

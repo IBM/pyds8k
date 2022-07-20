@@ -17,7 +17,7 @@
 import json
 
 import httpretty
-from nose.tools import nottest
+import pytest
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.exceptions import FieldReadOnly
@@ -251,7 +251,7 @@ class TestVolume(TestDS8KWithConnect):
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(body, action_response['server'])
 
-    @nottest
+    @pytest.mark.skip()
     @httpretty.activate
     def test_update_volume_map(self):
         volume_id = 'a_0000'
@@ -298,10 +298,10 @@ class TestVolume(TestDS8KWithConnect):
                                  'captype': captype, 'lss': lss, 'tp': tp,
                                  }
                                 )
-            self.assertDictContainsSubset(
-                req.get_request_data().get('request').get('params'),
-                json.loads(request.body).get('request').get('params'),
-            )
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                   } == json.loads(request.body).get('request').get('params')
             return (201, headers, create_volume_response_json)
 
         httpretty.register_uri(httpretty.POST,
@@ -522,10 +522,10 @@ class TestVolume(TestDS8KWithConnect):
                 'id': id
             })
 
-            self.assertDictContainsSubset(
-                req.get_request_data().get('request').get('params'),
-                json.loads(request.body).get('request').get('params'),
-            )
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                   } == json.loads(request.body).get('request').get('params')
 
             prepared_response = create_volume_response.copy()
             prepared_response['data']['volumes'][0]['id'] = id
@@ -616,10 +616,7 @@ class TestVolume(TestDS8KWithConnect):
 
             self.assertEqual(req_name_col, rec_namecol)
 
-            self.assertDictContainsSubset(
-                prepared_request,
-                received_request,
-            )
+            assert {**received_request, **prepared_request} == received_request
 
             prepared_response = create_volume_response.copy()
             prepared_response['data']['volumes'][0]['id'] = ids[0]

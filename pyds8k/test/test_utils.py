@@ -15,7 +15,7 @@
 ##############################################################################
 
 from . import base
-from nose.tools import nottest
+import pytest
 from pyds8k import utils
 
 
@@ -67,7 +67,7 @@ class TestUtils(base.TestCaseWithoutConnect):
     # def test_get_default_service_type(self):
     #     self.assertEqual('ds8k', utils.get_default_service_type())
 
-    @nottest
+    @pytest.mark.skip()
     def test_get_config_settings(self):
         settings_dict = utils.get_config_settings()
         self.assertEqual(5, len(list(settings_dict.keys())))
@@ -76,7 +76,7 @@ class TestUtils(base.TestCaseWithoutConnect):
         self.assertIsNotNone(settings_dict.get('default_service_type'))
         self.assertIsNotNone(settings_dict.get('runtime_service_type'))
 
-    @nottest
+    @pytest.mark.skip()
     def test_get_config_all_items(self):
         config_dict = utils.get_config_all_items()
         self.assertEqual(5, len(list(config_dict.keys())))
@@ -85,7 +85,7 @@ class TestUtils(base.TestCaseWithoutConnect):
         self.assertIsNotNone(config_dict.get('default_service_type'))
         self.assertIsNotNone(config_dict.get('runtime_service_type'))
 
-    @nottest
+    @pytest.mark.skip()
     def test_get_config_all(self):
         config_dict = utils.get_config_all()
         self.assertEqual(1, len(list(config_dict.keys())))

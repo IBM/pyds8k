@@ -16,7 +16,7 @@
 
 import httpretty
 import json
-from nose.tools import nottest
+import pytest
 from functools import cmp_to_key
 import warnings
 from pyds8k.exceptions import InternalServerError, FieldReadOnly
@@ -214,7 +214,7 @@ class TestHost(TestDS8KWithConnect):
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(resp1, action_response['server'])
 
-    @nottest
+    @pytest.mark.skip()
     @httpretty.activate
     def test_update_host_rm_volumes_all(self):
         host_name = 'host1'
@@ -252,12 +252,12 @@ class TestHost(TestDS8KWithConnect):
         self.assertEqual(data2, action_response['server'])
         self.assertEqual(resp2.status_code, 200)
 
-    @nottest
+    @pytest.mark.skip()
     @httpretty.activate
     def test_update_host_add_volumes(self):
         warnings.warn('test_update_host_add_volumes: not finished yet.')
 
-    @nottest
+    @pytest.mark.skip()
     @httpretty.activate
     def test_update_host_rm_volumes(self):
         warnings.warn('test_update_host_rm_volumes: not finished yet.')
@@ -537,10 +537,10 @@ class TestHost(TestDS8KWithConnect):
             self.assertEqual(uri, self.domain + self.base_url + url)
 
             req = RequestParser({'hosttype': host_type, 'name': host_name})
-            self.assertDictContainsSubset(
-                req.get_request_data().get('request').get('params'),
-                json.loads(request.body).get('request').get('params'),
-            )
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                    } == json.loads(request.body).get('request').get('params')
             return (200, headers, create_host_response_json)
 
         httpretty.register_uri(httpretty.POST,
