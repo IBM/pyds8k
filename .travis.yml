@@ -16,6 +16,18 @@ jobs:
     - python: "3.10"
       dist: focal
       env: TOXENV=py310
+    - os: windows
+      language: shell
+      python: "3.9"
+      before_install:
+        - choco install python --version=3.9.13
+        - python -m pip install -U pip setuptools
+      env:
+        - PATH=/c/Python39:/c/Python39/Scripts:$PATH
+        - TOXENV=py39
+      cache:
+        directories:
+          - $LOCALAPPDATA/pip/Cache
 install:
   - pip install tox
 
