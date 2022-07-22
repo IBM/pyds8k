@@ -466,6 +466,38 @@ class RootVolumeMixin(object):
                                   )
         return res
 
+    def create_alias_volumes(
+            self,
+            id,
+            ckd_base_ids,
+            quantity='',
+            alias_create_order='decrement'
+    ):
+        """
+        Create ckd alias volumes for a list of base ckd volumes
+
+        Args:
+            id (str): the starting volume id for where aliases should be created
+            ckd_base_ids (list): list of ckd base ids aliases will be created for
+            quantity (str): number of aliases per ckd base id to create, number in str
+            alias_create_order (str): whether to ``increment`` or ``decrement`` from starting id
+                          default ``decrement``
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
+
+        """
+        _, res = self.all(types.DS8K_VOLUME,
+                          rebuild_url=True
+                          ).posta({'id': id,
+                                   'quantity': quantity,
+                                   'alias': 'true',
+                                   'alias_create_order': alias_create_order,
+                                   'ckd_base_ids': ckd_base_ids
+                                   }
+                                  )
+        return res
+
     def create_volume_ckd(self, name, cap, pool,
                           captype='', lss='', tp='', id=''
                           ):
