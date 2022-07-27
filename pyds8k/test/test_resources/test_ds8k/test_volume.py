@@ -643,3 +643,46 @@ class TestVolume(TestDS8KWithConnect):
         )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp1[0], Volume)
+
+    @httpretty.activate
+    def test_create_alias_volumes(self):
+        url = '/volumes'
+
+        vol_id = '00FF'
+        ckd_base_ids = ['0000', '0001']
+        quantity = 2
+
+        def _verify_request(request, uri, headers):
+            self.assertEqual(uri, self.domain + self.base_url + url)
+
+            req = RequestParser({
+                'id': vol_id,
+                'quantity': quantity,
+                'ckd_base_ids': ckd_base_ids
+            })
+
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                   } == json.loads(request.body).get('request').get('params')
+
+            prepared_response = create_volume_response.copy()
+            prepared_response['data']['volumes'][0]['id'] = vol_id
+            prepared_href = f"{self.domain}{self.base_url}{url}/{vol_id}"
+            prepared_response['link']['href'] = prepared_href
+
+            return 201, headers, json.dumps(prepared_response)
+
+        httpretty.register_uri(httpretty.POST,
+                               self.domain + self.base_url + url,
+                               body=_verify_request,
+                               content_type='application/json',
+                               )
+
+        resp1 = self.system.create_alias_volumes(
+            vol_id,
+            ckd_base_ids,
+            quantity=quantity
+        )
+        self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        self.assertIsInstance(resp1[0], Volume)
