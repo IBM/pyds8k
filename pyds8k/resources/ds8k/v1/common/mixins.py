@@ -317,6 +317,128 @@ class RootPoolMixin(object):
                         ).all(types.DS8K_VOLUME).list()
 
 
+class RootResourceGroupMixin(object):
+    def get_resource_groups(self, resource_group_id=None):
+        """
+        Get Resource Groups
+
+        Args:
+            resource_group_id (str): id of the target resource group.
+                                     Get all if none.
+
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
+
+        """
+        if resource_group_id:
+            return self.get_resource_group(resource_group_id)
+        return self.all(types.DS8K_RESOURCE_GROUP, rebuild_url=True).list()
+
+    def get_resource_group(self, resource_group_id):
+        """
+        Get a Resource Group
+
+        Args:
+            resource_group_id (str): Required. id of the target resource group.
+
+        Returns:
+            object:
+            :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
+
+        """
+        return self.one(types.DS8K_RESOURCE_GROUP,
+                        resource_group_id,
+                        rebuild_url=True).get()
+
+    def delete_resource_group(self, resource_group_id):
+        """
+        Delete a Resource Group
+
+        Args:
+            resource_group_id (str): Required. id of the target resource group.
+
+        Returns:
+            tuple: tuple of DS8000 Server Response.
+
+        """
+        return self.one(types.DS8K_RESOURCE_GROUP,
+                        resource_group_id,
+                        rebuild_url=True).delete()
+
+    def create_resource_group(
+            self,
+            label,
+            name='',
+            resource_group_id='',):
+        """
+        Create one Resource Group
+
+        Args:
+            label (str): Required.
+                        The label for the resource group to be created.
+            name (str): The name for the resource group to be created.
+            resource_group_id (str): The resource group id to be created.
+
+        Returns:
+            object:
+            :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
+
+        """
+        _, res = self.all(types.DS8K_RESOURCE_GROUP,
+                          rebuild_url=True
+                          ).posta({'label': label,
+                                   'id': resource_group_id,
+                                   'name': name,
+                                   }
+                                  )
+        return res
+
+    def update_resource_group(
+            self,
+            resource_group_id,
+            label='',
+            name='',
+            cs_global='',
+            pass_global='',
+            gm_masters='',
+            gm_sessions=''):
+        """
+        Update one Resource Group
+
+        Args:
+            resource_group_id (str): Required.
+                                    The resource group id to be updated.
+            label (str): The label to assign to the resource group.
+            name (str): The name to assign to the resource group.
+            cs_global (str): The resource group label to associate with the
+                             Copy Services Global Resource Scope.
+            pass_global (str): The resource group label to associate with the
+                               Pass-thru Global Copy Services Resource Scope.
+            gm_masters (list): An list of Global Mirror session IDs allowed
+                               to be used as a master session for volumes
+                               in this resource.
+            gm_sessions (list): A list of Global Mirror session IDs allowed
+                                to be used for the volumes in this resource.
+
+        Returns:
+            tuple: tuple of DS8000 Server Response.
+
+        """
+        _, res = self.one(types.DS8K_RESOURCE_GROUP,
+                          resource_group_id,
+                          rebuild_url=True).update({
+                                'label': label,
+                                'name': name,
+                                'cs_global': cs_global,
+                                'pass_global': pass_global,
+                                'gm_masters': gm_masters,
+                                'gm_sessions': gm_sessions,
+                                }
+                            )
+        return res
+
+
 class RootVolumeMixin(object):
     def get_volumes(self, volume_id=None):
         """
@@ -1439,6 +1561,7 @@ class RootResourceMixin(RootSystemMixin,
                         RootEncryptionGroupMixin,
                         RootEventMixin,
                         RootPoolMixin,
+                        RootResourceGroupMixin,
                         RootVolumeMixin,
                         RootLSSMixin,
                         RootIOPortMixin,
