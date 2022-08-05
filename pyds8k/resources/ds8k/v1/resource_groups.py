@@ -37,7 +37,7 @@ class ResourceGroup(Base):
         'cs_global': '',
         'pass_global': '',
         'gm_masters': '',
-        'gm_session': '',
+        'gm_sessions': '',
     }
 
 
