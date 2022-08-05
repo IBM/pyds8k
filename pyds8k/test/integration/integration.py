@@ -196,6 +196,10 @@ class TestIntegration(unittest.TestCase):
         if ports:
             self.get_host_ports(ports[0].id)
 
+    def test_resource_groups(self):
+        resource_groups = self.get_resource_groups()
+        self.get_resource_groups(resource_groups[0].id)
+
     def _get_volumes_by(self, route, parent_res):
         return self._get_sub_resource_by(route, parent_res, types.DS8K_VOLUME)
 

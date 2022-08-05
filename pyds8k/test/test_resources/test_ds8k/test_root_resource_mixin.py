@@ -44,6 +44,10 @@ tserep_list_response_json = get_response_list_json_by_type(types.DS8K_TSEREP)
 eserep_list_response_json = get_response_list_json_by_type(types.DS8K_ESEREP)
 volume_list_response = get_response_list_data_by_type(types.DS8K_VOLUME)
 volume_list_response_json = get_response_list_json_by_type(types.DS8K_VOLUME)
+resource_group_list_response = \
+    get_response_list_data_by_type(types.DS8K_RESOURCE_GROUP)
+resource_group_list_response_json = \
+    get_response_list_json_by_type(types.DS8K_RESOURCE_GROUP)
 
 
 class TestRootResourceMixin(TestDS8KWithConnect):
@@ -288,3 +292,9 @@ class TestRootResourceMixin(TestDS8KWithConnect):
                          len(vol_list),
                          len(volume_list_response['data']['volumes'])
                          )
+
+    def test_get_resource_groups(self):
+        self._test_resource_list_by_route(types.DS8K_RESOURCE_GROUP)
+
+    def test_get_resource_group(self):
+        self._test_resource_by_route(types.DS8K_RESOURCE_GROUP)

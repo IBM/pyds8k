@@ -16,7 +16,7 @@
 
 from . import ioports, flashcopy, events, mappings, pprc, eserep, \
     users, systems, nodes, marrays, encryption_groups, io_enclosures, \
-    pools, tserep, lss, volumes, host_ports, hosts
+    pools, tserep, lss, volumes, host_ports, hosts, resource_groups
 from .cs import pprcs, flashcopies
 
 __all__ = (
@@ -35,6 +35,7 @@ __all__ = (
     'encryption_groups',
     'io_enclosures',
     'pools',
+    'resource_groups',
     'tserep',
     'lss',
     'volumes',
