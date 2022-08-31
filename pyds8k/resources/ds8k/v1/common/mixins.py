@@ -1282,39 +1282,43 @@ class RootLSSMixin(object):
 
 
 class RootFlashCopyMixin(object):
-    def get_flashcopies(self, fcid=None):
+    def get_flashcopies(self, volume_id=None):
         """
-        Get Flash Copies.
+        Get Flash Copies. Deprecated after R8.
 
         Args:
-            fcid (str):  id of the flash copy. Get all if None.
+            volume_id (str):  id of the associating volume. Get all if None.
 
         Returns:
             list: A list of
             :py:class:`pyds8k.resources.ds8k.v1.flashcopy.FlashCopy`.
 
         """
-        if fcid:
-            return self.one(types.DS8K_FLASHCOPY, fcid, rebuild_url=True).get()
+        if not volume_id and self.resource_type == "volumes":
+            volume_id = self.id
+
+        if volume_id:
+            return self.get_flashcopies_by_volume(volume_id)
+
         return self.all(types.DS8K_FLASHCOPY, rebuild_url=True).list()
 
-    def get_flashcopy(self, fcid=None):
+    def get_flashcopy(self, volume_id=None):
         """
-        Get A Flash Copy.
+        Get A Flash Copy. Deprecated after R8.
 
         Args:
-            fcid (str): Required. id of the flash copy.
+            volume_id (str): Required.  id of the associating volume.
 
         Returns:
             object:
             :py:class:`pyds8k.resources.ds8k.v1.flashcopy.FlashCopy`.
 
         """
-        return self.get_flashcopies(fcid)
+        return self.get_flashcopies(volume_id)
 
     def get_flashcopies_by_volume(self, volume_id):
         """
-        Get Flash Copies by volume id.
+        Get Flash Copies by volume id. Deprecated after R8.
 
         Args:
             volume_id (str):  Required. id of the target volume.
