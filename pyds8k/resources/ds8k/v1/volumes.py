@@ -50,6 +50,7 @@ class Volume(Base):
                  'tieralloc': [],
                  'lss': '',
                  'pool': '',
+                 'basevolume': '',
                  types.DS8K_HOST: None,
                  types.DS8K_FLASHCOPY: None,
                  types.DS8K_PPRC: None,
@@ -58,7 +59,7 @@ class Volume(Base):
     fb_template.update({'stgtype': types.DS8K_VOLUME_TYPE_FB})
 
     ckd_template = _template.copy()
-    ckd_template.update({'stgtype': types.DS8K_VOLUME_TYPE_FB})
+    ckd_template.update({'stgtype': types.DS8K_VOLUME_TYPE_CKD})
 
     template_dict = {types.DS8K_VOLUME_TYPE_FB: fb_template,
                      types.DS8K_VOLUME_TYPE_CKD: ckd_template,
@@ -67,9 +68,11 @@ class Volume(Base):
                        'capalloc', 'MTM', 'datatype', 'easytier', 'tieralloc',
                        'lss'
                        )
-    related_resource = {'_pool': (Pool, PoolManager),
-                        '_lss': (LSS, LSSManager)
-                        }
+    related_resource = {
+        '_pool': (Pool, PoolManager),
+        '_lss': (LSS, LSSManager),
+    }
+
     related_resources_collection = (types.DS8K_HOST,
                                     types.DS8K_FLASHCOPY,
                                     types.DS8K_PPRC)
@@ -80,6 +83,7 @@ class Volume(Base):
                  loaded=False,
                  volume_type=types.DS8K_VOLUME_TYPE_FB,
                  ):
+        self.related_resource['_basevolume'] = (Volume, VolumeManager)
         super(Volume, self).__init__(client,
                                      manager=manager,
                                      url=url,

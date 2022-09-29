@@ -1,18 +1,33 @@
 # ref: https://docs.travis-ci.com/user/languages/python
 language: python
+os: linux
 dist: xenial
 
-matrix:
-    include:
-     - python: 3.6
-       env: TOXENV=py36
-     - python: 3.7
-       env: TOXENV=py37
-     - python: 3.7
-       env: TOXENV=cover,docs,flake8
-     - python: 3.8
-       env: TOXENV=py38
-
+jobs:
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=cover,docs,flake8
+    - python: "3.10"
+      dist: focal
+      env: TOXENV=py310
+    - os: windows
+      language: shell
+      python: "3.9"
+      before_install:
+        - choco install python --version=3.9.13
+        - python -m pip install -U pip setuptools
+      env:
+        - PATH=/c/Python39:/c/Python39/Scripts:$PATH
+        - TOXENV=py39
+      cache:
+        directories:
+          - $LOCALAPPDATA/pip/Cache
 install:
   - pip install tox
 

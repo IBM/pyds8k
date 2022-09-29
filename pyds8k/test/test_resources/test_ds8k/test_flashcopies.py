@@ -35,10 +35,10 @@ class TestFlashCopies(TestDS8KWithConnect):
                                    }],
                  "options": []
                  })
-            self.assertDictContainsSubset(
-                req.get_request_data().get('request').get('params'),
-                json.loads(request.body).get('request').get('params'),
-            )
+            assert {
+                    **json.loads(request.body).get('request').get('params'),
+                    **req.get_request_data().get('request').get('params')
+                    } == json.loads(request.body).get('request').get('params')
             return (201, headers, create_flashcopy_response_json)
 
         httpretty.register_uri(httpretty.POST,

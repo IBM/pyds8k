@@ -317,6 +317,128 @@ class RootPoolMixin(object):
                         ).all(types.DS8K_VOLUME).list()
 
 
+class RootResourceGroupMixin(object):
+    def get_resource_groups(self, resource_group_id=None):
+        """
+        Get Resource Groups
+
+        Args:
+            resource_group_id (str): id of the target resource group.
+                                     Get all if none.
+
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
+
+        """
+        if resource_group_id:
+            return self.get_resource_group(resource_group_id)
+        return self.all(types.DS8K_RESOURCE_GROUP, rebuild_url=True).list()
+
+    def get_resource_group(self, resource_group_id):
+        """
+        Get a Resource Group
+
+        Args:
+            resource_group_id (str): Required. id of the target resource group.
+
+        Returns:
+            object:
+            :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
+
+        """
+        return self.one(types.DS8K_RESOURCE_GROUP,
+                        resource_group_id,
+                        rebuild_url=True).get()
+
+    def delete_resource_group(self, resource_group_id):
+        """
+        Delete a Resource Group
+
+        Args:
+            resource_group_id (str): Required. id of the target resource group.
+
+        Returns:
+            tuple: tuple of DS8000 Server Response.
+
+        """
+        return self.one(types.DS8K_RESOURCE_GROUP,
+                        resource_group_id,
+                        rebuild_url=True).delete()
+
+    def create_resource_group(
+            self,
+            label,
+            name='',
+            resource_group_id='',):
+        """
+        Create one Resource Group
+
+        Args:
+            label (str): Required.
+                        The label for the resource group to be created.
+            name (str): The name for the resource group to be created.
+            resource_group_id (str): The resource group id to be created.
+
+        Returns:
+            object:
+            :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
+
+        """
+        _, res = self.all(types.DS8K_RESOURCE_GROUP,
+                          rebuild_url=True
+                          ).posta({'label': label,
+                                   'id': resource_group_id,
+                                   'name': name,
+                                   }
+                                  )
+        return res
+
+    def update_resource_group(
+            self,
+            resource_group_id,
+            label='',
+            name='',
+            cs_global='',
+            pass_global='',
+            gm_masters='',
+            gm_sessions=''):
+        """
+        Update one Resource Group
+
+        Args:
+            resource_group_id (str): Required.
+                                    The resource group id to be updated.
+            label (str): The label to assign to the resource group.
+            name (str): The name to assign to the resource group.
+            cs_global (str): The resource group label to associate with the
+                             Copy Services Global Resource Scope.
+            pass_global (str): The resource group label to associate with the
+                               Pass-thru Global Copy Services Resource Scope.
+            gm_masters (list): An list of Global Mirror session IDs allowed
+                               to be used as a master session for volumes
+                               in this resource.
+            gm_sessions (list): A list of Global Mirror session IDs allowed
+                                to be used for the volumes in this resource.
+
+        Returns:
+            tuple: tuple of DS8000 Server Response.
+
+        """
+        _, res = self.one(types.DS8K_RESOURCE_GROUP,
+                          resource_group_id,
+                          rebuild_url=True).update({
+                                'label': label,
+                                'name': name,
+                                'cs_global': cs_global,
+                                'pass_global': pass_global,
+                                'gm_masters': gm_masters,
+                                'gm_sessions': gm_sessions,
+                                }
+                            )
+        return res
+
+
 class RootVolumeMixin(object):
     def get_volumes(self, volume_id=None):
         """
@@ -371,7 +493,8 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            id=''):
         """
         Create One Volume
 
@@ -386,6 +509,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      valid options include `none`, `ese`, `tse`
+            id (str): volume id to be created
 
         Returns:
             object: :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
@@ -403,6 +527,7 @@ class RootVolumeMixin(object):
                                    'pool': pool,
                                    'lss': lss,
                                    'tp': tp,
+                                   'id': id
                                    }
                                   )
         return res
@@ -417,7 +542,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a group of volumes with different names
 
@@ -435,6 +562,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      in ``none``, ``ese``, ``tse``
+            ids (list): list of volume ids to be created.
 
         Returns:
             list: A list of
@@ -455,12 +583,49 @@ class RootVolumeMixin(object):
                                    'pool': pool,
                                    'lss': lss,
                                    'tp': tp,
+                                   'ids': ids
+                                   }
+                                  )
+        return res
+
+    def create_alias_volumes(
+            self,
+            id,
+            ckd_base_ids,
+            quantity='',
+            alias_create_order='decrement'
+    ):
+        """
+        Create ckd alias volumes for a list of base ckd volumes
+
+        Args:
+            id (str): the starting volume id for where aliases
+                    should be created
+            ckd_base_ids (list): list of ckd base ids aliases
+                    will be created for
+            quantity (str): number of aliases per ckd base id to
+                    create, number in str
+            alias_create_order (str): whether to ``increment``
+                    or ``decrement`` from starting id
+                    default ``decrement``
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
+
+        """
+        _, res = self.all(types.DS8K_VOLUME,
+                          rebuild_url=True
+                          ).posta({'id': id,
+                                   'quantity': quantity,
+                                   'alias': 'true',
+                                   'alias_create_order': alias_create_order,
+                                   'ckd_base_ids': ckd_base_ids
                                    }
                                   )
         return res
 
     def create_volume_ckd(self, name, cap, pool,
-                          captype='', lss='', tp='',
+                          captype='', lss='', tp='', id=''
                           ):
         """
         Create One CKD Volume
@@ -474,6 +639,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      valid options include `none`, `ese`, `tse`
+            id (str): volume id to be created
 
         Returns:
             list: A list of
@@ -485,11 +651,12 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_CKD,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            id=id
         )
 
     def create_volume_fb(self, name, cap, pool,
-                         captype='', lss='', tp='',
+                         captype='', lss='', tp='', id=''
                          ):
         """
         Create One FB Volume
@@ -504,6 +671,7 @@ class RootVolumeMixin(object):
             lss (str): logical subsystem id
             tp (str): storage allocation method,
                      valid options include `none`, `ese`, `tse`
+            id (str): volume id to be created
 
         Returns:
             list: A list of
@@ -515,7 +683,8 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            id=id
         )
 
     def create_volumes_with_same_prefix(
@@ -527,7 +696,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a volume with a name or a group of
         volumes with the same prefix
@@ -545,6 +716,7 @@ class RootVolumeMixin(object):
                           default to ``'gib'``
             lss (str): logical subsystem id
             tp (str): storage allocation method, in none, ese, tse
+            ids (list): list of volume ids to be created
 
         Returns:
             list: A list of
@@ -558,7 +730,8 @@ class RootVolumeMixin(object):
             stgtype=stgtype,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            ids=ids
         )
 
     def create_volumes_without_same_prefix(
@@ -569,7 +742,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a group of volumes with specified names
 
@@ -583,6 +758,7 @@ class RootVolumeMixin(object):
                          default to ``'gib'``
             lss (str): logical subsystem id
             tp (str): storage allocation method, in none, ese, tse
+            ids (list): list of volume ids to be created
 
         Returns:
             list: A list of
@@ -597,7 +773,8 @@ class RootVolumeMixin(object):
             stgtype=stgtype,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            ids=ids
         )
 
     def create_volumes_with_names(
@@ -608,7 +785,9 @@ class RootVolumeMixin(object):
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
-            tp=''):
+            tp='',
+            ids=None
+    ):
         """
         Create a group of volumes with specified names
 
@@ -622,6 +801,7 @@ class RootVolumeMixin(object):
                          default to ``'gib'``
             lss (str): logical subsystem id
             tp (str): storage allocation method, in none, ese, tse
+            ids (list): list of volume ids to be created
 
         Returns:
             list: A list of
@@ -636,7 +816,8 @@ class RootVolumeMixin(object):
             stgtype=stgtype,
             captype=captype,
             lss=lss,
-            tp=tp
+            tp=tp,
+            ids=ids
         )
 
     def update_volume_rename(self, volume_id, new_name):
@@ -856,6 +1037,23 @@ class RootHostMixin(object):
                         host_name,
                         rebuild_url=True
                         ).all(types.DS8K_IOPORT).list()
+
+    def get_host_ports_by_host(self, host_name):
+        """
+        Get Host Ports by the name of the Host.
+
+        Args:
+            host_name (str): Required. name of the host.
+
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.host_ports.HostPort`.
+
+        """
+        return self.one(types.DS8K_HOST,
+                        host_name,
+                        rebuild_url=True
+                        ).all(types.DS8K_HOST_PORT).list()
 
     def get_mappings_by_host(self, host_name):
         """
@@ -1084,39 +1282,43 @@ class RootLSSMixin(object):
 
 
 class RootFlashCopyMixin(object):
-    def get_flashcopies(self, fcid=None):
+    def get_flashcopies(self, volume_id=None):
         """
-        Get Flash Copies.
+        Get Flash Copies. Deprecated after R8.
 
         Args:
-            fcid (str):  id of the flash copy. Get all if None.
+            volume_id (str):  id of the associating volume. Get all if None.
 
         Returns:
             list: A list of
             :py:class:`pyds8k.resources.ds8k.v1.flashcopy.FlashCopy`.
 
         """
-        if fcid:
-            return self.one(types.DS8K_FLASHCOPY, fcid, rebuild_url=True).get()
+        if not volume_id and self.resource_type == "volumes":
+            volume_id = self.id
+
+        if volume_id:
+            return self.get_flashcopies_by_volume(volume_id)
+
         return self.all(types.DS8K_FLASHCOPY, rebuild_url=True).list()
 
-    def get_flashcopy(self, fcid=None):
+    def get_flashcopy(self, volume_id=None):
         """
-        Get A Flash Copy.
+        Get A Flash Copy. Deprecated after R8.
 
         Args:
-            fcid (str): Required. id of the flash copy.
+            volume_id (str): Required.  id of the associating volume.
 
         Returns:
             object:
             :py:class:`pyds8k.resources.ds8k.v1.flashcopy.FlashCopy`.
 
         """
-        return self.get_flashcopies(fcid)
+        return self.get_flashcopies(volume_id)
 
     def get_flashcopies_by_volume(self, volume_id):
         """
-        Get Flash Copies by volume id.
+        Get Flash Copies by volume id. Deprecated after R8.
 
         Args:
             volume_id (str):  Required. id of the target volume.
@@ -1363,6 +1565,7 @@ class RootResourceMixin(RootSystemMixin,
                         RootEncryptionGroupMixin,
                         RootEventMixin,
                         RootPoolMixin,
+                        RootResourceGroupMixin,
                         RootVolumeMixin,
                         RootLSSMixin,
                         RootIOPortMixin,

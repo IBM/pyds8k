@@ -17,8 +17,8 @@
 from functools import wraps, partial
 from logging import getLogger
 from contextlib import contextmanager
+import pytest
 import unittest
-from nose.tools import nottest
 from datetime import datetime
 from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.utils import res_timer_recorder
@@ -164,8 +164,7 @@ class TestIntegration(unittest.TestCase):
             if vols:
                 return
 
-    # Skipped, because get all volumes is not allowed.
-    @nottest
+    @pytest.mark.skip(reason="get all volumes is not allowed.")
     def test_volumes(self):
         volumes = self.get_volumes()
         self.get_volumes(volumes[0].id)
@@ -196,6 +195,10 @@ class TestIntegration(unittest.TestCase):
         ports = self.get_host_ports()
         if ports:
             self.get_host_ports(ports[0].id)
+
+    def test_resource_groups(self):
+        resource_groups = self.get_resource_groups()
+        self.get_resource_groups(resource_groups[0].id)
 
     def _get_volumes_by(self, route, parent_res):
         return self._get_sub_resource_by(route, parent_res, types.DS8K_VOLUME)
