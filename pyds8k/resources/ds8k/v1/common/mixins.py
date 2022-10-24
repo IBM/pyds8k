@@ -494,7 +494,7 @@ class RootVolumeMixin(object):
             captype=types.DS8K_CAPTYPE_GIB,
             lss='',
             tp='',
-            id=''):
+            id=None):
         """
         Create One Volume
 
@@ -625,7 +625,7 @@ class RootVolumeMixin(object):
         return res
 
     def create_volume_ckd(self, name, cap, pool,
-                          captype='', lss='', tp='', id=''
+                          captype='', lss='', tp='', id=None
                           ):
         """
         Create One CKD Volume
@@ -656,7 +656,7 @@ class RootVolumeMixin(object):
         )
 
     def create_volume_fb(self, name, cap, pool,
-                         captype='', lss='', tp='', id=''
+                         captype='', lss='', tp='', id=None
                          ):
         """
         Create One FB Volume
