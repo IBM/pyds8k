@@ -1471,6 +1471,129 @@ class RootPPRCMixin(object):
             types.DS8K_CS_PPRC), pprc_id, rebuild_url=True).get()
 
 
+class RootHMCMixin(object):
+    def restart_hmc(self):
+        """
+        Restart the Hardware Management Console.
+
+        Returns:
+            tuple: tuple of HTTP Response and DS8000 server message.
+        """
+        return self.all('{}.{}'.format(types.DS8K_HMC, types.DS8K_HMC_RESTART),
+                        rebuild_url=True).post(body=None)
+
+    def create_hmc_csr(self, O=None, OU=None, C=None, ST=None,  # noqa: E741
+                       L=None, days=365, email=None, force=True):
+        """
+        Create a Certificate Signing Request
+            for the Hardware Management Console
+
+        Args:
+            O (str): Optional. The name of your organization or company.
+            Defaults to None.
+            OU (str): Optional. A department name within your organization.
+            Defaults to None.
+            C (str): Optional. The two-letter ISO code for the country
+            where your organization is located. Defaults to None.
+            ST (str): Optional. The state or province where your organization
+            is located.  Do not abbreviate this value. Defaults to None.
+            L (str): Optional. The city or town where your organization is
+            located. Defaults to None.
+            days (int): Optional. The number of days the certificate is valid.
+            Defaults to 365.
+            email (str): Optional. An email contact address within your
+            organization. Defaults to None.
+            force (bool): Optional. Force the creation of a new CSR if one is
+            already in progress. Set to False if you want the CSR creation to
+            fail if a CSR currently exists. Defaults to True.
+
+        Returns:
+            str: The PEM formatted CSR.
+        """
+
+        res, _ = self.all('{}.{}.{}'.format(types.DS8K_HMC,
+                                            types.DS8K_HMC_CERTIFICATE,
+                                            types.DS8K_HMC_CERTIFICATE_CSR),
+                          rebuild_url=True).post({"O": O,
+                                                  "OU": OU,
+                                                  "C": C,
+                                                  "ST": ST,
+                                                  "L": L,
+                                                  "days": days,
+                                                  "email": email,
+                                                  "force": str(force)
+                                                  })
+
+        # CAVEAT: The certificate is directly returned in the response body.
+        # Code expects all responses to be json, thus None is returned as the
+        # body result. Get it directly from the response.
+        return res.text
+
+    def create_hmc_selfsigned_certificate(self, O=None, OU=None,  # noqa: E741
+                                          C=None, ST=None, L=None, days=365,
+                                          email=None, restart=False):
+        """
+        Create a Self-signed Certificate for the Hardware Management Console
+
+        Args:
+            O (str): Optional. The name of your organization or company.
+            Defaults to None.
+            OU (str): Optional. A department name within your organization.
+            Defaults to None.
+            C (str): Optional. The two-letter ISO code for the country
+            where your organization is located. Defaults to None.
+            ST (str): Optional. The state or province where your organization
+            is located. Do not abbreviate this value. Defaults to None.
+            L (str): Optional. The city or town where your organization is
+            located. Defaults to None.
+            days (int): Optional. The number of days the certificate is valid.
+            Defaults to 365.
+            email (str): Optional. An email contact address within your
+            organization. Defaults to None.
+            restart (bool): Optional. Restart the HMC to activate the
+            certificate. Defaults to True.
+
+        Returns:
+            tuple: tuple of HTTP Response and DS8000 server message.
+        """
+
+        return self.all(
+            '{}.{}.{}'.format(types.DS8K_HMC,
+                              types.DS8K_HMC_CERTIFICATE,
+                              types.DS8K_HMC_CERTIFICATE_SELFSIGNED),
+            rebuild_url=True).post({"O": O,
+                                    "OU": OU,
+                                    "C": C,
+                                    "ST": ST,
+                                    "L": L,
+                                    "days": days,
+                                    "email": email,
+                                    "restart": str(restart)
+                                    })
+
+    def upload_hmc_signed_certificate(self, certificate):
+        """
+        Upload a Signed Certificate to the Hardware Management Console
+
+        Args:
+            certificate (str): The opened signed certificate file or text
+            string.
+
+        Returns:
+            tuple: tuple of HTTP Response and DS8000 server message.
+        """
+
+        # CAVEAT: Packages and modules can't have the same name, so the
+        # resource is ds8k.v1.hmc.certificate.certificate
+        # not ds8k.v1.hmc.certificate because the design uses meta classes to
+        # build the urls. It didn't expect calls to object in /object/objects?
+        # Force to match object.object.
+        return self.all('{}.{}.{}'.format(types.DS8K_HMC,
+                                          types.DS8K_HMC_CERTIFICATE,
+                                          types.DS8K_HMC_CERTIFICATE),
+                        rebuild_url=True).post(body=certificate)
+
+
 class RootEventMixin(object):
     def get_events(self, evt_id=None, evt_filter={}):
         """
@@ -1556,6 +1679,7 @@ class RootEventMixin(object):
 
 
 class RootResourceMixin(RootSystemMixin,
+                        RootHMCMixin,
                         RootFlashCopyMixin,
                         RootPPRCMixin,
                         RootNodeMixin,

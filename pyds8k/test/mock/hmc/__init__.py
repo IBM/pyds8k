@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019 IBM Corp.
+# Copyright 2023 IBM Corp.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,22 @@
 # limitations under the License.
 ##############################################################################
 
-"""
-IBM DS8K CLI Client Module
+import os
+from importlib import import_module
 
-:module: pyds8k
+_PATH = os.path.abspath(os.path.dirname(__file__))
+mocks = set([os.path.splitext(resource)[0]
+             for resource in os.listdir(_PATH)
+             if os.path.isfile(os.path.join(_PATH, resource)) and
+             not str(resource).startswith('__init__')
+             ])
+success_response_one = {}
+success_response_all = {}
 
-"""
-PYDS8K_DEFAULT_LOGGER = "pyds8k"
-
-version_tuple = (1, 6, 0)
-
-
-def get_version_string():
-    """Current version of Client."""
-    if isinstance(version_tuple[-1], str):
-        return '.'.join(map(str, version_tuple[:-1])) + '.' + version_tuple[-1]
-    return '.'.join(map(str, version_tuple))
-
-
-version = get_version_string()
+for re in mocks:
+    success_response_one[re] = import_module(
+        '{0}.{1}'.format(__name__, re)
+    ).ONE
+    success_response_all[re] = import_module(
+        '{0}.{1}'.format(__name__, re)
+    ).ALL
