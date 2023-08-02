@@ -20,9 +20,9 @@ jobs:
 
         include:
           - os: [ubuntu-20.04]
-            python: ["3.6"]
+            python: "3.6"
           - os: [windows-2019]
-            python: ["3.6"]
+            python: "3.6"
 
     steps:
       - uses: actions/checkout@v3
