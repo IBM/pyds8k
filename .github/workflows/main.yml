@@ -49,5 +49,5 @@ jobs:
       - name: Run tox
         run: tox -e py
       - name: Run tox cover
-        if: ${{ matrix.python == "3.11" }}
+        if: ${{ matrix.python == '3.11' }}
         run: tox -e cover
