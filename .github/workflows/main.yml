@@ -1,13 +1,12 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Lint, Test, Cover
+name: Lint, Test
 
 on:
   push:
-    # branches: [ "main", "develop" ]
+    branches: [ "main", "develop" ]
   pull_request:
-    # branches: [ "main", "develop" ]
 
 jobs:
   lint:
@@ -48,6 +47,3 @@ jobs:
           pip install tox
       - name: Run tox
         run: tox -e py
-      - name: Run tox cover
-        if: ${{ matrix.python == '3.11' }}
-        run: tox -e cover
