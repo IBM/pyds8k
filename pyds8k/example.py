@@ -23,11 +23,11 @@ restclient = Client('ip_address or fqdn',
 
 # Create volumes
 vol = restclient.create_volumes(name_col=['volume_name'],
-                          cap='capacity_in_GiB',
-                          pool='pool_id',
-                          tp='none')
+                                cap='capacity_in_GiB',
+                                pool='pool_id',
+                                tp='none')
 
-# Delete volume 
+# Delete volume
 restclient.delete_volume(vol[0].id)
 
 # Get volume
