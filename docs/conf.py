@@ -64,7 +64,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'IBM DS8000 pyds8k'
-copyright = '2012-2022 IBM'
+copyright = '2012-2023 IBM'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -110,7 +110,7 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 
-# -- Options for HTML output ---------------------------------------------------
+# -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -278,7 +278,7 @@ texinfo_documents = [ ('index', 'pyds8k', 'pyds8k Documentation',
 epub_title = 'pyds8k'
 epub_author = 'IBM'
 epub_publisher = 'IBM'
-epub_copyright = '2022, IBM'
+epub_copyright = '2023, IBM'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

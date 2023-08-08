@@ -16,6 +16,11 @@
 
 DS8K_TOKEN = 'tokens'
 DS8K_SYSTEM = 'systems'
+DS8K_HMC = 'hmc'
+DS8K_HMC_CERTIFICATE = 'certificate'
+DS8K_HMC_CERTIFICATE_CSR = 'csr'
+DS8K_HMC_CERTIFICATE_SELFSIGNED = 'selfsigned'
+DS8K_HMC_RESTART = 'restart'
 DS8K_NODE = 'nodes'
 DS8K_MARRAY = 'marrays'
 DS8K_USER = 'users'

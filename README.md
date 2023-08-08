@@ -16,9 +16,13 @@ Clone the repository, and then add it to your PYTHONPATH directory. The Python c
 The library is also available to install using pip.  See [the pypi pyds8k project](https://pypi.org/project/pyds8k/)
 
 To install via pip run the following command:
-```pip install pyds8k```
+
+```shell
+pip install pyds8k
+```
 
 ## Documentation
+
 Documentation for the pyds8k library can be generated using sphinx.
 The documentation for the latest release is also available via [pyds8k.readthedocs.io](https://pyds8k.readthedocs.io/en/latest)
 
@@ -34,29 +38,39 @@ Each storage system of DS8000 and major software version has its own set of REST
 
 To display the full RESTful API Reference Guide of a specific storage system and a specific software version:
 
-1.	Navigate to a storage system welcome page on KC:
-
+1. Navigate to a storage system welcome page on KC:
 
 2. On the welcome page, select a storage system software version. For example, select **Version 8.5.3**.
 
-![Software version](https://github.com/IBM/pyds8k/blob/master/images/1.jpg)
+    ![Software version](https://github.com/IBM/pyds8k/blob/master/images/1.jpg)
 
-The welcome page of the selected software version is displayed.
+    The welcome page of the selected software version is displayed.
 
 3. If needed, select the **Table of contents** tab.
 
-![Table of contents](https://github.com/IBM/pyds8k/blob/master/images/2.jpg)
+    ![Table of contents](https://github.com/IBM/pyds8k/blob/master/images/2.jpg)
 
 4. On the table of contents, click **RESTful API**.
 
-![CLI interface](https://github.com/IBM/pyds8k/blob/master/images/3.jpg)
+    ![CLI interface](https://github.com/IBM/pyds8k/blob/master/images/3.jpg)
 
-5.	Refer to **Host commands** and to all subsequent chapters.
+5. Refer to **Host commands** and to all subsequent chapters.
 
 ## Contributing
+
 We do not accept any contributions at the moment. This may change in the future, so you can fork, clone, and suggest a pull request.
 
 ## Running tests
-Use nosetests command to run a test.
 
-    nosetests -v
+Use tox to run the test suite
+
+```shell
+tox
+```
+
+Use pytest to run tests or a specific test.
+
+```shell
+pytest --cov-config=.coveragerc --cov pyds8k --disable-warnings -v
+pytest --cov-config=.coveragerc --cov pyds8k --disable-warnings -v pyds8k/test/test_resources/test_ds8k/test_host.py
+```

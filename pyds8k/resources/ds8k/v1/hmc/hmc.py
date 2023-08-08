@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019 IBM Corp.
+# Copyright 2023 IBM Corp.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,21 +15,35 @@
 ##############################################################################
 
 """
-IBM DS8K CLI Client Module
-
-:module: pyds8k
-
+Hardware Management Console interface.
 """
-PYDS8K_DEFAULT_LOGGER = "pyds8k"
+import six
+from pyds8k.base import ManagerMeta, ResourceMeta
 
-version_tuple = (1, 6, 0)
-
-
-def get_version_string():
-    """Current version of Client."""
-    if isinstance(version_tuple[-1], str):
-        return '.'.join(map(str, version_tuple[:-1])) + '.' + version_tuple[-1]
-    return '.'.join(map(str, version_tuple))
+from ..common.base import Base, BaseManager
+from ..common.types import DS8K_HMC
 
 
-version = get_version_string()
+@six.add_metaclass(ResourceMeta)
+class HMC(Base):
+    resource_type = DS8K_HMC
+
+    # id_field = ''
+
+    # _template = {}
+
+    # readonly_fields = {''}
+
+    # related_resources_collection = ()
+
+    # def __repr__(self):
+    #     return "<HMC: {0}>".format(self.id)
+
+
+@six.add_metaclass(ManagerMeta)
+class HMCManager(BaseManager):
+    """
+    Manage Hardware Management Console resources.
+    """
+    resource_class = HMC
+    resource_type = DS8K_HMC
