@@ -18,7 +18,7 @@ from setuptools import find_packages, setup
 
 import pyds8k
 
-install_requires = ['requests', 'httpretty', 'configparser', 'six']
+install_requires = ['requests', 'configparser', 'six']
 
 setup(
     name='pyds8k',
@@ -31,7 +31,7 @@ setup(
     keywords=["IBM", "DS8000 Storage"],
     requires=install_requires,
     install_requires=install_requires,
-    tests_require=['nose', 'mock'],
+    tests_require=['pytest', 'mock', 'flake8', 'sphinx', 'httpretty'],
     license="Apache License, Version 2.0",
     include_package_data=True,
     packages=find_packages(),
@@ -50,5 +50,7 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ])
