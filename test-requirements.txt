@@ -1,5 +1,6 @@
 pytest>=7.0.0
 pytest-cov>=3.0.0
 mock>=3.0.5
-flake8>=3.6.0
+flake8>=3.7.0
 sphinx>=2.2.1
+httpretty>=0.9.6
