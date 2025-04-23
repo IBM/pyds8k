@@ -17,7 +17,6 @@
 """
 Host Ports interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_HOST_PORT
 from .common.base import Base, BaseManager
@@ -25,8 +24,7 @@ from .hosts import Host, HostManager
 from .ioports import IOPort, IOPortManager
 
 
-@six.add_metaclass(ResourceMeta)
-class HostPort(Base):
+class HostPort(Base, metaclass=ResourceMeta):
     resource_type = DS8K_HOST_PORT
     id_field = 'wwpn'
     _template = {'wwpn': '',
@@ -68,8 +66,7 @@ class HostPort(Base):
     #    return "<HostPort: {0}>".format(self.id)
 
 
-@six.add_metaclass(ManagerMeta)
-class HostPortManager(BaseManager):
+class HostPortManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Host Ports resources.
     """

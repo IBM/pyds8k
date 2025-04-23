@@ -224,7 +224,6 @@ class Resource(UtilsMixin, BaseResource):
 
     def create(self, **kwargs):
         custom_info = {}
-        # for (k, v) in six.iteritems(info):
         for (k, v) in kwargs.items():
             if k in list(self._template.keys()):
                 custom_info[k] = v
@@ -320,7 +319,6 @@ class Resource(UtilsMixin, BaseResource):
         self_url = self.ResponseParser.get_link_from_representation(info)
         if self_url:
             self.url = self_url
-        # for (k, v) in six.iteritems(info):
         for (k, v) in info.items():
             if not force and k in list(self._modified_info_dict.keys()):
                 continue

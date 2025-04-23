@@ -17,20 +17,17 @@
 """
 Hardware Management Console Self-signed Certificate interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from ...common.base import Base, BaseManager
 from ...common.types import DS8K_HMC_CERTIFICATE_SELFSIGNED
 
 
-@six.add_metaclass(ResourceMeta)
-class HmcCertificateSelfSigned(Base):
+class HmcCertificateSelfSigned(Base, metaclass=ResourceMeta):
     resource_type = DS8K_HMC_CERTIFICATE_SELFSIGNED
 
 
-@six.add_metaclass(ManagerMeta)
-class HmcCertificateSelfSignedManager(BaseManager):
+class HmcCertificateSelfSignedManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Hardware Management Console Self-signed Certificate resources.
     """

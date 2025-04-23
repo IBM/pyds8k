@@ -17,15 +17,13 @@
 """
 Marray interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_MARRAY
 from .common.base import Base, ReadOnlyManager
 from .pools import Pool, PoolManager
 
 
-@six.add_metaclass(ResourceMeta)
-class Marray(Base):
+class Marray(Base, metaclass=ResourceMeta):
     resource_type = DS8K_MARRAY
     # id_field = 'id'
     _template = {'id': '',
@@ -37,8 +35,7 @@ class Marray(Base):
                         }
 
 
-@six.add_metaclass(ManagerMeta)
-class MarrayManager(ReadOnlyManager):
+class MarrayManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Marray resources.
     """
