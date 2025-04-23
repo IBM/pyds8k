@@ -1,6 +1,14 @@
 pyds8k.resources.ds8k.v1.hmc package
 ====================================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyds8k.resources.ds8k.v1.hmc.certificate
+
 Submodules
 ----------
 

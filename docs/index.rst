@@ -43,6 +43,7 @@ following command from the root directory of the **pyds8k** source.
 
    installation
    changelog
+   api/pyds8k
 
 
 Indices and tables

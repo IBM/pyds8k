@@ -9,6 +9,7 @@ Subpackages
 
    pyds8k.resources.ds8k.v1.common
    pyds8k.resources.ds8k.v1.cs
+   pyds8k.resources.ds8k.v1.hmc
 
 Submodules
 ----------
