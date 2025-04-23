@@ -1,11 +1,10 @@
 [project]
 name = "pyds8k"
-# version = "1.6.0"
 description = "DS8000 Python Client"
 dynamic = ["version"]
 readme = "README.md"
-license-files = ["LICENSE*"]
-requires-python = ">=3.7"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
 authors = [
     { name = "Zhang Wu", email = "shwzhang@cn.ibm.com"},
     { name = "NjM3MjY5NzAgNzA3MzA3", email = "102704081+NjM3MjY5NzAgNzA3MzA3@users.noreply.github.com"}
@@ -20,8 +19,6 @@ classifiers=[
     'Intended Audience :: System Administrators',
     'Environment :: Console',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
@@ -32,20 +29,22 @@ classifiers=[
 dependencies = [
     "requests>=2.31.0",
 ]
-
 [dependency-groups]
 dev = [
-    "flake8>=3.7.0",
+    "flake8>=7.0.0",
     "sphinx>=2.2.1",
 ]
-
 test = [
     "pytest>=7.0.0",
     "pytest-cov>=3.0.0",
     "mock>=3.0.5",
     "httpretty>=0.9.6",
-    "tox"
+    "tox>=4.22.0"
 ]
+
+[build-system]
+requires = ["setuptools >= 77.0.0"]
+build-backend = "setuptools.build_meta"
 
 [project.urls]
 Documentation = "https://pyds8k.readthedocs.io/en/latest"
@@ -54,7 +53,7 @@ Issues = "https://github.com/IBM/pyds8k/issues"
 Repository = "https://github.com/IBM/pyds8k.git"
 
 [tool.setuptools.dynamic]
-version = {attr = "pyds8k.version"} 
+version = {attr = "pyds8k.version"} # Set in pyds8k/__init__.py
 
 [tool.setuptools.packages.find]
 exclude = ["cover", "images"]
