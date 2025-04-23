@@ -18,7 +18,7 @@ from setuptools import find_packages, setup
 
 import pyds8k
 
-install_requires = ['requests', 'configparser']
+install_requires = ['requests']
 
 setup(
     name='pyds8k',
