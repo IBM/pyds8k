@@ -17,15 +17,13 @@
 """
 Hardware Management Console Certificate interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from ...common.base import Base, BaseManager
 from ...common.types import DS8K_HMC_CERTIFICATE
 
 
-@six.add_metaclass(ResourceMeta)
-class HmcCertificate(Base):
+class HmcCertificate(Base, metaclass=ResourceMeta):
     resource_type = DS8K_HMC_CERTIFICATE
 
     # id_field = ''
@@ -40,8 +38,7 @@ class HmcCertificate(Base):
     #     return "<HMC Certificate: {0}>".format(self.id)
 
 
-@six.add_metaclass(ManagerMeta)
-class HmcCertificateManager(BaseManager):
+class HmcCertificateManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Hardware Management Console Certificate resources.
     """

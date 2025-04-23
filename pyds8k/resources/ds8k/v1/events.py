@@ -17,14 +17,12 @@
 """
 Event interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_EVENT
 from .common.base import Base, ReadOnlyManager
 
 
-@six.add_metaclass(ResourceMeta)
-class Event(Base):
+class Event(Base, metaclass=ResourceMeta):
     resource_type = DS8K_EVENT
     # id_field = 'id'
     _template = {'id': '',
@@ -37,8 +35,7 @@ class Event(Base):
                  }
 
 
-@six.add_metaclass(ManagerMeta)
-class EventManager(ReadOnlyManager):
+class EventManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Event resources.
     """

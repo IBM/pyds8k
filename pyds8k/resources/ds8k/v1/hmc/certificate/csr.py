@@ -17,15 +17,13 @@
 """
 Hardware Management Console Certificate Signing Request interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from ...common.base import Base, BaseManager
 from ...common.types import DS8K_HMC_CERTIFICATE_CSR
 
 
-@six.add_metaclass(ResourceMeta)
-class HmcCertificateCsr(Base):
+class HmcCertificateCsr(Base, metaclass=ResourceMeta):
     resource_type = DS8K_HMC_CERTIFICATE_CSR
 
     # id_field = ''
@@ -40,8 +38,7 @@ class HmcCertificateCsr(Base):
     #     return "<HMC CSR: {0}>".format(self.id)
 
 
-@six.add_metaclass(ManagerMeta)
-class HmcCertificateCsrManager(BaseManager):
+class HmcCertificateCsrManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Hardware Management Console Certificate Signing Request resources.
     """

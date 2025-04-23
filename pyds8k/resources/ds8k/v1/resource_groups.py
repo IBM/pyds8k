@@ -17,15 +17,13 @@
 """
 Resource Group interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from .common.base import Base, BaseManager
 from .common.types import DS8K_RESOURCE_GROUP
 
 
-@six.add_metaclass(ResourceMeta)
-class ResourceGroup(Base):
+class ResourceGroup(Base, metaclass=ResourceMeta):
     resource_type = DS8K_RESOURCE_GROUP
     # id_field = 'id'
 
@@ -41,8 +39,7 @@ class ResourceGroup(Base):
     }
 
 
-@six.add_metaclass(ManagerMeta)
-class ResourceGroupManager(BaseManager):
+class ResourceGroupManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Resource Group resources.
     """

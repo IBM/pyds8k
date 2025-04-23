@@ -17,14 +17,12 @@
 """
 User interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_USER
 from .common.base import Base, ReadOnlyManager
 
 
-@six.add_metaclass(ResourceMeta)
-class User(Base):
+class User(Base, metaclass=ResourceMeta):
     resource_type = DS8K_USER
     id_field = 'name'
     _template = {'name': '',
@@ -33,8 +31,7 @@ class User(Base):
                  }
 
 
-@six.add_metaclass(ManagerMeta)
-class UserManager(ReadOnlyManager):
+class UserManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage User resources.
     """

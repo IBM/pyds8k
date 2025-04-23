@@ -17,14 +17,12 @@
 """
 Node interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_NODE
 from .common.base import Base, ReadOnlyManager
 
 
-@six.add_metaclass(ResourceMeta)
-class Node(Base):
+class Node(Base, metaclass=ResourceMeta):
     resource_type = DS8K_NODE
     # id_field = 'id'
     _template = {'id': '',
@@ -32,8 +30,7 @@ class Node(Base):
                  }
 
 
-@six.add_metaclass(ManagerMeta)
-class NodeManager(ReadOnlyManager):
+class NodeManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage LSS resources.
     """

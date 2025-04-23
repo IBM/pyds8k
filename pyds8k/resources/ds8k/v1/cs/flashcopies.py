@@ -17,15 +17,13 @@
 """
 advanced FlashCopies interface.
 """
-import six
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, BaseManager
 from ..common.types import DS8K_CS_FLASHCOPY, DS8K_FLASHCOPY
 from ..volumes import Volume, VolumeManager
 
 
-@six.add_metaclass(ResourceMeta)
-class FlashCopy(Base):
+class FlashCopy(Base, metaclass=ResourceMeta):
     resource_type = DS8K_CS_FLASHCOPY
     _template = {'id': None,
                  'persistent': None,
@@ -51,8 +49,7 @@ class FlashCopy(Base):
             self._id = info[DS8K_FLASHCOPY][0]['id']
 
 
-@six.add_metaclass(ManagerMeta)
-class FlashCopyManager(BaseManager):
+class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage advanced FlashCopies resources.
     """

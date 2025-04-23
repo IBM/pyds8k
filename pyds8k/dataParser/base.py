@@ -16,11 +16,8 @@
 
 from abc import ABCMeta, abstractmethod
 
-import six
 
-
-@six.add_metaclass(ABCMeta)
-class BaseRequestParser(object):
+class BaseRequestParser(object, metaclass=ABCMeta):
     # Parse the data user wants to send to server,
     # in the right format that server defined.
 
@@ -33,8 +30,7 @@ class BaseRequestParser(object):
         pass
 
 
-@six.add_metaclass(ABCMeta)
-class BaseResponseParser(object):
+class BaseResponseParser(object, metaclass=ABCMeta):
     # Parser response data, to get resource link, representation, etc.
 
     response_key = ''
