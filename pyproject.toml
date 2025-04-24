@@ -1,0 +1,62 @@
+[project]
+name = "pyds8k"
+description = "DS8000 Python Client"
+dynamic = ["version"]
+readme = "README.md"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [
+    { name = "Zhang Wu", email = "shwzhang@cn.ibm.com" },
+]
+maintainers = [
+    { name = "Randy Blea", email = "blead@us.ibm.com" },
+    { name = "NjM3MjY5NzAgNzA3MzA3", email = "102704081+NjM3MjY5NzAgNzA3MzA3@users.noreply.github.com" },
+]
+keywords = [
+    "IBM",
+    "DS8000 Storage"
+]
+classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: System Administrators',
+    'Environment :: Console',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+dependencies = [
+    "requests>=2.31.0",
+]
+[dependency-groups]
+dev = [
+    "flake8>=7.0.0",
+    "sphinx>=2.2.1",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=3.0.0",
+    "mock>=3.0.5",
+    "httpretty>=0.9.6",
+    "tox>=4.22.0"
+]
+
+[build-system]
+requires = ["setuptools >= 77.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+Documentation = "https://pyds8k.readthedocs.io/en/latest"
+Homepage = "https://github.com/IBM/pyds8k"
+Issues = "https://github.com/IBM/pyds8k/issues"
+Repository = "https://github.com/IBM/pyds8k.git"
+
+[tool.setuptools.dynamic]
+version = {attr = "pyds8k.version"} # Set in pyds8k/__init__.py
+
+[tool.setuptools.packages.find]
+exclude = ["cover", "images"]

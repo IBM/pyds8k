@@ -8,7 +8,7 @@ This repository contains the IBM RESTful API Python client, which establishes te
 
 ## Python Compatibility
 
-The content in this collection supports Python 3.7 and newer.
+The content in this collection supports Python 3.9 and newer.
 
 ## Getting started
 
@@ -42,17 +42,17 @@ To display the full RESTful API Reference Guide of a specific storage system and
 
 2. On the welcome page, select a storage system software version. For example, select **Version 8.5.3**.
 
-    ![Software version](https://github.com/IBM/pyds8k/blob/master/images/1.jpg)
+    ![Software version](images/1.jpg)
 
     The welcome page of the selected software version is displayed.
 
 3. If needed, select the **Table of contents** tab.
 
-    ![Table of contents](https://github.com/IBM/pyds8k/blob/master/images/2.jpg)
+    ![Table of contents](images/2.jpg)
 
 4. On the table of contents, click **RESTful API**.
 
-    ![CLI interface](https://github.com/IBM/pyds8k/blob/master/images/3.jpg)
+    ![CLI interface](images/3.jpg)
 
 5. Refer to **Host commands** and to all subsequent chapters.
 

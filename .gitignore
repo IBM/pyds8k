@@ -1,6 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Coverage
 .coverage
+cover
+
+# Docs
+docs/html
+
+# Tests
 .tox
-*.pyc
+
 .project
 .idea
 .pydevproject
@@ -10,9 +28,6 @@
 *.help
 .pylintrc
 *.log
-__pycache__
 .DS_Store
-nosetests.xml
-*.egg-info
-docs/html
-cover
+
+
