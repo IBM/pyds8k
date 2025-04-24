@@ -108,7 +108,7 @@ class Base(RootResourceMixin, Resource):
         )
 
     def _verify_type(self, new_type, valid_type_list):
-        if new_type and not (new_type in valid_type_list):
+        if new_type and new_type not in valid_type_list:
             raise ValueError(
                 INVALID_TYPE.format(', '.join(valid_type_list))
             )
