@@ -17,15 +17,14 @@
 """
 DS8K resources base interface.
 """
+
 from logging import getLogger
 from pyds8k.messages import INVALID_TYPE
 from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.base import Resource, Manager
 from pyds8k.base import get_resource_and_manager_class_by_route
 from .mixins import RootResourceMixin
-from pyds8k.exceptions import OperationNotAllowed, \
-    URLNotSpecifiedError, \
-    FieldReadOnly
+from pyds8k.exceptions import OperationNotAllowed, URLNotSpecifiedError, FieldReadOnly
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
@@ -64,10 +63,10 @@ class Base(RootResourceMixin, Resource):
             # If the related resources(should be a list) are in info, set it.
             else:
                 re_class, re_manager = self._get_resource_class_by_name(key)
-                res_list = [re_class(self.client,
-                                     manager=re_manager(self.client),
-                                     info=r)
-                            for r in res]
+                res_list = [
+                    re_class(self.client, manager=re_manager(self.client), info=r)
+                    for r in res
+                ]
                 setattr(self, key, res_list)
 
     def __setattr__(self, key, value):
@@ -89,9 +88,7 @@ class Base(RootResourceMixin, Resource):
                 return getattr(self, 'get_{}'.format(key))()
             except Exception as e:
                 logger.debug(
-                    "Can not get {} from {}, reason is: {}".format(
-                        key, self, type(e)
-                        )
+                    "Can not get {} from {}, reason is: {}".format(key, self, type(e))
                 )
                 raise AttributeError(key)
         return super(Base, self).__getattr__(key)
@@ -100,18 +97,14 @@ class Base(RootResourceMixin, Resource):
         return "<{0}: {1}>".format(self.__class__.__name__, self._get_id())
 
     def _get_resource_class_by_name(self, resource_type):
-        prefix = '{}.{}'.format(self.client.service_type,
-                                self.client.service_version
-                                )
+        prefix = '{}.{}'.format(self.client.service_type, self.client.service_version)
         return get_resource_and_manager_class_by_route(
             "{}.{}".format(prefix, resource_type)
         )
 
     def _verify_type(self, new_type, valid_type_list):
         if new_type and new_type not in valid_type_list:
-            raise ValueError(
-                INVALID_TYPE.format(', '.join(valid_type_list))
-            )
+            raise ValueError(INVALID_TYPE.format(', '.join(valid_type_list)))
 
 
 class SingletonBase(Base):
@@ -147,16 +140,15 @@ class BaseManager(Manager):
             if self.managed_object is not None:
                 self.url = self.managed_object.url
                 # use modified info here
-                put_body = body if body else \
-                    self.managed_object._get_modified_info_dict()
+                put_body = (
+                    body if body else self.managed_object._get_modified_info_dict()
+                )
             else:
                 raise URLNotSpecifiedError()
         else:
             self.url = url
             put_body = body
-        resp, body = self.client.put(self.url,
-                                     body=self._get_request_data(put_body)
-                                     )
+        resp, body = self.client.put(self.url, body=self._get_request_data(put_body))
         data = self._get_data(body, method='PUT', response=resp)
         return resp, data
 
@@ -186,17 +178,16 @@ class BaseManager(Manager):
 
 
 class ReadOnlyManager(BaseManager):
-
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
-        return self._get(resource_id=resource_id,
-                         url=url, obj_class=obj_class, **kwargs)
+        return self._get(
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
+        )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
         return self._list(url=url, obj_class=obj_class, body=body, **kwargs)
 
 
 class SingletonBaseManager(BaseManager):
-
     def get(self, url='', obj_class=None, **kwargs):
         return self._get(url=url, obj_class=obj_class, **kwargs)
 

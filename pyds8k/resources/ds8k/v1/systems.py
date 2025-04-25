@@ -17,6 +17,7 @@
 """
 Storage system interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_SYSTEM
 from .common.base import Base, ReadOnlyManager
@@ -25,19 +26,20 @@ from .common.base import Base, ReadOnlyManager
 class System(Base, metaclass=ResourceMeta):
     resource_type = DS8K_SYSTEM
     id_field = 'id'
-    _template = {'id': '',
-                 'name': '',
-                 'state': '',
-                 'release': '',
-                 'bundle': '',
-                 'MTM': '',
-                 'sn': '',
-                 'wwnn': '',
-                 'cap': '',
-                 'capalloc': '',
-                 'capavail': '',
-                 'capraw': '',
-                 }
+    _template = {
+        'id': '',
+        'name': '',
+        'state': '',
+        'release': '',
+        'bundle': '',
+        'MTM': '',
+        'sn': '',
+        'wwnn': '',
+        'cap': '',
+        'capalloc': '',
+        'capavail': '',
+        'capraw': '',
+    }
 
     def __repr__(self):
         return "<Storage System: {0}>".format(self.id)
@@ -50,5 +52,6 @@ class SystemManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Storage System resources.
     """
+
     resource_class = System
     resource_type = DS8K_SYSTEM

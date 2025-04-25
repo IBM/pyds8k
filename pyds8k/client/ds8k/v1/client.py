@@ -17,8 +17,7 @@ from logging import getLogger
 from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.httpclient import HTTPClient
 from pyds8k.base import Resource, DefaultManager
-from pyds8k.resources.ds8k.v1.systems import System, \
-    SystemManager
+from pyds8k.resources.ds8k.v1.systems import System, SystemManager
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 DEFAULT_PORT = 8452
@@ -59,24 +58,31 @@ class Client(object):
         object: DS8000 REST-API Client
     """
 
-    def __init__(self, service_address, user, password,
-                 port=DEFAULT_PORT,
-                 hostname='',
-                 service_type='ds8k',
-                 service_version='v1',
-                 timeout=None,
-                 verify=True
-                 ):
+    def __init__(
+        self,
+        service_address,
+        user,
+        password,
+        port=DEFAULT_PORT,
+        hostname='',
+        service_type='ds8k',
+        service_version='v1',
+        timeout=None,
+        verify=True,
+    ):
         logger.info('================== logger is enabled ==================')
 
-        client = HTTPClient(service_address, user, password,
-                            port=port,
-                            hostname=hostname,
-                            service_type=service_type,
-                            service_version=service_version,
-                            timeout=timeout,
-                            verify=verify
-                            )
+        client = HTTPClient(
+            service_address,
+            user,
+            password,
+            port=port,
+            hostname=hostname,
+            service_type=service_type,
+            service_version=service_version,
+            timeout=timeout,
+            verify=verify,
+        )
 
         self.client = client
         self.resource = Resource(self.client, DefaultManager(self.client))

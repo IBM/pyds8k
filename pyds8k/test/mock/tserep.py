@@ -15,33 +15,33 @@
 ##############################################################################
 
 ALL = {
-  "server": {
-    "status": "ok",
-    "code": "CMUC00183I",
-    "message": "Operation done successfully."
-  },
-  "data": {
-    "tserep": [
-      {
-        "link": {
-          "rel": "self",
-          "href": "https://localhost:8088/api/v1/pools/P1/tserep"
-        },
-        "cap": "22260",
-        "capalloc": "0",
-        "capavail": "22260",
-        "overprovisioned": "0.0",
-        "repcapthreshold": "80",
-        "pool": {
-          "id": "P1",
-          "link": {
-            "rel": "self",
-            "href": "https://localhost:8088/api/v1/pools/P1"
-          }
-        }
-      }
-    ]
-  }
+    "server": {
+        "status": "ok",
+        "code": "CMUC00183I",
+        "message": "Operation done successfully.",
+    },
+    "data": {
+        "tserep": [
+            {
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/pools/P1/tserep",
+                },
+                "cap": "22260",
+                "capalloc": "0",
+                "capavail": "22260",
+                "overprovisioned": "0.0",
+                "repcapthreshold": "80",
+                "pool": {
+                    "id": "P1",
+                    "link": {
+                        "rel": "self",
+                        "href": "https://localhost:8088/api/v1/pools/P1",
+                    },
+                },
+            }
+        ]
+    },
 }
 
 ONE = ALL

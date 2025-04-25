@@ -18,12 +18,9 @@ ALL = {
     "server": {
         "status": "ok",
         "code": "CMUC00183I",
-        "message": "Operation done successfully."
+        "message": "Operation done successfully.",
     },
-    "counts": {
-        "data_counts": 32,
-        "total_counts": 32
-    },
+    "counts": {"data_counts": 32, "total_counts": 32},
     'data': {
         'hosts': [
             {
@@ -53,7 +50,7 @@ ALL = {
                 },
                 'link': {
                     'rel': 'self',
-                    'href': 'https://localhost:8088/api/v1/hosts/host1'
+                    'href': 'https://localhost:8088/api/v1/hosts/host1',
                 },
             },
             {
@@ -83,23 +80,20 @@ ALL = {
                 },
                 'link': {
                     'rel': 'self',
-                    'href': 'https://localhost:8088/api/v1/hosts/host2'
+                    'href': 'https://localhost:8088/api/v1/hosts/host2',
                 },
             },
         ]
-    }
+    },
 }
 
 ONE = {
     "server": {
         "status": "ok",
         "code": "CMUC00183I",
-        "message": "Operation done successfully."
+        "message": "Operation done successfully.",
     },
-    "counts": {
-        "data_counts": 1,
-        "total_counts": 1
-    },
+    "counts": {"data_counts": 1, "total_counts": 1},
     'data': {
         'hosts': [
             {
@@ -129,9 +123,9 @@ ONE = {
                 },
                 'link': {
                     'rel': 'self',
-                    'href': 'https://localhost:8088/api/v1/hosts/host1'
+                    'href': 'https://localhost:8088/api/v1/hosts/host1',
                 },
             },
         ]
-    }
+    },
 }

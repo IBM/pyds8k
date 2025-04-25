@@ -20,7 +20,6 @@ from pyds8k import utils
 
 
 class TestUtils(base.TestCaseWithoutConnect):
-
     def test_get_subclasses(self):
         class A(object):
             pass
@@ -57,12 +56,13 @@ class TestUtils(base.TestCaseWithoutConnect):
 
     def test_get_request_parser_class(self):
         from pyds8k.dataParser.ds8k import RequestParser
+
         self.assertEqual(RequestParser, utils.get_request_parser_class('ds8k'))
 
     def test_get_response_parser_class(self):
         from pyds8k.dataParser.ds8k import ResponseParser
-        self.assertEqual(ResponseParser,
-                         utils.get_response_parser_class('ds8k'))
+
+        self.assertEqual(ResponseParser, utils.get_response_parser_class('ds8k'))
 
     # def test_get_default_service_type(self):
     #     self.assertEqual('ds8k', utils.get_default_service_type())

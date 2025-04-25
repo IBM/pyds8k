@@ -17,6 +17,7 @@
 """
 Node interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_NODE
 from .common.base import Base, ReadOnlyManager
@@ -25,14 +26,16 @@ from .common.base import Base, ReadOnlyManager
 class Node(Base, metaclass=ResourceMeta):
     resource_type = DS8K_NODE
     # id_field = 'id'
-    _template = {'id': '',
-                 'state': '',
-                 }
+    _template = {
+        'id': '',
+        'state': '',
+    }
 
 
 class NodeManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage LSS resources.
     """
+
     resource_class = Node
     resource_type = DS8K_NODE

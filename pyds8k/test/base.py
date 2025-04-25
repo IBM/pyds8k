@@ -20,20 +20,16 @@ from pyds8k.base import Resource, DefaultManager
 
 
 class TestCaseWithConnect(unittest.TestCase):
-
     def setUp(self):
         self.client = HTTPClient(
             "http://localhost:8088/api/",
             'admin',
             'admin',
             service_type='ds8k',
-            port=8088
+            port=8088,
         )
         self.base_url = self.client.base_url
-        self.resource = Resource(
-            self.client,
-            manager=DefaultManager(self.client)
-        )
+        self.resource = Resource(self.client, manager=DefaultManager(self.client))
         self.domain = self.client.domain
         # self.maxDiff = None
 
@@ -42,7 +38,6 @@ class TestCaseWithConnect(unittest.TestCase):
 
 
 class TestCaseWithoutConnect(unittest.TestCase):
-
     def setUp(self):
         super(TestCaseWithoutConnect, self).setUp()
 

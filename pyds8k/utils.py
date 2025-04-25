@@ -18,8 +18,7 @@ import os
 import time
 import configparser
 from importlib import import_module
-from pyds8k.messages import GET_CONFIG_SETTINGS_IOERROR, \
-    GET_CONFIG_SETTINGS_ERROR
+from pyds8k.messages import GET_CONFIG_SETTINGS_IOERROR, GET_CONFIG_SETTINGS_ERROR
 
 _PATH = os.path.abspath(os.path.dirname(__file__))
 CONFIG_FILE_NAME = 'config.ini'
@@ -44,6 +43,7 @@ DELETE = 'DELETE'
 def _get_logger():
     from logging import getLogger
     from pyds8k import PYDS8K_DEFAULT_LOGGER
+
     global logger
     if not logger:
         logger = getLogger(PYDS8K_DEFAULT_LOGGER)
@@ -65,10 +65,8 @@ def get_config_settings(category="settings"):
         for setting, value in config.items(category):
             result_dict[setting] = value
     except IOError as e:
-        _get_logger().debug(GET_CONFIG_SETTINGS_IOERROR.format(
-            CONFIG_FILE_PATH,
-            str(e)
-            )
+        _get_logger().debug(
+            GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
     except Exception as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
@@ -85,10 +83,8 @@ def get_config_all():
             for setting, value in config.items(section):
                 result_dict[section][setting] = value
     except IOError as e:
-        _get_logger().debug(GET_CONFIG_SETTINGS_IOERROR.format(
-            CONFIG_FILE_PATH,
-            str(e)
-            )
+        _get_logger().debug(
+            GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
     except Exception as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
@@ -104,10 +100,8 @@ def get_config_all_items():
             for setting, value in config.items(section):
                 result_dict[setting] = value
     except IOError as e:
-        _get_logger().debug(GET_CONFIG_SETTINGS_IOERROR.format(
-            CONFIG_FILE_PATH,
-            str(e)
-            )
+        _get_logger().debug(
+            GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
     except Exception as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
@@ -153,15 +147,13 @@ def set_runtime_service_type(service_type):
 
 def get_request_parser_class(service_type):
     prefix = service_type
-    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix)
-                           )
+    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix))
     return Parser.RequestParser
 
 
 def get_response_parser_class(service_type):
     prefix = service_type
-    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix)
-                           )
+    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix))
     return Parser.ResponseParser
 
 
@@ -172,11 +164,11 @@ def timer(func):
         end = time.time()
         _get_logger().info(
             "Successfully called method '{}' in {} seconds".format(
-                func.__name__,
-                round(end - start, 2)
+                func.__name__, round(end - start, 2)
             )
         )
         return result
+
     return inner
 
 
@@ -187,19 +179,14 @@ def res_timer_recorder(func):
         end = time.time()
         sec = round(end - start, 2)
         if not res:
-            _get_logger().info(
-                "Successfully got 0 resources in {} seconds".format(sec)
-            )
+            _get_logger().info("Successfully got 0 resources in {} seconds".format(sec))
             return []
         _get_logger().info(
             "Successfully got {} resources in {} seconds, \
-{} seconds per 100 instances.".format(
-                len(res),
-                sec,
-                round(sec / len(res) * 100, 2)
-            )
+{} seconds per 100 instances.".format(len(res), sec, round(sec / len(res) * 100, 2))
         )
         return res
+
     return inner
 
 
@@ -207,11 +194,14 @@ def dictionarize(func):
     def inner(self, *args, **kwargs):
         res_obj = func(self, *args, **kwargs)
         if not isinstance(res_obj, list):
-            res_obj = [res_obj, ]
+            res_obj = [
+                res_obj,
+            ]
         coverted = []
         for res in res_obj:
             coverted.append(res.representation)
         return coverted
+
     return inner
 
 

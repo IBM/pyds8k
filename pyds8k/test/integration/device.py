@@ -18,14 +18,6 @@ from collections import namedtuple
 
 Device = namedtuple('Device', ['ipaddr', 'username', 'password', 'port'])
 
-ds44 = Device(ipaddr='9.11.108.44',
-              username='admin',
-              password='open1sys',
-              port=8452
-              )
+ds44 = Device(ipaddr='9.11.108.44', username='admin', password='open1sys', port=8452)
 
-ds179 = Device(ipaddr='9.11.217.179',
-               username='admin',
-               password='passw0rd',
-               port=8452
-               )
+ds179 = Device(ipaddr='9.11.217.179', username='admin', password='passw0rd', port=8452)

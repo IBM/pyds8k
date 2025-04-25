@@ -15,33 +15,30 @@
 ##############################################################################
 
 ALL = {
-  "server": {
-    "status": "ok",
-    "code": "CMUC00183I",
-    "message": "Operation done successfully."
-  },
-  "counts": {
-    "data_counts": 1,
-    "total_counts": 1
-  },
-  "data": {
-    "systems": [
-      {
-        "id": "2107-75DHZ81",
-        "name": "mtc032h",
-        "state": "online",
-        "release": "7.4",
-        "bundle": "87.40.47.0",
-        "MTM": "2421-961",
-        "sn": "75DHZ81",
-        "wwnn": "5005076306FFD2F0",
-        "cap": "440659",
-        "capalloc": "304361",
-        "capavail": "136810",
-        "capraw": "73282879488"
-      }
-    ]
-  }
+    "server": {
+        "status": "ok",
+        "code": "CMUC00183I",
+        "message": "Operation done successfully.",
+    },
+    "counts": {"data_counts": 1, "total_counts": 1},
+    "data": {
+        "systems": [
+            {
+                "id": "2107-75DHZ81",
+                "name": "mtc032h",
+                "state": "online",
+                "release": "7.4",
+                "bundle": "87.40.47.0",
+                "MTM": "2421-961",
+                "sn": "75DHZ81",
+                "wwnn": "5005076306FFD2F0",
+                "cap": "440659",
+                "capalloc": "304361",
+                "capavail": "136810",
+                "capraw": "73282879488",
+            }
+        ]
+    },
 }
 
 ONE = ALL

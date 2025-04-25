@@ -22,10 +22,13 @@ import pytest
 import time
 from pyds8k.httpclient import HTTPClient
 from pyds8k.base import Resource, DefaultManager
-from .data import get_response_list_json_by_type, \
-                      get_response_list_data_by_type, \
-                      get_response_data_by_type, \
-                      get_response_json_by_type
+from .data import (
+    get_response_list_json_by_type,
+    get_response_list_data_by_type,
+    get_response_data_by_type,
+    get_response_json_by_type,
+)
+
 info = {'id': 'v1', 'name': 'vol1'}
 
 custom_method_get = {'data': 'custom_method_get'}
@@ -39,7 +42,6 @@ default_list_response_json = get_response_list_json_by_type(DEFAULT)
 
 
 class TestHTTPClient(base.TestCaseWithConnect):
-
     def setUp(self):
         super(TestHTTPClient, self).setUp()
 
@@ -54,9 +56,9 @@ class TestHTTPClient(base.TestCaseWithConnect):
         self.assertEqual('/new', self.client._parse_url(url3))
         with self.assertRaises(URLParseError):
             self.client._parse_url(url4)
-        new_client = HTTPClient('9.115.247.115', 'admin', 'admin',
-                                service_type='ds8k',
-                                secure=True)
+        new_client = HTTPClient(
+            '9.115.247.115', 'admin', 'admin', service_type='ds8k', secure=True
+        )
         with self.assertRaises(URLParseError):
             new_client._parse_url(url3)
 
@@ -64,16 +66,20 @@ class TestHTTPClient(base.TestCaseWithConnect):
     def test_redirect(self):
         url = '/default/old'
         new_url = '/default/a'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               content_type='application/json',
-                               adding_headers={'Location': new_url},
-                               status=301)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + new_url,
-                               body=default_a_response_json,
-                               content_type='application/json',
-                               status=200)
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            content_type='application/json',
+            adding_headers={'Location': new_url},
+            status=301,
+        )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + new_url,
+            body=default_a_response_json,
+            content_type='application/json',
+            status=200,
+        )
         de = self.resource.one(DEFAULT, 'old').get(allow_redirects=False)
         self.assertEqual(new_url, de.url)
 
@@ -81,19 +87,20 @@ class TestHTTPClient(base.TestCaseWithConnect):
     @httpretty.activate
     def test_timeout(self):
         url = '/default/a'
-        new_client = HTTPClient('localhost', 'admin', 'admin',
-                                service_type='ds8k',
-                                timeout=0.01)
+        new_client = HTTPClient(
+            'localhost', 'admin', 'admin', service_type='ds8k', timeout=0.01
+        )
 
         def _verify_request(request, uri, headers):
             time.sleep(10)
             return (200, headers, default_a_response_json)
 
-        httpretty.register_uri(httpretty.GET,
-                               new_client.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            new_client.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
 
         resource = Resource(new_client, DefaultManager(new_client))
         resource.one(DEFAULT, 'a').get()

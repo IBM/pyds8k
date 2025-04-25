@@ -22,39 +22,34 @@ from .data import get_response_data_by_type
 
 default_a_response = get_response_data_by_type('default')
 response_401 = {
-  "server": {
-    "status": "failed",
-    "code": "BE742607",
-    "message": "The token is invalid or expired."
-  }
+    "server": {
+        "status": "failed",
+        "code": "BE742607",
+        "message": "The token is invalid or expired.",
+    }
 }
 
 response_token = {
-  "server": {
-    "status": "ok",
-    "code": "",
-    "message": "Operation done successfully."
-  },
-  "token": {
-    "token": "54546d2a",
-    "expired_time": "2014-08-29T20:13:24+0800",
-    "max_idle_interval": "1800000"
-  }
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "token": {
+        "token": "54546d2a",
+        "expired_time": "2014-08-29T20:13:24+0800",
+        "max_idle_interval": "1800000",
+    },
 }
 
 response_token_error = {
-  "server": {
-    "status": "failed",
-    "code": "NIServerException",
-    "message": "Operation done successfully."
-  }
+    "server": {
+        "status": "failed",
+        "code": "NIServerException",
+        "message": "Operation done successfully.",
+    }
 }
 
 DEFAULT = 'default'
 
 
 class TestHTTPException(base.TestCaseWithConnect):
-
     def setUp(self):
         super(TestHTTPException, self).setUp()
 
@@ -64,12 +59,11 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=400
+            status=400,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -84,65 +78,70 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + '/tokens',
             body=json.dumps(response_token),
             content_type='application/json',
-            status=200
+            status=200,
         )
 
         httpretty.register_uri(
             httpretty.GET,
             domain + self.base_url + url,
             responses=[
-                httpretty.Response(body=json.dumps(response_401),
-                                   content_type='application/json',
-                                   status=401
-                                   ),
-                httpretty.Response(body=json.dumps(default_a_response),
-                                   content_type='application/json',
-                                   status=200
-                                   ),
-                httpretty.Response(body=json.dumps(response_401),
-                                   content_type='application/json',
-                                   status=401
-                                   ),
-            ]
+                httpretty.Response(
+                    body=json.dumps(response_401),
+                    content_type='application/json',
+                    status=401,
+                ),
+                httpretty.Response(
+                    body=json.dumps(default_a_response),
+                    content_type='application/json',
+                    status=200,
+                ),
+                httpretty.Response(
+                    body=json.dumps(response_401),
+                    content_type='application/json',
+                    status=401,
+                ),
+            ],
         )
         vol = self.resource.one(DEFAULT, 'a')
         vol.get()
         self.assertEqual(
-                    vol.url,
-                    default_a_response['data']['default'][0]['link']['href']
-                         )
-        self.assertEqual(
-                         vol.name,
-                         default_a_response['data']['default'][0]['name']
-                         )
+            vol.url, default_a_response['data']['default'][0]['link']['href']
+        )
+        self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
         self.assertRaises(exceptions.Unauthorized, vol.get)
 
     @httpretty.activate
     def test_auth_fail(self):
         domain = self.client.domain
         url = '/default/a'
-        httpretty.register_uri(httpretty.POST,
-                               domain + self.base_url + '/tokens',
-                               body=json.dumps(response_token_error),
-                               content_type='application/json',
-                               status=401)
+        httpretty.register_uri(
+            httpretty.POST,
+            domain + self.base_url + '/tokens',
+            body=json.dumps(response_token_error),
+            content_type='application/json',
+            status=401,
+        )
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
+            httpretty.GET,
+            domain + self.base_url + url,
             responses=[
-                httpretty.Response(body=json.dumps(response_401),
-                                   content_type='application/json',
-                                   status=401
-                                   ),
-                httpretty.Response(body=json.dumps(default_a_response),
-                                   content_type='application/json',
-                                   status=200
-                                   ),
-                httpretty.Response(body=json.dumps(response_401),
-                                   content_type='application/json',
-                                   status=401
-                                   ),
-            ]
+                httpretty.Response(
+                    body=json.dumps(response_401),
+                    content_type='application/json',
+                    status=401,
+                ),
+                httpretty.Response(
+                    body=json.dumps(default_a_response),
+                    content_type='application/json',
+                    status=200,
+                ),
+                httpretty.Response(
+                    body=json.dumps(response_401),
+                    content_type='application/json',
+                    status=401,
+                ),
+            ],
         )
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.Unauthorized, vol.get)
@@ -155,12 +154,10 @@ class TestHTTPException(base.TestCaseWithConnect):
         httpretty.register_uri(
             httpretty.GET,
             domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=403
-            )
+            status=403,
+        )
 
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.Forbidden, vol.get)
@@ -171,12 +168,11 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=404
+            status=404,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -188,13 +184,12 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=405
-            )
+            status=405,
+        )
 
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.MethodNotAllowed, vol.get)
@@ -205,13 +200,12 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=409
-            )
+            status=409,
+        )
 
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.Conflict, vol.get)
@@ -222,13 +216,12 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=415
-            )
+            status=415,
+        )
 
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.UnsupportedMediaType, vol.get)
@@ -239,12 +232,11 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=500
+            status=500,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -256,13 +248,12 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=503
-            )
+            status=503,
+        )
 
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.ServiceUnavailable, vol.get)
@@ -273,13 +264,12 @@ class TestHTTPException(base.TestCaseWithConnect):
         url = '/default/a'
 
         httpretty.register_uri(
-            httpretty.GET, domain + self.base_url + url,
-            body=json.dumps(
-                {'server': {'message': 'error', 'details': 'error'}}
-            ),
+            httpretty.GET,
+            domain + self.base_url + url,
+            body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=504
-            )
+            status=504,
+        )
 
         vol = self.resource.one(DEFAULT, 'a')
         self.assertRaises(exceptions.GatewayTimeout, vol.get)

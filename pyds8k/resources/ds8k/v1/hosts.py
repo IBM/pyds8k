@@ -17,40 +17,43 @@
 """
 Host interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.base import Base, BaseManager
 from .common.mixins import FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin
 from .common import types
 
 
-class Host(FCPortMixin,
-           HostPortMixin,
-           VolumeMixin,
-           VolmapMixin,
-           Base,
-           metaclass=ResourceMeta
-           ):
+class Host(
+    FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin, Base, metaclass=ResourceMeta
+):
     resource_type = types.DS8K_HOST
     id_field = 'name'
     alias = {'id': 'host_id'}
-    _template = {'name': '',
-                 'state': '',
-                 'hosttype': '',
-                 'addrmode': '',
-                 'addrdiscovery': '',
-                 'lbs': '',
-                 types.DS8K_VOLUME: '',
-                 types.DS8K_IOPORT: '',
-                 types.DS8K_HOST_PORT: '',
-                 }
-    readonly_fileds = ('state', 'addrmode', 'addrdiscovery', 'lbs',
-                       types.DS8K_HOST_PORT,
-                       )
-    related_resources_collection = (types.DS8K_VOLUME,
-                                    types.DS8K_IOPORT,
-                                    types.DS8K_HOST_PORT,
-                                    types.DS8K_VOLMAP,
-                                    )
+    _template = {
+        'name': '',
+        'state': '',
+        'hosttype': '',
+        'addrmode': '',
+        'addrdiscovery': '',
+        'lbs': '',
+        types.DS8K_VOLUME: '',
+        types.DS8K_IOPORT: '',
+        types.DS8K_HOST_PORT: '',
+    }
+    readonly_fileds = (
+        'state',
+        'addrmode',
+        'addrdiscovery',
+        'lbs',
+        types.DS8K_HOST_PORT,
+    )
+    related_resources_collection = (
+        types.DS8K_VOLUME,
+        types.DS8K_IOPORT,
+        types.DS8K_HOST_PORT,
+        types.DS8K_VOLMAP,
+    )
     # def __repr__(self):
     #    return "<Host: {0}>".format(self.id)
 
@@ -59,10 +62,9 @@ class Host(FCPortMixin,
             return self.update_host_add_ioports_all(self.id)
         updated_port_ids = self._update_ioports_and_return_ids(port_ids)
 
-        _, res = self.one(types.DS8K_HOST,
-                          self.id,
-                          rebuild_url=True
-                          ).update({'ioports': updated_port_ids})
+        _, res = self.one(types.DS8K_HOST, self.id, rebuild_url=True).update(
+            {'ioports': updated_port_ids}
+        )
         return res
 
     def update_host_rm_ioports(self, port_ids=[]):
@@ -70,16 +72,17 @@ class Host(FCPortMixin,
             return self.update_host_rm_ioports_all(self.id)
         updated_port_ids = self._update_ioports_and_return_ids(port_ids, '-')
 
-        _, res = self.one(types.DS8K_HOST,
-                          self.id,
-                          rebuild_url=True
-                          ).update({'ioports': updated_port_ids})
+        _, res = self.one(types.DS8K_HOST, self.id, rebuild_url=True).update(
+            {'ioports': updated_port_ids}
+        )
         return res
 
     def _update_ioports_and_return_ids(self, port_ids, operator='+'):
         ports = []
         if not isinstance(port_ids, list):
-            port_ids = [port_ids, ]
+            port_ids = [
+                port_ids,
+            ]
         for port_id in port_ids:
             port = port_id
             if not isinstance(port_id, Base):
@@ -93,12 +96,14 @@ class HostManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Host resources.
     """
+
     resource_class = Host
     resource_type = types.DS8K_HOST
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
-        return self._get(resource_id=resource_id,
-                         url=url, obj_class=obj_class, **kwargs)
+        return self._get(
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
+        )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
         return self._list(url=url, obj_class=obj_class, body=body, **kwargs)

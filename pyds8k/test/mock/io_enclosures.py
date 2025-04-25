@@ -15,23 +15,16 @@
 ##############################################################################
 
 ALL = {
-    "server": {
-        "status": "ok",
-        "code": "",
-        "message": "Operation done successfully."
-        },
-    "counts": {
-        "data_counts": 2,
-        "total_counts": 2
-        },
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 2, "total_counts": 2},
     "data": {
         "io_enclosures": [
             {
                 "id": "1",
                 "link": {
                     "rel": "self",
-                    "href": "https://localhost:8088/api/v1/io_enclosures/1"
-                    },
+                    "href": "https://localhost:8088/api/v1/io_enclosures/1",
+                },
                 "name": "io_enclosure1",
                 "state": "online",
             },
@@ -39,37 +32,30 @@ ALL = {
                 "id": "2",
                 "link": {
                     "rel": "self",
-                    "href": "https://localhost:8088/api/v1/io_enclosures/2"
-                    },
+                    "href": "https://localhost:8088/api/v1/io_enclosures/2",
+                },
                 "name": "io_enclosure2",
                 "state": "online",
             },
         ]
-    }
+    },
 }
 
 
 ONE = {
-    "server": {
-        "status": "ok",
-        "code": "",
-        "message": "Operation done successfully."
-        },
-    "counts": {
-        "data_counts": 1,
-        "total_counts": 1
-        },
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 1, "total_counts": 1},
     "data": {
         "io_enclosures": [
             {
                 "id": "1",
                 "link": {
                     "rel": "self",
-                    "href": "https://localhost:8088/api/v1/io_enclosures/1"
-                    },
+                    "href": "https://localhost:8088/api/v1/io_enclosures/1",
+                },
                 "name": "io_enclosure1",
                 "state": "online",
             },
         ]
-    }
+    },
 }

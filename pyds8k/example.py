@@ -13,19 +13,14 @@ from pyds8k.client.ds8k.v1.client import Client
 #    to man-in-the-middle (MitM) attacks. Setting verify to False may be
 #    useful during local development or testing.
 # verify=False can be used when the DS8K certificate is self-signed.
-restclient = Client('ip_address or fqdn',
-                    'username',
-                    'password',
-                    verify=False
-                    )
+restclient = Client('ip_address or fqdn', 'username', 'password', verify=False)
 
 # Available functions are located in pyds8k/resources/ds8k/v1/common/mixins.py
 
 # Create volumes
-vol = restclient.create_volumes(name_col=['volume_name'],
-                                cap='capacity_in_GiB',
-                                pool='pool_id',
-                                tp='none')
+vol = restclient.create_volumes(
+    name_col=['volume_name'], cap='capacity_in_GiB', pool='pool_id', tp='none'
+)
 
 # Delete volume
 restclient.delete_volume(vol[0].id)

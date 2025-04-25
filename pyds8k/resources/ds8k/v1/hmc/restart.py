@@ -17,6 +17,7 @@
 """
 Hardware Management Console Restart interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from ..common.base import Base, BaseManager
@@ -31,6 +32,7 @@ class HMCRestartManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Hardware Management Console Restart.
     """
+
     resource_class = HMCRestart
     resource_type = DS8K_HMC_RESTART
 

@@ -17,12 +17,16 @@
 """
 LSS interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_LSS, DS8K_VOLUME, \
-    DS8K_LCU_TYPES, \
-    DS8K_LSS_TYPES, \
-    DS8K_LCU_TYPE_3990_6, \
-    DS8K_VOLUME_TYPE_CKD
+from .common.types import (
+    DS8K_LSS,
+    DS8K_VOLUME,
+    DS8K_LCU_TYPES,
+    DS8K_LSS_TYPES,
+    DS8K_LCU_TYPE_3990_6,
+    DS8K_VOLUME_TYPE_CKD,
+)
 from .common.base import Base, BaseManager
 from .common.mixins import VolumeMixin
 
@@ -46,28 +50,26 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
         {
             'ckd_base_cu_type': DS8K_LCU_TYPE_3990_6,
             # lss type shared with volume type
-            'type': DS8K_VOLUME_TYPE_CKD
+            'type': DS8K_VOLUME_TYPE_CKD,
         }
     )
-    template_dict = {
-        DS8K_VOLUME_TYPE_CKD: ckd_template
-    }
+    template_dict = {DS8K_VOLUME_TYPE_CKD: ckd_template}
 
     readonly_fileds = ()
     related_resource = {}
-    related_resources_collection = (DS8K_VOLUME, )
+    related_resources_collection = (DS8K_VOLUME,)
 
     def __init__(
-            self,
-            client,
-            manager=None,
-            url='',
-            info=None,
-            resource_id=None,
-            parent=None,
-            loaded=False,
-            lss_type=DS8K_VOLUME_TYPE_CKD,
-            lcu_type=DS8K_LCU_TYPE_3990_6
+        self,
+        client,
+        manager=None,
+        url='',
+        info=None,
+        resource_id=None,
+        parent=None,
+        loaded=False,
+        lss_type=DS8K_VOLUME_TYPE_CKD,
+        lcu_type=DS8K_LCU_TYPE_3990_6,
     ):
         super(LSS, self).__init__(
             client,
@@ -76,7 +78,7 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
             info=info,
             resource_id=resource_id,
             parent=parent,
-            loaded=loaded
+            loaded=loaded,
         )
         self._lss_type = lss_type
         self._lcu_type = lcu_type
@@ -93,24 +95,17 @@ class LSSManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage LSS resources.
     """
+
     resource_class = LSS
     resource_type = DS8K_LSS
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
         return self._get(
-            resource_id=resource_id,
-            url=url,
-            obj_class=obj_class,
-            **kwargs
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
         )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
-        return self._list(
-            url=url,
-            obj_class=obj_class,
-            body=body,
-            **kwargs
-        )
+        return self._list(url=url, obj_class=obj_class, body=body, **kwargs)
 
     def posta(self, url='', body=None):
         return self._posta(url=url, body=body)

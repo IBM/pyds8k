@@ -17,6 +17,7 @@
 """
 Hardware Management Console interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from ..common.base import Base, BaseManager
@@ -42,5 +43,6 @@ class HMCManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Hardware Management Console resources.
     """
+
     resource_class = HMC
     resource_type = DS8K_HMC

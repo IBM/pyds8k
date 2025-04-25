@@ -16,16 +16,18 @@
 
 import httpretty
 
-from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, \
-                                                  DS8K_HMC_CERTIFICATE
+from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_CERTIFICATE
+
 # from pyds8k.resources.ds8k.v1.hmc.certificate import HmcCertificate
-from pyds8k.test.data import action_response_json, action_response, \
-                             upload_hmc_certificate_cert
+from pyds8k.test.data import (
+    action_response_json,
+    action_response,
+    upload_hmc_certificate_cert,
+)
 from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 
 class TestHmcCertificate(TestDS8KWithConnect):
-
     def setUp(self):
         super(TestHmcCertificate, self).setUp()
 
@@ -35,21 +37,17 @@ class TestHmcCertificate(TestDS8KWithConnect):
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
-            self.assertIn(
-                upload_hmc_certificate_cert,
-                request.body.decode('UTF-8')
-            )
+            self.assertIn(upload_hmc_certificate_cert, request.body.decode('UTF-8'))
             return (201, headers, action_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='multipart/form'
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='multipart/form',
+        )
         # Way 1
-        resp1 = self.system.upload_hmc_signed_certificate(
-                    upload_hmc_certificate_cert
-                    )
+        resp1 = self.system.upload_hmc_signed_certificate(upload_hmc_certificate_cert)
 
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertEqual(resp1[0].status_code, 201)

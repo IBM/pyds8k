@@ -23,9 +23,7 @@ from requests.packages.urllib3 import disable_warnings
 from requests.exceptions import Timeout
 from pyds8k.auth.authenticate import get_authenticate
 from pyds8k.utils import is_absolute_url
-from pyds8k.messages import CONNECTION_ERROR, \
-    REAUTH_SERVER, \
-    REDIRECTING
+from pyds8k.messages import CONNECTION_ERROR, REAUTH_SERVER, REDIRECTING
 
 try:
     import json
@@ -78,21 +76,26 @@ class HTTPClient(object):
     """
 
     USER_AGENT = 'python-restclient'
-    DefaultHeaders = {'User-Agent': USER_AGENT,
-                      'Accept': 'application/json',
-                      }
+    DefaultHeaders = {
+        'User-Agent': USER_AGENT,
+        'Accept': 'application/json',
+    }
 
-    def __init__(self, service_address, user, password,
-                 service_type,
-                 service_version=DEFAULT_SERVICE_VERSION,
-                 port=None,
-                 hostname=None,
-                 secure=True,
-                 timeout=DEFAULT_TIMEOUT_SEC,
-                 default_headers=None,
-                 cert=None,
-                 verify=True
-                 ):
+    def __init__(
+        self,
+        service_address,
+        user,
+        password,
+        service_type,
+        service_version=DEFAULT_SERVICE_VERSION,
+        port=None,
+        hostname=None,
+        secure=True,
+        timeout=DEFAULT_TIMEOUT_SEC,
+        default_headers=None,
+        cert=None,
+        verify=True,
+    ):
         self.user = user
         self.password = password
         self.service_type = service_type
@@ -142,8 +145,7 @@ class HTTPClient(object):
             self.defaultHeaders.update(default_headers)
         self.defaultQuerystrings = {}
         self.authenticate = get_authenticate(
-            service_type=self.service_type,
-            service_version=self.service_version
+            service_type=self.service_type, service_version=self.service_version
         )
         self.session = requests.session()
 
@@ -157,10 +159,7 @@ class HTTPClient(object):
                 string_parts.append(' {}'.format(element))
 
         for element in kwargs['headers']:
-            header = ' -H "{0}: {1}"'.format(
-                element,
-                kwargs['headers'][element]
-            )
+            header = ' -H "{0}: {1}"'.format(element, kwargs['headers'][element])
             string_parts.append(header)
 
         if 'data' in kwargs:
@@ -171,9 +170,7 @@ class HTTPClient(object):
     def log_resp(cls, resp):
         logger.debug(
             "\nRESP: [{0}] {1}\nRESP BODY: {2}\n".format(
-                resp.status_code,
-                resp.headers,
-                resp.text
+                resp.status_code, resp.headers, resp.text
             )
         )
 
@@ -203,20 +200,19 @@ class HTTPClient(object):
             if self.authenticate.get_auth_url() in url:
                 attempts += 1
                 log_required = False
-            absolute_url = url if is_absolute_url(url) \
-                else self.service_address + url
+            absolute_url = url if is_absolute_url(url) else self.service_address + url
             if log_required:
                 self.log_req(
-                    (absolute_url, method,),
-                    kwargs
-                 )
+                    (
+                        absolute_url,
+                        method,
+                    ),
+                    kwargs,
+                )
             try:
                 resp = self.session.request(
-                    method,
-                    absolute_url,
-                    verify=self.verify,
-                    cert=self.cert,
-                    **kwargs)
+                    method, absolute_url, verify=self.verify, cert=self.cert, **kwargs
+                )
                 self.log_resp(resp)
                 if resp.text:
                     try:

@@ -34,7 +34,10 @@ class BaseResponseParser(object, metaclass=ABCMeta):
     # Parser response data, to get resource link, representation, etc.
 
     response_key = ''
-    success_status = ('ok', 'successful', )
+    success_status = (
+        'ok',
+        'successful',
+    )
     resource_data_key = 'data'
     error_status_key = 'status'
 

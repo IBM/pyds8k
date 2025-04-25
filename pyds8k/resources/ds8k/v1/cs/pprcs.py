@@ -17,6 +17,7 @@
 """
 advanced PPRC interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, ReadOnlyManager
 from ..common.types import DS8K_CS_PPRC
@@ -27,20 +28,22 @@ from ..systems import System, SystemManager
 class PPRC(Base, metaclass=ResourceMeta):
     resource_type = DS8K_CS_PPRC
 
-    _template = {'id': '',
-                 'type': '',
-                 'state': '',
-                 'source_system': '',
-                 'target_system': '',
-                 'source_volume': '',
-                 'target_volume': '',
-                 }
+    _template = {
+        'id': '',
+        'type': '',
+        'state': '',
+        'source_system': '',
+        'target_system': '',
+        'source_volume': '',
+        'target_volume': '',
+    }
 
-    related_resource = {'_source_volume': (Volume, VolumeManager),
-                        '_source_system': (System, SystemManager),
-                        '_target_volume': (Volume, VolumeManager),
-                        '_target_system': (System, SystemManager),
-                        }
+    related_resource = {
+        '_source_volume': (Volume, VolumeManager),
+        '_source_system': (System, SystemManager),
+        '_target_volume': (Volume, VolumeManager),
+        '_target_system': (System, SystemManager),
+    }
 
     def _update_volume_info(self, info):
         # Handle for bug in DS8000 RESTful API /api/v1/cs/pprcs:
@@ -62,5 +65,6 @@ class PPRCManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage advanced PPRC resources.
     """
+
     resource_class = PPRC
     resource_type = DS8K_CS_PPRC

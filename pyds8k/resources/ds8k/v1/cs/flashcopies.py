@@ -17,6 +17,7 @@
 """
 advanced FlashCopies interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from ..common.base import Base, BaseManager
 from ..common.types import DS8K_CS_FLASHCOPY, DS8K_FLASHCOPY
@@ -25,19 +26,23 @@ from ..volumes import Volume, VolumeManager
 
 class FlashCopy(Base, metaclass=ResourceMeta):
     resource_type = DS8K_CS_FLASHCOPY
-    _template = {'id': None,
-                 'persistent': None,
-                 'recording': None,
-                 'backgroundcopy': None,
-                 'state': None,
-                 'options': [],
-                 'volume_pairs': []
-                 }
+    _template = {
+        'id': None,
+        'persistent': None,
+        'recording': None,
+        'backgroundcopy': None,
+        'state': None,
+        'options': [],
+        'volume_pairs': [],
+    }
 
-    related_resource = {'_volume_pairs': [{
-        'source_volume': (Volume, VolumeManager),
-        'target_volume': (Volume, VolumeManager)
-    }]
+    related_resource = {
+        '_volume_pairs': [
+            {
+                'source_volume': (Volume, VolumeManager),
+                'target_volume': (Volume, VolumeManager),
+            }
+        ]
     }
 
     def __repr__(self):
@@ -53,12 +58,14 @@ class FlashCopyManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage advanced FlashCopies resources.
     """
+
     resource_class = FlashCopy
     resource_type = DS8K_CS_FLASHCOPY
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
-        return self._get(resource_id=resource_id, url=url,
-                         obj_class=obj_class, **kwargs)
+        return self._get(
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
+        )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
         return self._list(url=url, obj_class=obj_class, body=body, **kwargs)

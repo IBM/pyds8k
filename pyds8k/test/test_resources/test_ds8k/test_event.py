@@ -25,16 +25,16 @@ event_list_response = get_response_list_json_by_type(DS8K_EVENT)
 
 
 class TestHost(TestDS8KWithConnect):
-
     @httpretty.activate
     def test_get_events_by_filter_set_severity(self):
         url = '/events'
 
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=event_list_response,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=event_list_response,
+            content_type='application/json',
+        )
         self.system.get_events_by_filter(warning=True, error=True)
         req = httpretty.last_request()
         self.assertIsNotNone(req.querystring)
@@ -45,11 +45,12 @@ class TestHost(TestDS8KWithConnect):
     def test_get_events_by_filter_set_date_error(self):
         url = '/events'
 
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=event_list_response,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=event_list_response,
+            content_type='application/json',
+        )
         with self.assertRaises(InvalidArgumentError):
             self.system.get_events_by_filter(before='test')
 
@@ -59,11 +60,12 @@ class TestHost(TestDS8KWithConnect):
         before = datetime(2015, 4, 1)
         after = datetime(2015, 1, 1)
 
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=event_list_response,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=event_list_response,
+            content_type='application/json',
+        )
         self.system.get_events_by_filter(before=before, after=after)
         req = httpretty.last_request()
         self.assertIsNotNone(req.querystring)
@@ -72,9 +74,5 @@ class TestHost(TestDS8KWithConnect):
 
         # httpretty unquote "+" and " " in a wrong way,
         # so I can not verify time zone here.
-        self.assertEqual('2015-04-01T00:00:00',
-                         req.querystring.get('before')[0][:-5]
-                         )
-        self.assertEqual('2015-01-01T00:00:00',
-                         req.querystring.get('after')[0][:-5]
-                         )
+        self.assertEqual('2015-04-01T00:00:00', req.querystring.get('before')[0][:-5])
+        self.assertEqual('2015-01-01T00:00:00', req.querystring.get('after')[0][:-5])

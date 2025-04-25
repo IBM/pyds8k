@@ -15,58 +15,44 @@
 ##############################################################################
 
 ALL = {
-    "server": {
-        "status": "ok",
-        "code": "",
-        "message": "Operation done successfully."
-        },
-    "counts": {
-        "data_counts": 2,
-        "total_counts": 2
-        },
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 2, "total_counts": 2},
     "data": {
         "encryption_groups": [
             {
                 "id": "1",
                 "link": {
                     "rel": "self",
-                    "href": "https://localhost:8088/api/v1/encryption_groups/1"
-                    },
+                    "href": "https://localhost:8088/api/v1/encryption_groups/1",
+                },
                 "state": "accessible",
             },
             {
                 "id": "2",
                 "link": {
                     "rel": "self",
-                    "href": "https://localhost:8088/api/v1/encryption_groups/2"
-                    },
+                    "href": "https://localhost:8088/api/v1/encryption_groups/2",
+                },
                 "state": "accessible",
             },
         ]
-    }
+    },
 }
 
 
 ONE = {
-    "server": {
-        "status": "ok",
-        "code": "",
-        "message": "Operation done successfully."
-        },
-    "counts": {
-        "data_counts": 1,
-        "total_counts": 1
-        },
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 1, "total_counts": 1},
     "data": {
         "encryption_groups": [
             {
                 "id": "1",
                 "link": {
                     "rel": "self",
-                    "href": "https://localhost:8088/api/v1/encryption_groups/1"
-                    },
+                    "href": "https://localhost:8088/api/v1/encryption_groups/1",
+                },
                 "state": "accessible",
             },
         ]
-    }
+    },
 }

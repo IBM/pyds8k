@@ -23,11 +23,8 @@ from pyds8k.resources.ds8k.v1.systems import System
 
 
 class TestPPRC(TestDS8KWithConnect):
-
     def test_related_resource_field(self):
-        pprc_info = get_response_data_by_type(
-            DS8K_PPRC
-            )['data'][DS8K_PPRC][0]
+        pprc_info = get_response_data_by_type(DS8K_PPRC)['data'][DS8K_PPRC][0]
         sourcevolume_id = pprc_info['sourcevolume'][Volume.id_field]
         targetvolume_id = pprc_info['targetvolume'][Volume.id_field]
         targetsystem_id = pprc_info['targetsystem'][System.id_field]

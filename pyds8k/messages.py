@@ -51,10 +51,7 @@ to the new url "{}"...'
 # ==============================================================================
 CAN_NOT_GET_STATUS_BODY = 'Can not get the status body in {} {} response, \
 will return the original response body.'
-DEFAULT_SUCCESS_BODY_DICT = {
-    'status': 'ok',
-    'message': 'Operation done successfully.'
-}
+DEFAULT_SUCCESS_BODY_DICT = {'status': 'ok', 'message': 'Operation done successfully.'}
 DEFAULT_FAIL_BODY_JSON = '{{"status": "failed", "message": \
 "Can not {action} {res_class} {res_id}"}}'
 SET_RELATED_RESOURCE_FAILED = 'Can not set {} during loading {}'
@@ -73,9 +70,7 @@ STATUS_BODY_NOT_FOUND = 'failed to get status body'
 # ==============================================================================
 INVALID_TYPE = 'Invalid type you specified, expected one of: {}.'
 INVALID_LSS_TYPE = 'Invalid lss type. Expected one of: {}.'
-INVALID_NAME = \
-    r'Invalid volume name. The right format is: {nameprefix}_{volume_id}'
-INVALID_POOL_NAME = \
-    r'Invalid pool name. The right format is: {pool_name}_{pool_id}'
+INVALID_NAME = r'Invalid volume name. The right format is: {nameprefix}_{volume_id}'
+INVALID_POOL_NAME = r'Invalid pool name. The right format is: {pool_name}_{pool_id}'
 ITEM_IN_LIST = '{} [{}] are already existed.'
 ITEM_NOT_IN_LIST = '{0} [{1}] are not in the current {0}.'

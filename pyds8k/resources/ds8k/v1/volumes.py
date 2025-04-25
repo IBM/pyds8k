@@ -17,6 +17,7 @@
 """
 Storage volume interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.base import Base, BaseManager
 from .common import types
@@ -30,66 +31,85 @@ class Volume(Base, metaclass=ResourceMeta):
     # id_field = 'id'
 
     # Set the value to None if the field is not required when creation.
-    _template = {'id': None,
-                 'name': '',
-                 'state': '',
-                 'cap': '',
-                 'real_cap': None,
-                 'virtual_cap': None,
-                 'captype': '',
-                 'stgtype': '',
-                 'VOLSER': None,
-                 'allocmethod': '',
-                 'tp': '',
-                 'capalloc': '',
-                 'MTM': None,
-                 'datatype': '',
-                 'easytier': '',
-                 'tieralloc': [],
-                 'lss': '',
-                 'pool': '',
-                 'basevolume': '',
-                 types.DS8K_HOST: None,
-                 types.DS8K_FLASHCOPY: None,
-                 types.DS8K_PPRC: None,
-                 }
+    _template = {
+        'id': None,
+        'name': '',
+        'state': '',
+        'cap': '',
+        'real_cap': None,
+        'virtual_cap': None,
+        'captype': '',
+        'stgtype': '',
+        'VOLSER': None,
+        'allocmethod': '',
+        'tp': '',
+        'capalloc': '',
+        'MTM': None,
+        'datatype': '',
+        'easytier': '',
+        'tieralloc': [],
+        'lss': '',
+        'pool': '',
+        'basevolume': '',
+        types.DS8K_HOST: None,
+        types.DS8K_FLASHCOPY: None,
+        types.DS8K_PPRC: None,
+    }
     fb_template = _template.copy()
     fb_template.update({'stgtype': types.DS8K_VOLUME_TYPE_FB})
 
     ckd_template = _template.copy()
     ckd_template.update({'stgtype': types.DS8K_VOLUME_TYPE_CKD})
 
-    template_dict = {types.DS8K_VOLUME_TYPE_FB: fb_template,
-                     types.DS8K_VOLUME_TYPE_CKD: ckd_template,
-                     }
-    readonly_fileds = ('state', 'stgtype', 'VOLSER', 'allocmethod', 'tp',
-                       'capalloc', 'MTM', 'datatype', 'easytier', 'tieralloc',
-                       'lss'
-                       )
+    template_dict = {
+        types.DS8K_VOLUME_TYPE_FB: fb_template,
+        types.DS8K_VOLUME_TYPE_CKD: ckd_template,
+    }
+    readonly_fileds = (
+        'state',
+        'stgtype',
+        'VOLSER',
+        'allocmethod',
+        'tp',
+        'capalloc',
+        'MTM',
+        'datatype',
+        'easytier',
+        'tieralloc',
+        'lss',
+    )
     related_resource = {
         '_pool': (Pool, PoolManager),
         '_lss': (LSS, LSSManager),
     }
 
-    related_resources_collection = (types.DS8K_HOST,
-                                    types.DS8K_FLASHCOPY,
-                                    types.DS8K_PPRC)
+    related_resources_collection = (
+        types.DS8K_HOST,
+        types.DS8K_FLASHCOPY,
+        types.DS8K_PPRC,
+    )
 
-    def __init__(self, client, manager=None, url='', info={},
-                 resource_id=None,
-                 parent=None,
-                 loaded=False,
-                 volume_type=types.DS8K_VOLUME_TYPE_FB,
-                 ):
+    def __init__(
+        self,
+        client,
+        manager=None,
+        url='',
+        info={},
+        resource_id=None,
+        parent=None,
+        loaded=False,
+        volume_type=types.DS8K_VOLUME_TYPE_FB,
+    ):
         self.related_resource['_basevolume'] = (Volume, VolumeManager)
-        super(Volume, self).__init__(client,
-                                     manager=manager,
-                                     url=url,
-                                     info=info,
-                                     resource_id=resource_id,
-                                     parent=parent,
-                                     loaded=loaded,
-                                     )
+        super(Volume, self).__init__(
+            client,
+            manager=manager,
+            url=url,
+            info=info,
+            resource_id=resource_id,
+            parent=parent,
+            loaded=loaded,
+        )
         self.volume_type = volume_type
         self._verify_volume_type()
         self._template = self.get_template_from_volume_type(volume_type)
@@ -108,14 +128,14 @@ class Volume(Base, metaclass=ResourceMeta):
         if host_list:
             host_obj_list = []
             for host in host_list:
-                host_obj = Host(self.client,
-                                manager=HostManager(self.client),
-                                info=host,
-                                loaded=False,
-                                )
+                host_obj = Host(
+                    self.client,
+                    manager=HostManager(self.client),
+                    info=host,
+                    loaded=False,
+                )
                 host_obj_list.append(host_obj)
-            self.representation[types.DS8K_HOST] = [
-                h.host_id for h in host_obj_list]
+            self.representation[types.DS8K_HOST] = [h.host_id for h in host_obj_list]
             setattr(self, types.DS8K_HOST, host_obj_list)
 
     def _add_details(self, info, force=False):
@@ -129,12 +149,14 @@ class VolumeManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Storage Volume resources.
     """
+
     resource_class = Volume
     resource_type = types.DS8K_VOLUME
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
-        return self._get(resource_id=resource_id, url=url,
-                         obj_class=obj_class, **kwargs)
+        return self._get(
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
+        )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
         return self._list(url=url, obj_class=obj_class, body=body, **kwargs)

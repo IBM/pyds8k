@@ -37,45 +37,42 @@ def add_logger(route):
         @wraps(func)
         def inner(self, route_id=None):
             if route_id:
-                logger.info(
-                    'Starting GET /{}/{} request'.format(route,
-                                                         route_id
-                                                         )
-                    )
+                logger.info('Starting GET /{}/{} request'.format(route, route_id))
                 res = func(self, route_id)
                 logger.info(
                     'Successfully got {}: {}, detail is: {}'.format(
-                        route,
-                        res,
-                        res.representation
-                        )
+                        route, res, res.representation
                     )
+                )
                 logger.info('Finish GET /{}/{} request'.format(route, res.id))
             else:
                 logger.info('Starting GET /{} request'.format(route))
                 res = func(self)
                 logger.info(
-                    'Successfully got {} {}: {}'.format(len(res),
-                                                        route,
-                                                        res,
-                                                        )
+                    'Successfully got {} {}: {}'.format(
+                        len(res),
+                        route,
+                        res,
                     )
+                )
                 logger.info('Finish GET /{} request'.format(route))
             return res
+
         return inner
+
     return add_logger_deco
 
 
 class TestIntegration(unittest.TestCase):
-
     @classmethod
     def setup_class(cls):
-
-        cls.client = Client(ds8k_device.ipaddr,
-                            ds8k_device.username, ds8k_device.password,
-                            # hostname='mtc032h.tuc.stglabs.ibm.com',
-                            port=ds8k_device.port,
-                            )
+        cls.client = Client(
+            ds8k_device.ipaddr,
+            ds8k_device.username,
+            ds8k_device.password,
+            # hostname='mtc032h.tuc.stglabs.ibm.com',
+            port=ds8k_device.port,
+        )
 
     def __getattr__(self, k):
         if k.startswith('get_'):
@@ -84,6 +81,7 @@ class TestIntegration(unittest.TestCase):
             @add_logger(route=route)
             def route_getter(self, route_id=None):
                 return getattr(self.client, k)(route_id)
+
             return partial(route_getter, self)
 
         return super(TestIntegration, self).__getattr__(k)
@@ -92,11 +90,8 @@ class TestIntegration(unittest.TestCase):
         logger.info('Starting GET /systems request')
         sys = self.client.get_system()
         logger.info(
-            'Successfully got system: {}, detail is: {}'.format(
-                sys,
-                sys.representation
-                )
-            )
+            'Successfully got system: {}, detail is: {}'.format(sys, sys.representation)
+        )
         logger.info('Finish GET /systems request')
 
     def test_nodes(self):
@@ -124,17 +119,13 @@ class TestIntegration(unittest.TestCase):
         self.get_flashcopy()
 
         volume = self.get_volumes('0000')
-        self._get_sub_resource_by(types.DS8K_VOLUME, volume,
-                                  types.DS8K_FLASHCOPY
-                                  )
+        self._get_sub_resource_by(types.DS8K_VOLUME, volume, types.DS8K_FLASHCOPY)
 
     def test_pprc(self):
         self.get_pprc()
 
         volume = self.get_volumes('0000')
-        self._get_sub_resource_by(types.DS8K_VOLUME, volume,
-                                  types.DS8K_PPRC
-                                  )
+        self._get_sub_resource_by(types.DS8K_VOLUME, volume, types.DS8K_PPRC)
 
     def test_cs_pprcs(self):
         pprcs = self.get_cs_pprcs()
@@ -143,17 +134,12 @@ class TestIntegration(unittest.TestCase):
     def test_events(self):
         sys = self.client.get_system()
         before = datetime.now()
-        after = datetime(year=before.year,
-                         month=before.month,
-                         day=before.day)
+        after = datetime(year=before.year, month=before.month, day=before.day)
         logger.info('Starting GET /events request')
-        events = sys.get_events_by_filter(warning=True,
-                                          error=True,
-                                          before=before,
-                                          after=after)
-        logger.info(
-            'Successfully got {} events'.format(len(events))
-            )
+        events = sys.get_events_by_filter(
+            warning=True, error=True, before=before, after=after
+        )
+        logger.info('Successfully got {} events'.format(len(events)))
         logger.info('Finish GET /events request')
 
     def test_pools(self):
@@ -176,18 +162,18 @@ class TestIntegration(unittest.TestCase):
         hosts = self.get_hosts()
         for h in hosts:
             host = self.get_hosts(h.id)
-            volumes = self._get_sub_resource_by(types.DS8K_HOST, host,
-                                                types.DS8K_VOLUME
-                                                )
-            mappings = self._get_sub_resource_by(types.DS8K_HOST, host,
-                                                 types.DS8K_VOLMAP
-                                                 )
-            ioports = self._get_sub_resource_by(types.DS8K_HOST, host,
-                                                types.DS8K_IOPORT
-                                                )
-            host_ports = self._get_sub_resource_by(types.DS8K_HOST, host,
-                                                   types.DS8K_HOST_PORT
-                                                   )
+            volumes = self._get_sub_resource_by(
+                types.DS8K_HOST, host, types.DS8K_VOLUME
+            )
+            mappings = self._get_sub_resource_by(
+                types.DS8K_HOST, host, types.DS8K_VOLMAP
+            )
+            ioports = self._get_sub_resource_by(
+                types.DS8K_HOST, host, types.DS8K_IOPORT
+            )
+            host_ports = self._get_sub_resource_by(
+                types.DS8K_HOST, host, types.DS8K_HOST_PORT
+            )
             if volumes and mappings and ioports and host_ports:
                 return
 
@@ -205,31 +191,28 @@ class TestIntegration(unittest.TestCase):
 
     @res_timer_recorder
     def _get_sub_resource_by(self, route, parent_res, sub_route):
-        logger.info('Starting GET /{}/{}/{} request'.format(route,
-                                                            parent_res.id,
-                                                            sub_route
-                                                            )
-                    )
+        logger.info(
+            'Starting GET /{}/{}/{} request'.format(route, parent_res.id, sub_route)
+        )
         # Lazy-loading
         sub_res = getattr(parent_res, sub_route)
         logger.info('Successfully got {} {}'.format(len(sub_res), sub_route))
-        logger.info('Finish GET /{}/{}/{} request'.format(route,
-                                                          parent_res.id,
-                                                          sub_route
-                                                          )
-                    )
+        logger.info(
+            'Finish GET /{}/{}/{} request'.format(route, parent_res.id, sub_route)
+        )
         return sub_res
 
 
 class TestSCClient(unittest.TestCase):
-
     @classmethod
     def setup_class(cls):
-        cls.client = SCClient(ds8k_device.ipaddr,
-                              ds8k_device.username, ds8k_device.password,
-                              # hostname='mtc032h.tuc.stglabs.ibm.com',
-                              port=ds8k_device.port,
-                              )
+        cls.client = SCClient(
+            ds8k_device.ipaddr,
+            ds8k_device.username,
+            ds8k_device.password,
+            # hostname='mtc032h.tuc.stglabs.ibm.com',
+            port=ds8k_device.port,
+        )
 
     def test_volume_create_and_delete(self):
         volume = self._prepare_volume()
@@ -244,21 +227,21 @@ class TestSCClient(unittest.TestCase):
             logger.info(
                 'Successfully renamed the volume {}, response is {}'.format(
                     volume.id, res
-                    )
                 )
+            )
 
     def test_volume_extend(self):
         new_size = '7'
         with self.get_test_volume() as volume:
             res = self.client.extend_volume(volume.id, new_size)
             new_volume = self.client.get_volume(volume.id)[0]
-            self.assertEqual(new_volume.get('cap'),
-                             str(convert_size_gib_to_bytes(int(new_size)))
-                             )
+            self.assertEqual(
+                new_volume.get('cap'), str(convert_size_gib_to_bytes(int(new_size)))
+            )
             logger.info(
                 'Successfully extended the volume {}, response is {}'.format(
                     volume.id, res
-                    )
+                )
             )
 
     def test_volume_move(self):
@@ -270,14 +253,12 @@ class TestSCClient(unittest.TestCase):
                     new_pool_id = pool.get('id')
                     res = self.client.relocate_volume(volume.id, new_pool_id)
                     new_volume = self.client.get_volume(volume.id)[0]
-                    self.assertEqual(new_volume.get('pool'),
-                                     new_pool_id
-                                     )
+                    self.assertEqual(new_volume.get('pool'), new_pool_id)
                     logger.info(
                         'Successfully move volume {} from pool {} to pool {}, response is {}'.format(  # noqa
                             volume.id, old_pool_id, new_pool_id, res
-                            )
                         )
+                    )
                     break
 
     def test_host_create_and_delete(self):
@@ -287,23 +268,21 @@ class TestSCClient(unittest.TestCase):
     def test_volume_map_and_unmap(self):
         with self.get_test_host() as host_name:
             with self.get_test_volume() as volume:
-                used_lunids = self.client.get_used_lun_numbers_by_host(
-                    host_name
-                )
-                unused_lunids = \
-                    ['{0:0{1}x}'.format(i, 2) for i in range(256)
-                     if '{0:0{1}x}'.format(i, 2) not in used_lunids
-                     ]
+                used_lunids = self.client.get_used_lun_numbers_by_host(host_name)
+                unused_lunids = [
+                    '{0:0{1}x}'.format(i, 2)
+                    for i in range(256)
+                    if '{0:0{1}x}'.format(i, 2) not in used_lunids
+                ]
                 lunid = unused_lunids[0]
                 logger.info(
                     'Trying to map volume {} to host {} with lunid {}'.format(
                         volume.id, host_name, lunid
                     )
                 )
-                res = self.client.map_volume_to_host(host_name=host_name,
-                                                     volume_id=volume.id,
-                                                     lunid=lunid
-                                                     )
+                res = self.client.map_volume_to_host(
+                    host_name=host_name, volume_id=volume.id, lunid=lunid
+                )
                 logger.info(
                     'Successfully map volume {} to host {}. res is {}'.format(
                         volume.id, host_name, res
@@ -325,14 +304,11 @@ class TestSCClient(unittest.TestCase):
         with self.get_test_zlinux_type_host() as host_name:
             with self.get_test_volume() as volume:
                 logger.info(
-                    'Trying to map volume {} to host {}'.format(
-                        volume.id, host_name
-                    )
+                    'Trying to map volume {} to host {}'.format(volume.id, host_name)
                 )
-                res = self.client.map_volume_to_host(host_name=host_name,
-                                                     volume_id=volume.id,
-                                                     lunid=''
-                                                     )
+                res = self.client.map_volume_to_host(
+                    host_name=host_name, volume_id=volume.id, lunid=''
+                )
                 logger.info(
                     'Successfully map volume {} to host {}. res is {}'.format(
                         volume.id, host_name, res
@@ -354,11 +330,12 @@ class TestSCClient(unittest.TestCase):
     def _prepare_volume(self):
         logger.info('Preparing a new volume for test purpose.')
         pools = self.client.list_extentpools()
-        res = self.client.create_volumes(pool_id=pools[0].get('id'),
-                                         capacity_in_GiB=2,
-                                         sam='ese',
-                                         volume_names_list=['loutest_volume1']
-                                         )
+        res = self.client.create_volumes(
+            pool_id=pools[0].get('id'),
+            capacity_in_GiB=2,
+            sam='ese',
+            volume_names_list=['loutest_volume1'],
+        )
         logger.info('Task done, the volume {} is created.'.format(res))
         return res[0]
 
@@ -370,20 +347,16 @@ class TestSCClient(unittest.TestCase):
 
     def _prepare_host(self):
         logger.info('Preparing a new host for test purpose.')
-        res = self.client.crate_host(host_name='loutest_host1',
-                                     wwpn='1'
-                                     )
+        res = self.client.crate_host(host_name='loutest_host1', wwpn='1')
         logger.info('Task done, the host {} is created.'.format(res))
         return res
 
     def _prepare_host_of_zlinux(self):
         logger.info('Preparing a new zLinux type host for test purpose.')
-        res = self.client.crate_host(host_name='zlinuxtest_host1',
-                                     wwpn='1',
-                                     host_type='zLinux'
-                                     )
-        logger.info('Task done, the zLinux type host {} is '
-                    'created.'.format(res))
+        res = self.client.crate_host(
+            host_name='zlinuxtest_host1', wwpn='1', host_type='zLinux'
+        )
+        logger.info('Task done, the zLinux type host {} is created.'.format(res))
         return res
 
     def _destroy_host(self, host_name):

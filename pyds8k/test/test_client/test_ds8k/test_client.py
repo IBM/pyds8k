@@ -14,11 +14,12 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM, \
-    DS8K_VOLUME
+from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM, DS8K_VOLUME
 from pyds8k.test.base import TestCaseWithConnect
-from pyds8k.test.data import get_response_list_json_by_type, \
-    get_response_list_data_by_type
+from pyds8k.test.data import (
+    get_response_list_json_by_type,
+    get_response_list_data_by_type,
+)
 from pyds8k.client.ds8k.v1.client import Client
 from pyds8k.resources.ds8k.v1.volumes import Volume
 import httpretty
@@ -29,37 +30,33 @@ volume_list_response = get_response_list_data_by_type(DS8K_VOLUME)
 
 
 class TestClient(TestCaseWithConnect):
-
     def setUp(self):
         super(TestClient, self).setUp()
-        self.rest_client = Client(
-            'http://localhost:8088/api/',
-            'admin',
-            'admin'
-        )
+        self.rest_client = Client('http://localhost:8088/api/', 'admin', 'admin')
 
     @httpretty.activate
     def test_get_array_method(self):
         domain = self.client.domain
         vol_url = '/volumes'
         sys_url = '/systems'
-        httpretty.register_uri(httpretty.GET,
-                               domain + self.base_url + vol_url,
-                               body=volume_list_response_json,
-                               content_type='application/json')
+        httpretty.register_uri(
+            httpretty.GET,
+            domain + self.base_url + vol_url,
+            body=volume_list_response_json,
+            content_type='application/json',
+        )
 
-        httpretty.register_uri(httpretty.GET,
-                               domain + self.base_url + sys_url,
-                               body=system_list_response_json,
-                               content_type='application/json')
+        httpretty.register_uri(
+            httpretty.GET,
+            domain + self.base_url + sys_url,
+            body=system_list_response_json,
+            content_type='application/json',
+        )
 
         vol_list = self.rest_client.get_volumes()
         self.assertIsInstance(vol_list, list)
         self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(
-                         len(vol_list),
-                         len(volume_list_response['data']['volumes'])
-                         )
+        self.assertEqual(len(vol_list), len(volume_list_response['data']['volumes']))
         with self.assertRaises(AttributeError):
             # 'base_url' is an attr from System, not a method
             self.rest_client.base_url

@@ -18,8 +18,7 @@
 Exception definitions.
 """
 
-from pyds8k.utils import get_subclasses, \
-    get_response_parser_class
+from pyds8k.utils import get_subclasses, get_response_parser_class
 from pyds8k import messages
 
 
@@ -32,23 +31,21 @@ class InvalidArgumentError(Exception):
         self.reason = reason
 
     def __str__(self):
-        return messages.INVALID_ARGUMENT.format(
-            self.reason
-        )
+        return messages.INVALID_ARGUMENT.format(self.reason)
 
 
 class OperationNotAllowed(Exception):
     """
     The operation performed on the resource is not allowed.
     """
+
     def __init__(self, operation_name, resource_name=''):
         self.operation_name = operation_name
         self.resource_name = resource_name
 
     def __str__(self):
         return messages.OPERATION_NOT_ALLOWED.format(
-            self.operation_name,
-            self.resource_name
+            self.operation_name, self.resource_name
         )
 
 
@@ -56,6 +53,7 @@ class URLNotSpecifiedError(Exception):
     """
     The URL is not specified.
     """
+
     def __str__(self):
         return messages.URL_NOT_SPECIFIED
 
@@ -64,6 +62,7 @@ class URLMissingError(Exception):
     """
     The URL is missing.
     """
+
     def __str__(self):
         return messages.URL_MISSING
 
@@ -72,6 +71,7 @@ class IDMissingError(Exception):
     """
     The id field is missing or None.
     """
+
     def __str__(self):
         return messages.ID_MISSING
 
@@ -80,6 +80,7 @@ class ResponseBodyMissingError(Exception):
     """
     The response body is missing.
     """
+
     def __str__(self):
         return messages.RESPONSE_BODY_MISSING
 
@@ -88,6 +89,7 @@ class URLParseError(Exception):
     """
     Can not get the URL
     """
+
     def __str__(self):
         return messages.CAN_NOT_GET_URL
 
@@ -96,6 +98,7 @@ class RepresentationParseError(Exception):
     """
     Can not get the representation
     """
+
     def __str__(self):
         return messages.CAN_NOT_GET_REPRESENTATION
 
@@ -116,6 +119,7 @@ class ConnectionError(Exception):
     """
     Could not open a connection to the API service.
     """
+
     pass
 
 
@@ -135,6 +139,7 @@ class ClientException(Exception):
     """
     The base exception class for all HTTP client or server errors.
     """
+
     def __init__(self, code, message=None, detail='', origin_data=None):
         self.code = code
         self.message = message
@@ -148,17 +153,14 @@ class ClientException(Exception):
             self.details = ''
 
     def __str__(self):
-        return "HTTP {0} {1}. {2}".format(
-            self.code,
-            self.reason_phrase,
-            self.details
-        )
+        return "HTTP {0} {1}. {2}".format(self.code, self.reason_phrase, self.details)
 
 
 class ClientError(ClientException):
     """
     HTTP 4xx - Client Error
     """
+
     status_code = '4xx'
     reason_phrase = "Client Error"
 
@@ -167,6 +169,7 @@ class ServerError(ClientException):
     """
     HTTP 5xx - Server Error
     """
+
     status_code = '5xx'
     reason_phrase = "Server Error"
 
@@ -175,6 +178,7 @@ class BadRequest(ClientError):
     """
     HTTP 400 - Bad request: you sent some malformed data.
     """
+
     status_code = '400'
     reason_phrase = "Bad Request"
 
@@ -183,6 +187,7 @@ class Unauthorized(ClientError):
     """
     HTTP 401 - Unauthorized: bad credentials.
     """
+
     status_code = '401'
     reason_phrase = "Unauthorized"
 
@@ -192,6 +197,7 @@ class Forbidden(ClientError):
     HTTP 403 - Forbidden: your credentials don't give you access to this
     resource.
     """
+
     status_code = '403'
     reason_phrase = "Forbidden"
 
@@ -200,6 +206,7 @@ class NotFound(ClientError):
     """
     HTTP 404 - Not found
     """
+
     status_code = '404'
     reason_phrase = "Not Found"
 
@@ -208,6 +215,7 @@ class MethodNotAllowed(ClientError):
     """
     HTTP 405 - Method Not Allowed
     """
+
     status_code = '405'
     reason_phrase = "Method Not Allowed"
 
@@ -216,6 +224,7 @@ class Conflict(ClientError):
     """
     HTTP 409 - Conflict
     """
+
     status_code = '409'
     reason_phrase = "Conflict"
 
@@ -224,6 +233,7 @@ class UnsupportedMediaType(ClientError):
     """
     HTTP 415 - Unsupported Media Type
     """
+
     status_code = '415'
     reason_phrase = "Unsupported Media Type"
 
@@ -233,6 +243,7 @@ class InternalServerError(ServerError):
     HTTP 500 - Internal Server Error: The server encountered an unexpected
     condition which prevented it from fulfilling the request.
     """
+
     status_code = '500'
     reason_phrase = "Internal Server Error"
 
@@ -241,6 +252,7 @@ class ServiceUnavailable(ServerError):
     """
     HTTP 503 - Service Unavailable
     """
+
     status_code = '503'
     reason_phrase = "Service Unavailable"
 
@@ -249,6 +261,7 @@ class GatewayTimeout(ServerError):
     """
     HTTP 504 - Gateway Timeout
     """
+
     status_code = '504'
     reason_phrase = "Gateway Timeout"
 
@@ -268,13 +281,8 @@ def raise_error(response, body, service_type=''):
         message = res_p.get_error_code()
         details = res_p.get_error_msg()
         data = res_p.get_status_body()
-        return cls(code=response.status_code,
-                   message=message,
-                   detail=details,
-                   origin_data=data
-                   )
+        return cls(
+            code=response.status_code, message=message, detail=details, origin_data=data
+        )
     else:
-        return cls(code=response.status_code,
-                   message=response.reason,
-                   origin_data=body
-                   )
+        return cls(code=response.status_code, message=response.reason, origin_data=body)

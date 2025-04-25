@@ -19,13 +19,13 @@ import json
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_RESTART
+
 # from pyds8k.resources.ds8k.v1.hmc.restart import HMCRestart
 from pyds8k.test.data import action_response, action_response_json
 from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 
 class TestHmcRestart(TestDS8KWithConnect):
-
     def setUp(self):
         super(TestHmcRestart, self).setUp()
 
@@ -38,16 +38,17 @@ class TestHmcRestart(TestDS8KWithConnect):
 
             req = RequestParser({})
             assert {
-                    **json.loads(request.body).get('request').get('params'),
-                    **req.get_request_data().get('request').get('params')
-                   } == json.loads(request.body).get('request').get('params')
+                **json.loads(request.body).get('request').get('params'),
+                **req.get_request_data().get('request').get('params'),
+            } == json.loads(request.body).get('request').get('params')
             return (201, headers, action_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
         # Way 1
         resp1 = self.system.restart_hmc()
 

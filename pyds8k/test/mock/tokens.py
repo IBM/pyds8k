@@ -15,16 +15,12 @@
 ##############################################################################
 
 ALL = {
-  "server": {
-    "status": "ok",
-    "code": "",
-    "message": "Operation done successfully."
-  },
-  "token": {
-    "token": "240a3408",
-    "expired_time": "2014-09-03T17:15:45+0800",
-    "max_idle_interval": "1800000"
-  }
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "token": {
+        "token": "240a3408",
+        "expired_time": "2014-09-03T17:15:45+0800",
+        "max_idle_interval": "1800000",
+    },
 }
 
 ONE = ALL

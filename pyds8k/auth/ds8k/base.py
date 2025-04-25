@@ -21,7 +21,6 @@ DEFAULT_BASE_URL = ''
 
 
 class Auth(object):
-
     base_url = DEFAULT_BASE_URL
     auth_url = AUTH_URL
 
@@ -40,9 +39,7 @@ class Auth(object):
         if client.hostname:
             params['hmc1'] = client.hostname
         req_p = RequestParser(params)
-        _, body = client.post(self.get_auth_url(),
-                              body=req_p.get_request_data()
-                              )
+        _, body = client.post(self.get_auth_url(), body=req_p.get_request_data())
         token = _get_data(body).get('token', '')
         if token:
             client.set_defaultHeaders('X-Auth-Token', token)

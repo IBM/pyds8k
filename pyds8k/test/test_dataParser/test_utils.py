@@ -19,27 +19,17 @@ from pyds8k.resources import utils
 
 
 class TestUtils(base.TestCaseWithoutConnect):
-
     def test_update_resource_id_in_url(self):
         old_id = '1'
         new_id = '2'
         old_url_str = '/default/{}'.format(old_id)
         new_url_str = '/default/{}'.format(new_id)
-        old_url_dict = {
-                        'rel': 'self',
-                        'href': old_url_str
-                        }
-        new_url_dict = {
-                        'rel': 'self',
-                        'href': new_url_str
-                        }
+        old_url_dict = {'rel': 'self', 'href': old_url_str}
+        new_url_dict = {'rel': 'self', 'href': new_url_str}
         self.assertEqual(
-                utils.update_resource_id_in_url(old_id, new_id, old_url_str),
-                new_url_str
-                         )
+            utils.update_resource_id_in_url(old_id, new_id, old_url_str), new_url_str
+        )
         self.assertEqual(
-                         utils.update_resource_id_in_url(old_id, new_id,
-                                                         old_url_dict, 'href'
-                                                         ),
-                         new_url_dict
-                         )
+            utils.update_resource_id_in_url(old_id, new_id, old_url_dict, 'href'),
+            new_url_dict,
+        )

@@ -18,11 +18,13 @@ import httpretty
 import json
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_RESOURCE_GROUP
-from pyds8k.test.data import get_response_json_by_type, \
-    get_response_data_by_type, \
-    create_resource_group_response_json, \
-    action_response_json, \
-    action_response
+from pyds8k.test.data import (
+    get_response_json_by_type,
+    get_response_data_by_type,
+    create_resource_group_response_json,
+    action_response_json,
+    action_response,
+)
 
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.resource_groups import ResourceGroup
@@ -33,35 +35,32 @@ response_a_json = get_response_json_by_type(DS8K_RESOURCE_GROUP)
 
 
 class TestResourceGroup(TestDS8KWithConnect):
-
     def setUp(self):
         super(TestResourceGroup, self).setUp()
         self.resource_group_id = self._get_resource_id_from_resopnse(
-            DS8K_RESOURCE_GROUP,
-            response_a,
-            ResourceGroup.id_field
-            )
+            DS8K_RESOURCE_GROUP, response_a, ResourceGroup.id_field
+        )
         self.resource_group = self.system.one(
-            DS8K_RESOURCE_GROUP,
-            self.resource_group_id,
-            rebuild_url=True
+            DS8K_RESOURCE_GROUP, self.resource_group_id, rebuild_url=True
         )
 
     @httpretty.activate
     def test_delete_resource_group(self):
         url = '/resource_groups/{}'.format(self.resource_group_id)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=response_a_json,
-                               content_type='application/json',
-                               status=200,
-                               )
-        httpretty.register_uri(httpretty.DELETE,
-                               self.domain + self.base_url + url,
-                               body=action_response_json,
-                               content_type='application/json',
-                               status=204,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=response_a_json,
+            content_type='application/json',
+            status=200,
+        )
+        httpretty.register_uri(
+            httpretty.DELETE,
+            self.domain + self.base_url + url,
+            body=action_response_json,
+            content_type='application/json',
+            status=204,
+        )
         # Way 1
         _ = self.system.delete_resource_group(self.resource_group_id)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
@@ -88,30 +87,31 @@ class TestResourceGroup(TestDS8KWithConnect):
             self.assertEqual(uri, self.domain + self.base_url + url)
 
             resq = RequestParser(
-                                    {
-                                        'name': new_name,
-                                        'label': new_label,
-                                        'cs_global': new_cs_global,
-                                        'pass_global': new_pass_global,
-                                        'gm_masters': new_gm_masters,
-                                        'gm_sessions': new_gm_sessions,
-                                    },
-                                )
+                {
+                    'name': new_name,
+                    'label': new_label,
+                    'cs_global': new_cs_global,
+                    'pass_global': new_pass_global,
+                    'gm_masters': new_gm_masters,
+                    'gm_sessions': new_gm_sessions,
+                },
+            )
             self.assertEqual(json.loads(request.body), resq.get_request_data())
             return (200, headers, action_response_json)
 
         httpretty.register_uri(
-                               httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=response_a_json,
-                               content_type='application/json',
-                               status=200,
-                               )
-        httpretty.register_uri(httpretty.PUT,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=response_a_json,
+            content_type='application/json',
+            status=200,
+        )
+        httpretty.register_uri(
+            httpretty.PUT,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
 
         # Way 1
         res = self.system.update_resource_group(
@@ -185,21 +185,24 @@ class TestResourceGroup(TestDS8KWithConnect):
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
 
-            req = RequestParser({'label': label,
-                                 'name': name,
-                                 }
-                                )
+            req = RequestParser(
+                {
+                    'label': label,
+                    'name': name,
+                }
+            )
             assert {
-                    **json.loads(request.body).get('request').get('params'),
-                    **req.get_request_data().get('request').get('params')
-                   } == json.loads(request.body).get('request').get('params')
+                **json.loads(request.body).get('request').get('params'),
+                **req.get_request_data().get('request').get('params'),
+            } == json.loads(request.body).get('request').get('params')
             return (201, headers, create_resource_group_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
         # Way 1
         resp1 = self.system.create_resource_group(
             label=label,
@@ -210,7 +213,10 @@ class TestResourceGroup(TestDS8KWithConnect):
 
         # Way 2
         resource_group = self.system.all(DS8K_RESOURCE_GROUP, rebuild_url=True)
-        resource_group2 = resource_group.create(label=label, name=name, )
+        resource_group2 = resource_group.create(
+            label=label,
+            name=name,
+        )
         resp2, data2 = resource_group2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], ResourceGroup)
@@ -218,7 +224,10 @@ class TestResourceGroup(TestDS8KWithConnect):
 
         # Way 3
         resource_group = self.system.all(DS8K_RESOURCE_GROUP, rebuild_url=True)
-        resource_group3 = resource_group.create(label=label, name=name, )
+        resource_group3 = resource_group.create(
+            label=label,
+            name=name,
+        )
         resp3, data3 = resource_group3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], ResourceGroup)

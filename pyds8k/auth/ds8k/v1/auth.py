@@ -22,5 +22,4 @@ base_url = Base.base_url
 
 
 class Auth(AuthBase):
-
     base_url = Base.base_url

@@ -19,6 +19,5 @@ from .base import TestDS8KWithConnect
 
 
 class TestIOPort(TestDS8KWithConnect):
-
     def test_related_resource_field(self):
         self._test_related_resource_field(DS8K_IOPORT)

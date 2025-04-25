@@ -28,7 +28,6 @@ FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 
 
 class LocalTimezone(tzinfo):
-
     def utcoffset(self, dt):
         if self._isdst(dt):
             return DSTOFFSET
@@ -53,9 +52,17 @@ class LocalTimezone(tzinfo):
         return prefix + local_time.strftime('%H%M')
 
     def _isdst(self, dt):
-        tt = (dt.year, dt.month, dt.day,
-              dt.hour, dt.minute, dt.second,
-              dt.weekday(), 0, 0)
+        tt = (
+            dt.year,
+            dt.month,
+            dt.day,
+            dt.hour,
+            dt.minute,
+            dt.second,
+            dt.weekday(),
+            0,
+            0,
+        )
         stamp = _time.mktime(tt)
         tt = _time.localtime(stamp)
         return tt.tm_isdst > 0

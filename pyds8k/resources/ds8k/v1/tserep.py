@@ -17,6 +17,7 @@
 """
 TSE Rep interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 from .common.types import DS8K_TSEREP
 from .common.base import SingletonBase, SingletonBaseManager
@@ -26,16 +27,18 @@ from .pools import Pool, PoolManager
 class TSERep(SingletonBase, metaclass=ResourceMeta):
     resource_type = DS8K_TSEREP
     # id_field = 'id'
-    _template = {'cap': '',
-                 'capalloc': '',
-                 'capavail': '',
-                 'overprovisioned': '',
-                 'threshold': '',
-                 'pool': '',
-                 }
+    _template = {
+        'cap': '',
+        'capalloc': '',
+        'capavail': '',
+        'overprovisioned': '',
+        'threshold': '',
+        'pool': '',
+    }
     readonly_fileds = ('capalloc', 'capavail', 'overprovisioned', 'pool')
-    related_resource = {'_pool': (Pool, PoolManager),
-                        }
+    related_resource = {
+        '_pool': (Pool, PoolManager),
+    }
 
     def __getattr__(self, key):
         if key == 'id' or key == self.id_field:
@@ -47,6 +50,7 @@ class TSERepManager(SingletonBaseManager, metaclass=ManagerMeta):
     """
     Manage TSE Rep resources.
     """
+
     resource_class = TSERep
     resource_type = DS8K_TSEREP
 

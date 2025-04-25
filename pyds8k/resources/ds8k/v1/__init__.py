@@ -14,9 +14,27 @@
 # limitations under the License.
 ##############################################################################
 
-from . import ioports, flashcopy, events, mappings, pprc, eserep, \
-    users, systems, nodes, marrays, encryption_groups, io_enclosures, \
-    pools, tserep, lss, volumes, host_ports, hosts, resource_groups
+from . import (
+    ioports,
+    flashcopy,
+    events,
+    mappings,
+    pprc,
+    eserep,
+    users,
+    systems,
+    nodes,
+    marrays,
+    encryption_groups,
+    io_enclosures,
+    pools,
+    tserep,
+    lss,
+    volumes,
+    host_ports,
+    hosts,
+    resource_groups,
+)
 from .cs import pprcs, flashcopies
 from .hmc import hmc, restart
 from .hmc.certificate import certificate, csr, selfsigned
@@ -47,5 +65,5 @@ __all__ = (
     'restart',
     'certificate',
     'csr',
-    'selfsigned'
+    'selfsigned',
 )

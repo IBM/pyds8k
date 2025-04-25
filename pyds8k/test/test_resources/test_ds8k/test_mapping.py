@@ -17,13 +17,15 @@
 import httpretty
 import json
 from pyds8k.exceptions import InternalServerError
-from pyds8k.resources.ds8k.v1.common.types import DS8K_HOST, \
-    DS8K_VOLMAP
-from pyds8k.test.data import get_response_json_by_type, \
-    get_response_data_by_type
-from pyds8k.test.data import action_response_json, \
-    create_mappings_response_json, create_mapping_response_json, \
-    action_response_failed, action_response_failed_json
+from pyds8k.resources.ds8k.v1.common.types import DS8K_HOST, DS8K_VOLMAP
+from pyds8k.test.data import get_response_json_by_type, get_response_data_by_type
+from pyds8k.test.data import (
+    action_response_json,
+    create_mappings_response_json,
+    create_mapping_response_json,
+    action_response_failed,
+    action_response_failed_json,
+)
 from .base import TestDS8KWithConnect
 from pyds8k.resources.ds8k.v1.mappings import Volmap
 from pyds8k.resources.ds8k.v1.hosts import Host
@@ -37,17 +39,14 @@ mapping_response_json = get_response_json_by_type(DS8K_VOLMAP)
 
 
 class TestVolmap(TestDS8KWithConnect):
-
     def setUp(self):
         super(TestVolmap, self).setUp()
-        self.host_id = self._get_resource_id_from_resopnse(DS8K_HOST,
-                                                           host_response,
-                                                           Host.id_field
-                                                           )
-        self.lunid = self._get_resource_id_from_resopnse(DS8K_VOLMAP,
-                                                         mapping_response,
-                                                         Volmap.id_field
-                                                         )
+        self.host_id = self._get_resource_id_from_resopnse(
+            DS8K_HOST, host_response, Host.id_field
+        )
+        self.lunid = self._get_resource_id_from_resopnse(
+            DS8K_VOLMAP, mapping_response, Volmap.id_field
+        )
         self.host = self.system.one(
             DS8K_HOST,
             self.host_id,
@@ -65,8 +64,7 @@ class TestVolmap(TestDS8KWithConnect):
 
     def test_get_mappings(self):
         self._test_sub_resource_list_by_route(
-            DS8K_HOST, DS8K_VOLMAP,
-            self._get_sort_func_by(Volmap.id_field)
+            DS8K_HOST, DS8K_VOLMAP, self._get_sort_func_by(Volmap.id_field)
         )
 
     @httpretty.activate
@@ -110,9 +108,7 @@ class TestVolmap(TestDS8KWithConnect):
         )
         with self.assertRaises(InternalServerError) as cm:
             self.host.delete_mapping(self.lunid)
-        self.assertEqual(action_response_failed['server'],
-                         cm.exception.error_data
-                         )
+        self.assertEqual(action_response_failed['server'], cm.exception.error_data)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
 
     @httpretty.activate
@@ -127,11 +123,12 @@ class TestVolmap(TestDS8KWithConnect):
             self.assertEqual(json.loads(request.body), resq.get_request_data())
             return (200, headers, create_mappings_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
         # Way 1
         resp1 = self.host.create_mappings(volumes=volumes)
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
@@ -149,11 +146,12 @@ class TestVolmap(TestDS8KWithConnect):
             self.assertEqual(json.loads(request.body), resq.get_request_data())
             return (200, headers, create_mappings_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
         # Way 1
         resp1 = self.host.create_mappings(mappings=mappings)
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
@@ -172,11 +170,12 @@ class TestVolmap(TestDS8KWithConnect):
             self.assertEqual(json.loads(request.body), resq.get_request_data())
             return (200, headers, create_mapping_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
         mapping = self.host.all(DS8K_VOLMAP)
         new_mapping = mapping.create(lunid=lunid, volume=volume_id)
         resp, data = new_mapping.save()
@@ -193,15 +192,15 @@ class TestVolmap(TestDS8KWithConnect):
                 self.assertEqual(uri, self.domain + self.base_url + url)
 
                 resq = RequestParser({'lunid': '', 'volume': volume_id})
-                self.assertEqual(json.loads(request.body),
-                                 resq.get_request_data())
+                self.assertEqual(json.loads(request.body), resq.get_request_data())
                 return (200, headers, create_mapping_response_json)
 
-            httpretty.register_uri(httpretty.POST,
-                                   self.domain + self.base_url + url,
-                                   body=_verify_request,
-                                   content_type='application/json',
-                                   )
+            httpretty.register_uri(
+                httpretty.POST,
+                self.domain + self.base_url + url,
+                body=_verify_request,
+                content_type='application/json',
+            )
             mapping = self.host.all(DS8K_VOLMAP)
             new_mapping = mapping.create(lunid='', volume=volume_id)
             resp, data = new_mapping.save()

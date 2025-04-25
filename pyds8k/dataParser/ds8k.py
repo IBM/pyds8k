@@ -16,16 +16,16 @@
 
 from logging import getLogger
 from pyds8k import PYDS8K_DEFAULT_LOGGER
-from pyds8k.dataParser.base import BaseRequestParser, \
-    BaseResponseParser
+from pyds8k.dataParser.base import BaseRequestParser, BaseResponseParser
 from pyds8k import messages
-from pyds8k.exceptions import URLParseError, \
-    RepresentationParseError, \
-    IDMissingError
+from pyds8k.exceptions import URLParseError, RepresentationParseError, IDMissingError
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
-success_status = ('ok', 'successful', )
+success_status = (
+    'ok',
+    'successful',
+)
 
 
 class RequestParser(BaseRequestParser):
@@ -95,7 +95,9 @@ class ResponseParser(BaseResponseParser):
         MULTIFLAG = "responses"
         data = self.raw_data.get(MULTIFLAG, self.raw_data)
         if not isinstance(data, list):
-            data = [data, ]
+            data = [
+                data,
+            ]
         res = []
         for s_data in data:
             res_status_body = s_data.get(self.status_key)
@@ -108,9 +110,10 @@ class ResponseParser(BaseResponseParser):
                     res.append(({self.resource_data_key: None}, res_url))
                 else:
                     res.append(
-                        ({self.resource_data_key: self._parse_data(res_data)[0]},  # noqa
-                         res_url
-                         )
+                        (
+                            {self.resource_data_key: self._parse_data(res_data)[0]},  # noqa
+                            res_url,
+                        )
                     )
             # return status part if something failed.
             else:
@@ -179,7 +182,9 @@ class ResponseParser(BaseResponseParser):
                 parsed = data.get(self.resource_key)
                 if parsed is None:
                     logger.debug(
-                        "Failed to parse resource from data, return raw data: {}".format(data)  # noqa
+                        "Failed to parse resource from data, return raw data: {}".format(
+                            data
+                        )  # noqa
                     )
                     parsed = data
         else:

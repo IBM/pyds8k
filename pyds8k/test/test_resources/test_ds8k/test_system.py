@@ -17,10 +17,11 @@
 import httpretty
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM
 from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.systems import System, \
-    SystemManager
-from pyds8k.test.data import get_response_list_json_by_type, \
-    get_response_list_data_by_type
+from pyds8k.resources.ds8k.v1.systems import System, SystemManager
+from pyds8k.test.data import (
+    get_response_list_json_by_type,
+    get_response_list_data_by_type,
+)
 from pyds8k.exceptions import OperationNotAllowed
 
 system_list_response = get_response_list_data_by_type(DS8K_SYSTEM)
@@ -28,7 +29,6 @@ system_list_response_json = get_response_list_json_by_type(DS8K_SYSTEM)
 
 
 class TestSystem(TestDS8KWithConnect):
-
     def setUp(self):
         super(TestSystem, self).setUp()
         self.system = System(self.client, SystemManager(self.client))
@@ -36,12 +36,13 @@ class TestSystem(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_system(self):
         url = '/systems'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=system_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=system_list_response_json,
+            content_type='application/json',
+            status=200,
+        )
         sys = self.system.get_system()
         self.assertIsInstance(sys, System)
         sys_data = system_list_response['data']['systems'][0]
@@ -50,12 +51,13 @@ class TestSystem(TestDS8KWithConnect):
     @httpretty.activate
     def test_not_allowed_operations(self):
         url = '/systems'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=system_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=system_list_response_json,
+            content_type='application/json',
+            status=200,
+        )
         sys = self.system.get_system()
         with self.assertRaises(OperationNotAllowed):
             sys.put()
