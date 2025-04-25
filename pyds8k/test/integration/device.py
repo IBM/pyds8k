@@ -14,9 +14,14 @@
 # limitations under the License.
 ##############################################################################
 
-from collections import namedtuple
+from typing import NamedTuple
 
-Device = namedtuple('Device', ['ipaddr', 'username', 'password', 'port'])
+
+class Device(NamedTuple):
+    ipaddr: str
+    username: str
+    password: str
+    port: int
 
 ds44 = Device(ipaddr='9.11.108.44', username='admin', password='open1sys', port=8452)
 
