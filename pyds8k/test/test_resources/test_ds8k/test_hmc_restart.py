@@ -14,8 +14,9 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
+
+import httpretty
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_RESTART

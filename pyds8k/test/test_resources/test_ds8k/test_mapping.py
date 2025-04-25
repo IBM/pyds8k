@@ -14,23 +14,27 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
+
+import httpretty
+
+from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.exceptions import InternalServerError
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HOST, DS8K_VOLMAP
-from pyds8k.test.data import get_response_json_by_type, get_response_data_by_type
+from pyds8k.resources.ds8k.v1.hosts import Host
+from pyds8k.resources.ds8k.v1.mappings import Volmap
+from pyds8k.resources.ds8k.v1.volumes import Volume
 from pyds8k.test.data import (
-    action_response_json,
-    create_mappings_response_json,
-    create_mapping_response_json,
     action_response_failed,
     action_response_failed_json,
+    action_response_json,
+    create_mapping_response_json,
+    create_mappings_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
 )
+
 from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.mappings import Volmap
-from pyds8k.resources.ds8k.v1.hosts import Host
-from pyds8k.resources.ds8k.v1.volumes import Volume
-from pyds8k.dataParser.ds8k import RequestParser
 
 host_response = get_response_data_by_type(DS8K_HOST)
 host_response_json = get_response_json_by_type(DS8K_HOST)

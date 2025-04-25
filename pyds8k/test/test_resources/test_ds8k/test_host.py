@@ -14,38 +14,39 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
-import pytest
-from functools import cmp_to_key
 import warnings
-from pyds8k.exceptions import InternalServerError, FieldReadOnly
+from functools import cmp_to_key
+
+import httpretty
+import pytest
+
+from pyds8k.dataParser.ds8k import RequestParser
+from pyds8k.exceptions import FieldReadOnly, InternalServerError
 from pyds8k.messages import DEFAULT_SUCCESS_BODY_DICT
 from pyds8k.resources.ds8k.v1.common.types import (
     DS8K_HOST,
-    DS8K_VOLUME,
-    DS8K_IOPORT,
     DS8K_HOST_PORT,
+    DS8K_IOPORT,
+    DS8K_VOLUME,
 )
-from pyds8k.test.data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
-    get_response_json_by_type,
-    get_response_data_by_type,
-)
-from pyds8k.test.data import (
-    action_response,
-    action_response_json,
-    action_response_failed,
-    action_response_failed_json,
-    create_host_response_json,
-)
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.host_ports import HostPort
 from pyds8k.resources.ds8k.v1.hosts import Host
+from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.volumes import Volume
-from pyds8k.dataParser.ds8k import RequestParser
+from pyds8k.test.data import (
+    action_response,
+    action_response_failed,
+    action_response_failed_json,
+    action_response_json,
+    create_host_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
+from .base import TestDS8KWithConnect
 
 volume_list_response = get_response_list_data_by_type(DS8K_VOLUME)
 volume_list_response_json = get_response_list_json_by_type(DS8K_VOLUME)

@@ -19,10 +19,11 @@ PPRC interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
+
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_PPRC
-from .volumes import Volume, VolumeManager
 from .systems import System, SystemManager
+from .volumes import Volume, VolumeManager
 
 
 class PPRC(Base, metaclass=ResourceMeta):

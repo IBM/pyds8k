@@ -31,15 +31,15 @@ from pyds8k.resources.ds8k.v1.pools import Pool
 from pyds8k.resources.ds8k.v1.pprc import PPRC
 from pyds8k.resources.ds8k.v1.volumes import Volume, VolumeManager
 from pyds8k.test.data import (
-    get_response_json_by_type,
-    get_response_data_by_type,
-    action_response_json,
     action_response,
-    create_volume_response_json,
-    create_volumes_response_json,
+    action_response_json,
     create_volume_response,
-    create_volumes_partial_failed_response_json,
+    create_volume_response_json,
     create_volumes_partial_failed_response,
+    create_volumes_partial_failed_response_json,
+    create_volumes_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
 )
 from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 

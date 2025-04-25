@@ -15,10 +15,12 @@
 ##############################################################################
 
 from datetime import datetime
-from . import types
-from pyds8k.messages import INVALID_TYPE
-from pyds8k.exceptions import IDMissingError, InvalidArgumentError
+
 from pyds8k.dateutil import LocalTimezone
+from pyds8k.exceptions import IDMissingError, InvalidArgumentError
+from pyds8k.messages import INVALID_TYPE
+
+from . import types
 
 FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 

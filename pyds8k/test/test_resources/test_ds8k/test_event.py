@@ -14,12 +14,15 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 from datetime import datetime
-from .base import TestDS8KWithConnect
-from pyds8k.test.data import get_response_list_json_by_type
-from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
+
+import httpretty
+
 from pyds8k.exceptions import InvalidArgumentError
+from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
+from pyds8k.test.data import get_response_list_json_by_type
+
+from .base import TestDS8KWithConnect
 
 event_list_response = get_response_list_json_by_type(DS8K_EVENT)
 

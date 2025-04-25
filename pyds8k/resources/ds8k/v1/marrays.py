@@ -19,8 +19,9 @@ Marray interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_MARRAY
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_MARRAY
 from .pools import Pool, PoolManager
 
 

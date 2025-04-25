@@ -19,8 +19,9 @@ IO Enclosure interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_IOENCLOSURE
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_IOENCLOSURE
 
 
 class IOEnclosure(Base, metaclass=ResourceMeta):

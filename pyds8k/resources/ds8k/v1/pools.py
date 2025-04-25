@@ -19,10 +19,11 @@ Extent pool interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_POOL, DS8K_VOLUME, DS8K_TSEREP, DS8K_ESEREP
+from pyds8k.exceptions import IDMissingError
+
 from .common.base import Base, ReadOnlyManager
 from .common.mixins import VolumeMixin
-from pyds8k.exceptions import IDMissingError
+from .common.types import DS8K_ESEREP, DS8K_POOL, DS8K_TSEREP, DS8K_VOLUME
 
 
 # Note: VolumeMixin will override the methods with

@@ -15,8 +15,9 @@
 ##############################################################################
 
 import unittest
+
+from pyds8k.base import DefaultManager, Resource
 from pyds8k.httpclient import HTTPClient
-from pyds8k.base import Resource, DefaultManager
 
 
 class TestCaseWithConnect(unittest.TestCase):

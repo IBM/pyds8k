@@ -14,9 +14,11 @@
 # limitations under the License.
 ##############################################################################
 
-from . import base
 import pytest
+
 from pyds8k import utils
+
+from . import base
 
 
 class TestUtils(base.TestCaseWithoutConnect):

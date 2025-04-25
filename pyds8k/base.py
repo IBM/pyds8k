@@ -17,18 +17,26 @@
 import json
 import os
 import sys
-from . import messages
-from pyds8k.utils import get_response_parser_class, get_request_parser_class
-from pyds8k.utils import is_absolute_url
-from pyds8k.utils import HTTP200, HTTP204, POSTA, POST
-from pyds8k.exceptions import (
-    URLNotSpecifiedError,
-    FieldReadOnly,
-    URLParseError,
-    ResponseBodyMissingError,
-)
-from pyds8k import PYDS8K_DEFAULT_LOGGER
 from logging import getLogger
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.exceptions import (
+    FieldReadOnly,
+    ResponseBodyMissingError,
+    URLNotSpecifiedError,
+    URLParseError,
+)
+from pyds8k.utils import (
+    HTTP200,
+    HTTP204,
+    POST,
+    POSTA,
+    get_request_parser_class,
+    get_response_parser_class,
+    is_absolute_url,
+)
+
+from . import messages
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 

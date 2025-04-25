@@ -4,17 +4,17 @@ import httpretty
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
-    DS8K_CS_FLASHCOPY,
     DS8K_COPY_SERVICE_PREFIX,
+    DS8K_CS_FLASHCOPY,
     DS8K_FLASHCOPY,
 )
 from pyds8k.resources.ds8k.v1.cs.flashcopies import FlashCopy as FlashCopies
 from pyds8k.resources.ds8k.v1.flashcopy import FlashCopy
 from pyds8k.test.data import (
-    get_response_json_by_type,
-    get_response_data_by_type,
     action_response_json,
     create_flashcopy_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
 )
 from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 

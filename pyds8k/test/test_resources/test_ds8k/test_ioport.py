@@ -15,6 +15,7 @@
 ##############################################################################
 
 from pyds8k.resources.ds8k.v1.common.types import DS8K_IOPORT
+
 from .base import TestDS8KWithConnect
 
 

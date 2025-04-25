@@ -71,6 +71,7 @@ target-version = "py39"
 
 [tool.ruff.lint]
 extend-select = [
+    "I",
 ]
 
 ignore = [

@@ -15,27 +15,27 @@
 ##############################################################################
 
 from . import (
-    ioports,
-    flashcopy,
-    events,
-    mappings,
-    pprc,
-    eserep,
-    users,
-    systems,
-    nodes,
-    marrays,
     encryption_groups,
-    io_enclosures,
-    pools,
-    tserep,
-    lss,
-    volumes,
+    eserep,
+    events,
+    flashcopy,
     host_ports,
     hosts,
+    io_enclosures,
+    ioports,
+    lss,
+    mappings,
+    marrays,
+    nodes,
+    pools,
+    pprc,
     resource_groups,
+    systems,
+    tserep,
+    users,
+    volumes,
 )
-from .cs import pprcs, flashcopies
+from .cs import flashcopies, pprcs
 from .hmc import hmc, restart
 from .hmc.certificate import certificate, csr, selfsigned
 

@@ -14,19 +14,22 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.exceptions import URLParseError
-from . import base
-import httpretty
 import json
-import pytest
 import time
+
+import httpretty
+import pytest
+
+from pyds8k.base import DefaultManager, Resource
+from pyds8k.exceptions import URLParseError
 from pyds8k.httpclient import HTTPClient
-from pyds8k.base import Resource, DefaultManager
+
+from . import base
 from .data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
     get_response_data_by_type,
     get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
 )
 
 info = {'id': 'v1', 'name': 'vol1'}

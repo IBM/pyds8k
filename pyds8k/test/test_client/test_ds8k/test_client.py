@@ -14,15 +14,16 @@
 # limitations under the License.
 ##############################################################################
 
+import httpretty
+
+from pyds8k.client.ds8k.v1.client import Client
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM, DS8K_VOLUME
+from pyds8k.resources.ds8k.v1.volumes import Volume
 from pyds8k.test.base import TestCaseWithConnect
 from pyds8k.test.data import (
-    get_response_list_json_by_type,
     get_response_list_data_by_type,
+    get_response_list_json_by_type,
 )
-from pyds8k.client.ds8k.v1.client import Client
-from pyds8k.resources.ds8k.v1.volumes import Volume
-import httpretty
 
 system_list_response_json = get_response_list_json_by_type(DS8K_SYSTEM)
 volume_list_response_json = get_response_list_json_by_type(DS8K_VOLUME)

@@ -20,8 +20,8 @@ from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_CERTIFICATE
 
 # from pyds8k.resources.ds8k.v1.hmc.certificate import HmcCertificate
 from pyds8k.test.data import (
-    action_response_json,
     action_response,
+    action_response_json,
     upload_hmc_certificate_cert,
 )
 from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect

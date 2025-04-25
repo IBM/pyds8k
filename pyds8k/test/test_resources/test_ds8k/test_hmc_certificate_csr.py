@@ -14,8 +14,9 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
+
+import httpretty
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
@@ -26,7 +27,6 @@ from pyds8k.resources.ds8k.v1.common.types import (
 
 # from pyds8k.resources.ds8k.v1.hmc.certificate.csr import HmcCertificateCsr
 from pyds8k.test.data import create_hmc_certificate_csr_response_json
-
 from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 

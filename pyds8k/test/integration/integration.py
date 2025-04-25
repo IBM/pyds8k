@@ -14,18 +14,20 @@
 # limitations under the License.
 ##############################################################################
 
-from functools import wraps, partial
-from logging import getLogger
-from contextlib import contextmanager
-import pytest
 import unittest
+from contextlib import contextmanager
 from datetime import datetime
+from functools import partial, wraps
+from logging import getLogger
+
+import pytest
+
 from pyds8k import PYDS8K_DEFAULT_LOGGER
-from pyds8k.utils import res_timer_recorder
 from pyds8k.client.ds8k.v1.client import Client
 from pyds8k.client.ds8k.v1.sc_client import SCClient
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.size_converter import convert_size_gib_to_bytes
+from pyds8k.utils import res_timer_recorder
 
 from .device import ds44 as ds8k_device
 

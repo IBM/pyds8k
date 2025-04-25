@@ -14,19 +14,23 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.base import Resource, DefaultManager
-from . import base
-import httpretty
 import json
+
+import httpretty
+
+from pyds8k.base import DefaultManager, Resource
 from pyds8k.messages import DEFAULT_SUCCESS_BODY_DICT
+
+from . import base
 from .data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
+    action_response,
+    action_response_json,
+    default_template,
     get_response_data_by_type,
     get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
 )
-from .data import action_response, action_response_json
-from .data import default_template
 
 info = {'id': 'v1', 'name': 'vol1'}
 

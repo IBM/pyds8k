@@ -14,21 +14,22 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
+
+import httpretty
+
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_RESOURCE_GROUP
+from pyds8k.resources.ds8k.v1.resource_groups import ResourceGroup
 from pyds8k.test.data import (
-    get_response_json_by_type,
-    get_response_data_by_type,
-    create_resource_group_response_json,
-    action_response_json,
     action_response,
+    action_response_json,
+    create_resource_group_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
 )
 
 from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.resource_groups import ResourceGroup
-
 
 response_a = get_response_data_by_type(DS8K_RESOURCE_GROUP)
 response_a_json = get_response_json_by_type(DS8K_RESOURCE_GROUP)

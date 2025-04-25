@@ -15,7 +15,8 @@
 ##############################################################################
 
 import json
-from .mock import success_response_one, success_response_all
+
+from .mock import success_response_all, success_response_one
 
 
 def get_response_data_by_type(resource_type):

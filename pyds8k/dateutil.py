@@ -14,8 +14,8 @@
 # limitations under the License.
 ##############################################################################
 
-from datetime import tzinfo, timedelta, time
 import time as _time
+from datetime import time, timedelta, tzinfo
 
 ZERO = timedelta(0)
 STDOFFSET = timedelta(seconds=-_time.timezone)

@@ -15,11 +15,12 @@
 ##############################################################################
 
 from pyds8k.resources.ds8k.v1.common.types import DS8K_PPRC
-from pyds8k.test.data import get_response_data_by_type
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.volumes import Volume
 from pyds8k.resources.ds8k.v1.pprc import PPRC
 from pyds8k.resources.ds8k.v1.systems import System
+from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.test.data import get_response_data_by_type
+
+from .base import TestDS8KWithConnect
 
 
 class TestPPRC(TestDS8KWithConnect):

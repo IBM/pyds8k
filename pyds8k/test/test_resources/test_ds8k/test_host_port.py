@@ -14,26 +14,30 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
 
+import httpretty
+
+from pyds8k.dataParser.ds8k import RequestParser
+
 # import warnings
-from pyds8k.exceptions import InternalServerError, FieldReadOnly
+from pyds8k.exceptions import FieldReadOnly, InternalServerError
 from pyds8k.messages import DEFAULT_SUCCESS_BODY_DICT
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HOST_PORT
 from pyds8k.resources.ds8k.v1.host_ports import HostPort, HostPortManager
-from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.hosts import Host
-from .base import TestDS8KWithConnect
-from pyds8k.test.data import get_response_json_by_type, get_response_data_by_type
+from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.test.data import (
     action_response,
-    action_response_json,
     action_response_failed,
     action_response_failed_json,
+    action_response_json,
     create_host_port_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
 )
-from pyds8k.dataParser.ds8k import RequestParser
+
+from .base import TestDS8KWithConnect
 
 response_a = get_response_data_by_type(DS8K_HOST_PORT)
 response_a_json = get_response_json_by_type(DS8K_HOST_PORT)

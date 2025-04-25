@@ -19,9 +19,10 @@ Host interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.base import Base, BaseManager
-from .common.mixins import FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin
+
 from .common import types
+from .common.base import Base, BaseManager
+from .common.mixins import FCPortMixin, HostPortMixin, VolmapMixin, VolumeMixin
 
 
 class Host(

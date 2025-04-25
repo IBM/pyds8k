@@ -15,10 +15,10 @@
 ##############################################################################
 
 from logging import getLogger
-from pyds8k import PYDS8K_DEFAULT_LOGGER
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER, messages
 from pyds8k.dataParser.base import BaseRequestParser, BaseResponseParser
-from pyds8k import messages
-from pyds8k.exceptions import URLParseError, RepresentationParseError, IDMissingError
+from pyds8k.exceptions import IDMissingError, RepresentationParseError, URLParseError
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 

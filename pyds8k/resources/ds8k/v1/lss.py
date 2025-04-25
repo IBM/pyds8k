@@ -19,16 +19,17 @@ LSS interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import (
-    DS8K_LSS,
-    DS8K_VOLUME,
-    DS8K_LCU_TYPES,
-    DS8K_LSS_TYPES,
-    DS8K_LCU_TYPE_3990_6,
-    DS8K_VOLUME_TYPE_CKD,
-)
+
 from .common.base import Base, BaseManager
 from .common.mixins import VolumeMixin
+from .common.types import (
+    DS8K_LCU_TYPE_3990_6,
+    DS8K_LCU_TYPES,
+    DS8K_LSS,
+    DS8K_LSS_TYPES,
+    DS8K_VOLUME,
+    DS8K_VOLUME_TYPE_CKD,
+)
 
 
 class LSS(VolumeMixin, Base, metaclass=ResourceMeta):

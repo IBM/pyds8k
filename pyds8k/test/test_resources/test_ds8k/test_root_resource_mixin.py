@@ -16,22 +16,24 @@
 
 import httpretty
 import pytest
+
 from pyds8k.resources.ds8k.v1.common import types
-from pyds8k.test.data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
-    get_response_data_by_type,
-    get_response_json_by_type,
-)
-from pyds8k.test.data import action_response_json
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.systems import System
+from pyds8k.resources.ds8k.v1.eserep import ESERep
 from pyds8k.resources.ds8k.v1.lss import LSS
+from pyds8k.resources.ds8k.v1.systems import System
 
 # from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.tserep import TSERep
-from pyds8k.resources.ds8k.v1.eserep import ESERep
 from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.test.data import (
+    action_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
+from .base import TestDS8KWithConnect
 
 system_list_response = get_response_list_data_by_type(types.DS8K_SYSTEM)
 system_list_response_json = get_response_list_json_by_type(types.DS8K_SYSTEM)

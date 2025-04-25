@@ -15,15 +15,16 @@
 ##############################################################################
 
 from logging import getLogger
-from pyds8k import PYDS8K_DEFAULT_LOGGER
-from pyds8k import exceptions
+
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from requests.packages.urllib3 import disable_warnings
 from requests.exceptions import Timeout
+from requests.packages.urllib3 import disable_warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER, exceptions
 from pyds8k.auth.authenticate import get_authenticate
-from pyds8k.utils import is_absolute_url
 from pyds8k.messages import CONNECTION_ERROR, REAUTH_SERVER, REDIRECTING
+from pyds8k.utils import is_absolute_url
 
 try:
     import json

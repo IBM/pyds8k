@@ -14,11 +14,12 @@
 # limitations under the License.
 ##############################################################################
 
+import configparser
 import os
 import time
-import configparser
 from importlib import import_module
-from pyds8k.messages import GET_CONFIG_SETTINGS_IOERROR, GET_CONFIG_SETTINGS_ERROR
+
+from pyds8k.messages import GET_CONFIG_SETTINGS_ERROR, GET_CONFIG_SETTINGS_IOERROR
 
 _PATH = os.path.abspath(os.path.dirname(__file__))
 CONFIG_FILE_NAME = 'config.ini'
@@ -42,6 +43,7 @@ DELETE = 'DELETE'
 
 def _get_logger():
     from logging import getLogger
+
     from pyds8k import PYDS8K_DEFAULT_LOGGER
 
     global logger

@@ -14,19 +14,21 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import operator
-from functools import partial, cmp_to_key
-from pyds8k.test.data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
-    get_response_data_by_type,
-    get_response_json_by_type,
-)
-from pyds8k.test import base
+from functools import cmp_to_key, partial
+
+import httpretty
+
 from pyds8k.base import Resource, get_resource_and_manager_class_by_route
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.resources.ds8k.v1.systems import System, SystemManager
+from pyds8k.test import base
+from pyds8k.test.data import (
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
 
 
 def cmp(a, b):

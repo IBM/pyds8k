@@ -19,8 +19,9 @@ Host Ports interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_HOST_PORT
+
 from .common.base import Base, BaseManager
+from .common.types import DS8K_HOST_PORT
 from .hosts import Host, HostManager
 from .ioports import IOPort, IOPortManager
 

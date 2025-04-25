@@ -14,22 +14,24 @@
 # limitations under the License.
 ##############################################################################
 import json
+from functools import cmp_to_key
 
 import httpretty
-from functools import cmp_to_key
-from pyds8k.resources.ds8k.v1.common.types import DS8K_LSS, DS8K_VOLUME
-from pyds8k.test.data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
-    get_response_json_by_type,
-    create_lss_response,
-)
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.lss import LSS, LSSManager
-from pyds8k.resources.ds8k.v1.volumes import Volume
+
+from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.messages import INVALID_TYPE
 from pyds8k.resources.ds8k.v1.common import types
-from pyds8k.dataParser.ds8k import RequestParser
+from pyds8k.resources.ds8k.v1.common.types import DS8K_LSS, DS8K_VOLUME
+from pyds8k.resources.ds8k.v1.lss import LSS, LSSManager
+from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.test.data import (
+    create_lss_response,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
+from .base import TestDS8KWithConnect
 
 
 class TestLSS(TestDS8KWithConnect):

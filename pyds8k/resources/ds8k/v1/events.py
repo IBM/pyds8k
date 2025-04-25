@@ -19,8 +19,9 @@ Event interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_EVENT
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_EVENT
 
 
 class Event(Base, metaclass=ResourceMeta):

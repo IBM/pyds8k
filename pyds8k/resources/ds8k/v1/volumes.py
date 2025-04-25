@@ -19,11 +19,12 @@ Storage volume interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.base import Base, BaseManager
+
 from .common import types
-from .pools import Pool, PoolManager
-from .lss import LSS, LSSManager
+from .common.base import Base, BaseManager
 from .hosts import Host, HostManager
+from .lss import LSS, LSSManager
+from .pools import Pool, PoolManager
 
 
 class Volume(Base, metaclass=ResourceMeta):

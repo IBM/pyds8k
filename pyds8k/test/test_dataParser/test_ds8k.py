@@ -14,12 +14,18 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME
-from pyds8k.dataParser.ds8k import RequestParser, ResponseParser
 import json
+
+from pyds8k.dataParser.ds8k import RequestParser, ResponseParser
+from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME
+
 from .. import base
-from ..data import get_response_list_data_by_type, get_response_data_by_type
-from ..data import token_response_error, default_request
+from ..data import (
+    default_request,
+    get_response_data_by_type,
+    get_response_list_data_by_type,
+    token_response_error,
+)
 
 info = {'id': 'v1', 'name': 'vol1'}
 

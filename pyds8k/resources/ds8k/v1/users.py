@@ -19,8 +19,9 @@ User interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_USER
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_USER
 
 
 class User(Base, metaclass=ResourceMeta):

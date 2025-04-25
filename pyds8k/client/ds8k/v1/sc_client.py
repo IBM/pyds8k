@@ -14,11 +14,13 @@
 # limitations under the License.
 ##############################################################################
 
-from .client import Client
-from pyds8k.utils import dictionarize
-from pyds8k.exceptions import NotFound
 from logging import getLogger
+
 from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.exceptions import NotFound
+from pyds8k.utils import dictionarize
+
+from .client import Client
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 

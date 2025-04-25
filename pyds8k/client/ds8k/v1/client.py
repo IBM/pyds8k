@@ -14,9 +14,10 @@
 # limitations under the License.
 ##############################################################################
 from logging import getLogger
+
 from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.base import DefaultManager, Resource
 from pyds8k.httpclient import HTTPClient
-from pyds8k.base import Resource, DefaultManager
 from pyds8k.resources.ds8k.v1.systems import System, SystemManager
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)

@@ -14,9 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.exceptions import URLParseError
-from pyds8k import PYDS8K_DEFAULT_LOGGER
 from logging import getLogger
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.exceptions import URLParseError
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 

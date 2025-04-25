@@ -14,21 +14,22 @@
 # limitations under the License.
 ##############################################################################
 
+import httpretty
+
+from pyds8k.base import Resource, get_resource_and_manager_class_by_route
+from pyds8k.client.ds8k.v1.sc_client import SCClient
+from pyds8k.dataParser.ds8k import RequestParser, ResponseParser
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.test.base import TestCaseWithConnect
-from pyds8k.test.test_resources.test_ds8k.base import TestUtils
-from pyds8k.dataParser.ds8k import ResponseParser, RequestParser
 from pyds8k.test.data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
-    get_response_json_by_type,
-    get_response_data_by_type,
-    get_request_json_body,
     create_mappings_response_json,
+    get_request_json_body,
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
 )
-from pyds8k.client.ds8k.v1.sc_client import SCClient
-import httpretty
-from pyds8k.base import Resource, get_resource_and_manager_class_by_route
+from pyds8k.test.test_resources.test_ds8k.base import TestUtils
 
 system_list_res_json = get_response_list_json_by_type(types.DS8K_SYSTEM)
 system_list_res = get_response_list_data_by_type(types.DS8K_SYSTEM)

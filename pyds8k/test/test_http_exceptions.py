@@ -14,10 +14,13 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
-from . import base
+
+import httpretty
+
 from pyds8k import exceptions
+
+from . import base
 from .data import get_response_data_by_type
 
 default_a_response = get_response_data_by_type('default')

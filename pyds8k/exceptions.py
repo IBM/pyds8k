@@ -18,8 +18,8 @@
 Exception definitions.
 """
 
-from pyds8k.utils import get_subclasses, get_response_parser_class
 from pyds8k import messages
+from pyds8k.utils import get_response_parser_class, get_subclasses
 
 
 class BaseRestError(Exception):

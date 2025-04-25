@@ -14,8 +14,9 @@
 # limitations under the License.
 ##############################################################################
 
-from .. import base
 from pyds8k.resources import utils
+
+from .. import base
 
 
 class TestUtils(base.TestCaseWithoutConnect):

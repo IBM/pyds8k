@@ -14,9 +14,9 @@
 # limitations under the License.
 ##############################################################################
 
-from io import StringIO
 import sys
 from contextlib import contextmanager
+from io import StringIO
 
 
 @contextmanager

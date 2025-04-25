@@ -14,28 +14,32 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
 from functools import cmp_to_key
+
+import httpretty
+
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
-    DS8K_POOL,
-    DS8K_VOLUME,
-    DS8K_TSEREP,
     DS8K_ESEREP,
+    DS8K_POOL,
+    DS8K_TSEREP,
+    DS8K_VOLUME,
 )
-from pyds8k.test.data import (
-    get_response_list_json_by_type,
-    get_response_list_data_by_type,
-    get_response_json_by_type,
-    get_response_data_by_type,
-)
-from pyds8k.test.data import action_response, action_response_json
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.resources.ds8k.v1.eserep import ESERep
 from pyds8k.resources.ds8k.v1.pools import Pool
 from pyds8k.resources.ds8k.v1.tserep import TSERep
-from pyds8k.resources.ds8k.v1.eserep import ESERep
+from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.test.data import (
+    action_response,
+    action_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
+from .base import TestDS8KWithConnect
 
 response_a = get_response_data_by_type(DS8K_POOL)
 response_a_json = get_response_json_by_type(DS8K_POOL)

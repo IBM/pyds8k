@@ -19,8 +19,9 @@ IO Ports interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_IOPORT
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_IOPORT
 from .io_enclosures import IOEnclosure, IOEnclosureManager
 
 

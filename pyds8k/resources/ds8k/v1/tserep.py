@@ -19,8 +19,9 @@ TSE Rep interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_TSEREP
+
 from .common.base import SingletonBase, SingletonBaseManager
+from .common.types import DS8K_TSEREP
 from .pools import Pool, PoolManager
 
 
