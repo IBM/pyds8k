@@ -120,8 +120,6 @@ class ConnectionError(Exception):
     Could not open a connection to the API service.
     """
 
-    pass
-
 
 class Timeout(Exception):
     """
