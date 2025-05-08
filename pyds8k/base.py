@@ -366,7 +366,7 @@ class Resource(UtilsMixin, BaseResource):
     def _get_url(self, urls):
         if isinstance(urls, str):
             return urls
-        elif isinstance(urls, dict):
+        if isinstance(urls, dict):
             urls = [urls]
         elif isinstance(urls, list):
             pass
@@ -381,8 +381,7 @@ class Resource(UtilsMixin, BaseResource):
         if k == 'id' or k == self.id_field:
             if '_id' not in self.__dict__:
                 raise AttributeError(k)
-            else:
-                return self._id
+            return self._id
         # If we can get the attr from a resource collection
         # we don't need to get the resource details.
         # So we don't load the details until an attr which is
@@ -393,15 +392,14 @@ class Resource(UtilsMixin, BaseResource):
                 return getattr(self, k)
 
             raise AttributeError(k)
-        else:
-            return self.__dict__[k]
+        return self.__dict__[k]
 
     def __setattr__(self, key, value):
         if key == '_id':
             self._add_id_to_url(value)
         if key.startswith('_'):
             super(Resource, self).__setattr__(key, value)
-            return
+            return None
         if self._is_init():
             return super(Resource, self).__setattr__(key, value)
         if key == 'id' or key == self.id_field:
@@ -412,6 +410,8 @@ class Resource(UtilsMixin, BaseResource):
             self.representation[key] = value
             self._set_modified_info_dict(key, value)
         super(Resource, self).__setattr__(key, value)
+
+        return None
 
     def __repr__(self):
         reprkeys = sorted(
@@ -426,10 +426,9 @@ class Resource(UtilsMixin, BaseResource):
         self.set_loaded(True)
         if resource_id:
             return self.manager.get(resource_id, **kwargs)
-        else:
-            _, info = self.manager.get(**kwargs)
-            self._add_details(info, force)
-            return self
+        _, info = self.manager.get(**kwargs)
+        self._add_details(info, force)
+        return self
 
     def get_response(self):
         return self.manager.get()
@@ -620,38 +619,37 @@ class Manager(UtilsMixin, BaseManager):
                 raise ResponseBodyMissingError()
             res_p = self.ResponseParser(response_body, self.resource_type)
             return res_p.get_representations()
-        elif method == POSTA:
+        if method == POSTA:
             if not response_body:
                 raise ResponseBodyMissingError()
             res_p = self.ResponseParser(response_body, self.resource_type)
             return res_p.get_posta_response_data()
-        else:
-            if response_body:
-                try:
-                    data = self._get_status_body(response_body)
-                except Exception:
-                    logger.debug(
-                        messages.CAN_NOT_GET_STATUS_BODY.format(
-                            method, self.resource_class.__name__
-                        )
-                    )
-                    data = response_body
-            elif response.status_code in (HTTP200, HTTP204):
-                data = messages.DEFAULT_SUCCESS_BODY_DICT
-            else:
-                res_id = ''
-                try:
-                    res_id = self.managed_object.id
-                except Exception:
-                    res_id = ''
-                data = json.loads(
-                    messages.DEFAULT_FAIL_BODY_JSON.format(
-                        action=method,
-                        res_class=self.resource_class.__name__,
-                        res_id=res_id,
+        if response_body:
+            try:
+                data = self._get_status_body(response_body)
+            except Exception:
+                logger.debug(
+                    messages.CAN_NOT_GET_STATUS_BODY.format(
+                        method, self.resource_class.__name__
                     )
                 )
-            return data
+                data = response_body
+        elif response.status_code in (HTTP200, HTTP204):
+            data = messages.DEFAULT_SUCCESS_BODY_DICT
+        else:
+            res_id = ''
+            try:
+                res_id = self.managed_object.id
+            except Exception:
+                res_id = ''
+            data = json.loads(
+                messages.DEFAULT_FAIL_BODY_JSON.format(
+                    action=method,
+                    res_class=self.resource_class.__name__,
+                    res_id=res_id,
+                )
+            )
+        return data
 
     def _get_status_body(self, response_body):
         res_p = self.ResponseParser(response_body, self.resource_type)
@@ -698,17 +696,16 @@ class Manager(UtilsMixin, BaseManager):
 
         if not new:
             return resp, data
-        else:
-            if obj_class is None:
-                obj_class = self.resource_class
-            return obj_class(
-                client=self.client,
-                manager=self.__class__(self.client),
-                url=self.url,
-                info=data,
-                parent=parent,
-                loaded=True,
-            )
+        if obj_class is None:
+            obj_class = self.resource_class
+        return obj_class(
+            client=self.client,
+            manager=self.__class__(self.client),
+            url=self.url,
+            info=data,
+            parent=parent,
+            loaded=True,
+        )
 
     # if url and obj_class is not none, list the sub collection
     # of current resource.

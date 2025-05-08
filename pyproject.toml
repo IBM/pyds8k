@@ -75,6 +75,7 @@ extend-select = [
     "I",
     "PIE",
     "PYI",
+    "RET",
 ]
 
 ignore = [

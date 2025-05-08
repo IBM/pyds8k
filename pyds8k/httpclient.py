@@ -291,7 +291,6 @@ class HTTPClient(object):
         domain, url2 = url1.split('/', 1)
         if not domain:
             return url
-        elif schma + '//' + domain == self.domain:
+        if schma + '//' + domain == self.domain:
             return '/' + url2
-        else:
-            raise exceptions.URLParseError()
+        raise exceptions.URLParseError()

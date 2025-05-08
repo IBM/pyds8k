@@ -1184,7 +1184,7 @@ class RootLSSMixin(object):
             return self.get_lss_by_id(lss_id)
         if not lss_type:
             return self.all(types.DS8K_LSS, rebuild_url=True).list()
-        elif str(lss_type) not in types.DS8K_VOLUME_TYPES:
+        if str(lss_type) not in types.DS8K_VOLUME_TYPES:
             raise ValueError(INVALID_TYPE.format(', '.join(types.DS8K_VOLUME_TYPES)))
         return self.all(types.DS8K_LSS, rebuild_url=True).list(
             params={'type': lss_type}

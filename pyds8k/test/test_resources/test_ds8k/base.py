@@ -34,8 +34,7 @@ from pyds8k.test.data import (
 def cmp(a, b):
     if a is not None and b is not None:
         return operator.gt(a, b) - operator.lt(a, b)
-    else:
-        return 0
+    return 0
 
 
 class TestUtils(object):

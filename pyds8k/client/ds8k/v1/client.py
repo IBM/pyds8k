@@ -96,7 +96,6 @@ class Client(object):
             method = getattr(self.system, k)
             if not callable(method):
                 raise AttributeError(k)
-            else:
-                return method
+            return method
         except Exception:
             raise AttributeError(k)

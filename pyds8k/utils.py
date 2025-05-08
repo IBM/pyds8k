@@ -210,8 +210,7 @@ def dictionarize(func):
 def is_absolute_url(url):
     if url.startswith('/'):
         return False
-    elif '//' in url:
+    if '//' in url:
         return True
     # Don't verify the URI's validation here.
-    else:
-        return True
+    return True

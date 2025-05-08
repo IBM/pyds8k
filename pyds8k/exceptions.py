@@ -282,5 +282,4 @@ def raise_error(response, body, service_type=''):
         return cls(
             code=response.status_code, message=message, detail=details, origin_data=data
         )
-    else:
-        return cls(code=response.status_code, message=response.reason, origin_data=body)
+    return cls(code=response.status_code, message=response.reason, origin_data=body)

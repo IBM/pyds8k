@@ -31,14 +31,12 @@ class LocalTimezone(tzinfo):
     def utcoffset(self, dt):
         if self._isdst(dt):
             return DSTOFFSET
-        else:
-            return STDOFFSET
+        return STDOFFSET
 
     def dst(self, dt):
         if self._isdst(dt):
             return DSTDIFF
-        else:
-            return ZERO
+        return ZERO
 
     def tzname(self, dt):
         local_time_zone = int(self.utcoffset(dt).total_seconds()) / 60

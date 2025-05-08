@@ -147,8 +147,7 @@ class ResponseParser(BaseResponseParser):
         url_objects = representation.get(cls.url_field)
         if not url_objects:
             return ""
-        url = cls._get_url(url_objects)
-        return url
+        return cls._get_url(url_objects)
 
     @classmethod
     def get_resource_id_from_url(self, url, resource_type):
@@ -164,7 +163,7 @@ class ResponseParser(BaseResponseParser):
     def _get_url(cls, urls):
         if isinstance(urls, str):
             return urls
-        elif isinstance(urls, dict):
+        if isinstance(urls, dict):
             urls = [urls]
         elif isinstance(urls, list):
             pass
