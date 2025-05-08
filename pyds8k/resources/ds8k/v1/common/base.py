@@ -18,6 +18,7 @@
 DS8K resources base interface.
 """
 
+import contextlib
 from logging import getLogger
 
 from pyds8k import PYDS8K_DEFAULT_LOGGER
@@ -57,10 +58,8 @@ class Base(RootResourceMixin, Resource):
             # will empty them and wait for lazy-loading.
             if not isinstance(res, list):
                 self.representation[key] = ''
-                try:
+                with contextlib.suppress(AttributeError):
                     delattr(self, key)
-                except AttributeError:
-                    pass
             # If the related resources(should be a list) are in info, set it.
             else:
                 re_class, re_manager = self._get_resource_class_by_name(key)

@@ -119,13 +119,13 @@ class HTTPClient(object):
         prefix_http = f"{self.schema}://"
 
         list_uri[0] = list_uri[0].lstrip("//")
-        if len(list_uri) > 1 and "/" != list_uri[1][0]:
+        if len(list_uri) > 1 and list_uri[1][0] != "/":
             # found embedded port
             self.port = int(list_uri[1].split('/')[0])
             url_service_point = ":".join(list_uri)
         elif len(list_uri) == 1:
             # no port in service address, add port if defined port is not 80
-            if "80" != self.port:
+            if self.port != "80":
                 list_seg_sp = list_uri[0].split('/')
                 list_seg_sp[0] = f"{list_seg_sp[0]}:{self.port}"
                 url_service_point = "/".join(list_seg_sp)
@@ -137,7 +137,7 @@ class HTTPClient(object):
         self.service_address = f"{prefix_http}{'/'.join(list_uri)}"
         self.domain = f"{prefix_http}{list_uri[0]}"
         self.base_url = f"/{'/'.join(list_uri[1:])}"
-        self.verify = verify if "https" == self.schema else False
+        self.verify = verify if self.schema == "https" else False
         self.cert = cert
         self.timeout = timeout
         self.defaultHeaders = self.DefaultHeaders.copy()

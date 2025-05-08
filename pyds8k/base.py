@@ -14,6 +14,7 @@
 # limitations under the License.
 ##############################################################################
 
+import contextlib
 import json
 import os
 import sys
@@ -314,11 +315,8 @@ class Resource(UtilsMixin, BaseResource):
     def _add_details(self, info, force=False):
         self._start_updating()
         info = self._update_alias(info)
-        try:
-            # set id field first.
+        with contextlib.suppress(KeyError):
             self._id = info[self.id_field]
-        except KeyError:
-            pass
 
         self_url = self.ResponseParser.get_link_from_representation(info)
         if self_url:
@@ -326,7 +324,7 @@ class Resource(UtilsMixin, BaseResource):
         for k, v in info.items():
             if not force and k in list(self._modified_info_dict.keys()):
                 continue
-            if not k == self.id_field:
+            if k != self.id_field:
                 setattr(self, k, v)
             self.representation[k] = v
 
@@ -484,16 +482,17 @@ class Resource(UtilsMixin, BaseResource):
                         "You should use POSTA or PUT method to create new resources"  # noqa
                     )
                 resp, data = getattr(self, self.create_method.lower())()
-                if self.create_method.lower() == 'posta':
-                    if isinstance(data[0], Resource):
-                        # re-init the res object according to the returned data
-                        self.__init__(
-                            client=self.client,
-                            manager=self.manager,
-                            url=data[0].url,
-                            resource_id=data[0].id,
-                            info=data[0].representation,
-                        )
+                if self.create_method.lower() == 'posta' and isinstance(
+                    data[0], Resource
+                ):
+                    # re-init the res object according to the returned data
+                    self.__init__(
+                        client=self.client,
+                        manager=self.manager,
+                        url=data[0].url,
+                        resource_id=data[0].id,
+                        info=data[0].representation,
+                    )
                 self._is_new = False
         else:
             resp, data = self.posta()

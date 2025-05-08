@@ -268,66 +268,63 @@ class TestSCClient(unittest.TestCase):
         self._destroy_host(host_name)
 
     def test_volume_map_and_unmap(self):
-        with self.get_test_host() as host_name:
-            with self.get_test_volume() as volume:
-                used_lunids = self.client.get_used_lun_numbers_by_host(host_name)
-                unused_lunids = [
-                    '{0:0{1}x}'.format(i, 2)
-                    for i in range(256)
-                    if '{0:0{1}x}'.format(i, 2) not in used_lunids
-                ]
-                lunid = unused_lunids[0]
-                logger.info(
-                    'Trying to map volume {} to host {} with lunid {}'.format(
-                        volume.id, host_name, lunid
-                    )
+        with self.get_test_host() as host_name, self.get_test_volume() as volume:
+            used_lunids = self.client.get_used_lun_numbers_by_host(host_name)
+            unused_lunids = [
+                '{0:0{1}x}'.format(i, 2)
+                for i in range(256)
+                if '{0:0{1}x}'.format(i, 2) not in used_lunids
+            ]
+            lunid = unused_lunids[0]
+            logger.info(
+                'Trying to map volume {} to host {} with lunid {}'.format(
+                    volume.id, host_name, lunid
                 )
-                res = self.client.map_volume_to_host(
-                    host_name=host_name, volume_id=volume.id, lunid=lunid
+            )
+            res = self.client.map_volume_to_host(
+                host_name=host_name, volume_id=volume.id, lunid=lunid
+            )
+            logger.info(
+                'Successfully map volume {} to host {}. res is {}'.format(
+                    volume.id, host_name, res
                 )
-                logger.info(
-                    'Successfully map volume {} to host {}. res is {}'.format(
-                        volume.id, host_name, res
-                    )
+            )
+            logger.info(
+                'Trying to unmap volume {} from host {}.'.format(volume.id, host_name)
+            )
+            res = self.client.unmap_volume_from_host(host_name, lunid)
+            logger.info(
+                'Successfully unmap volume {} from host {}. res is {}'.format(  # noqa
+                    volume.id, host_name, res
                 )
-                logger.info(
-                    'Trying to unmap volume {} from host {}.'.format(
-                        volume.id, host_name
-                    )
-                )
-                res = self.client.unmap_volume_from_host(host_name, lunid)
-                logger.info(
-                    'Successfully unmap volume {} from host {}. res is {}'.format(  # noqa
-                        volume.id, host_name, res
-                    )
-                )
+            )
 
     def test_volume_map_and_unmap_to_zlinux_type_host(self):
-        with self.get_test_zlinux_type_host() as host_name:
-            with self.get_test_volume() as volume:
-                logger.info(
-                    'Trying to map volume {} to host {}'.format(volume.id, host_name)
+        with (
+            self.get_test_zlinux_type_host() as host_name,
+            self.get_test_volume() as volume,
+        ):
+            logger.info(
+                'Trying to map volume {} to host {}'.format(volume.id, host_name)
+            )
+            res = self.client.map_volume_to_host(
+                host_name=host_name, volume_id=volume.id, lunid=''
+            )
+            logger.info(
+                'Successfully map volume {} to host {}. res is {}'.format(
+                    volume.id, host_name, res
                 )
-                res = self.client.map_volume_to_host(
-                    host_name=host_name, volume_id=volume.id, lunid=''
+            )
+            logger.info(
+                'Trying to unmap volume {} from host {}.'.format(volume.id, host_name)
+            )
+            lunid = int('40' + volume.id[:2] + '40' + volume.id[2:], 16)
+            res = self.client.unmap_volume_from_host(host_name, lunid)
+            logger.info(
+                'Successfully unmap volume {} from host {}. res is {}'.format(  # noqa
+                    volume.id, host_name, res
                 )
-                logger.info(
-                    'Successfully map volume {} to host {}. res is {}'.format(
-                        volume.id, host_name, res
-                    )
-                )
-                logger.info(
-                    'Trying to unmap volume {} from host {}.'.format(
-                        volume.id, host_name
-                    )
-                )
-                lunid = int('40' + volume.id[:2] + '40' + volume.id[2:], 16)
-                res = self.client.unmap_volume_from_host(host_name, lunid)
-                logger.info(
-                    'Successfully unmap volume {} from host {}. res is {}'.format(  # noqa
-                        volume.id, host_name, res
-                    )
-                )
+            )
 
     def _prepare_volume(self):
         logger.info('Preparing a new volume for test purpose.')

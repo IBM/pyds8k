@@ -24,4 +24,4 @@ LOG_LEVEL = (
     if 'debug' in settings and settings['debug'].lower() == 'true'
     else logging.INFO
 )
-LOG_PATH = settings['log_path'] if 'log_path' in settings else '/tmp'
+LOG_PATH = settings.get('log_path', '/tmp')

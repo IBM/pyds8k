@@ -37,7 +37,7 @@ class RequestParser(BaseRequestParser):
     param_key = 'params'
 
     def __init__(self, raw_data, resource_key=''):
-        if not (isinstance(raw_data, list) or isinstance(raw_data, dict)):
+        if not (isinstance(raw_data, (list, dict))):
             raise TypeError(messages.NEED_A_DICT_OR_DICT_LIST.format(raw_data))
         self.raw_data = raw_data
         self.request_data = None

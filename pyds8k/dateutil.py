@@ -19,10 +19,7 @@ from datetime import time, timedelta, tzinfo
 
 ZERO = timedelta(0)
 STDOFFSET = timedelta(seconds=-_time.timezone)
-if _time.daylight:
-    DSTOFFSET = timedelta(seconds=-_time.altzone)
-else:
-    DSTOFFSET = STDOFFSET
+DSTOFFSET = timedelta(seconds=-_time.altzone) if _time.daylight else STDOFFSET
 DSTDIFF = DSTOFFSET - STDOFFSET
 FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 

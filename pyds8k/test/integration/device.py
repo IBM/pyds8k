@@ -23,6 +23,7 @@ class Device(NamedTuple):
     password: str
     port: int
 
+
 ds44 = Device(ipaddr='9.11.108.44', username='admin', password='open1sys', port=8452)
 
 ds179 = Device(ipaddr='9.11.217.179', username='admin', password='passw0rd', port=8452)
