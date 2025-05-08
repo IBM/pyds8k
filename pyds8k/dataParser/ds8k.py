@@ -157,7 +157,7 @@ class ResponseParser(BaseResponseParser):
         if len(url_frag) > 1 and url_frag[-2] == resource_type:
             return url_frag[-1]
         logger.debug("Failed to get resource id from url {}".format(url))
-        raise IDMissingError()
+        raise IDMissingError
 
     @classmethod
     def _get_url(cls, urls):
@@ -168,7 +168,7 @@ class ResponseParser(BaseResponseParser):
         elif isinstance(urls, list):
             pass
         else:
-            raise URLParseError()
+            raise URLParseError
         for url in urls:
             if url.get('rel') == 'self':
                 return url.get('href', '')
@@ -187,7 +187,7 @@ class ResponseParser(BaseResponseParser):
                     )
                     parsed = data
         else:
-            raise RepresentationParseError()
+            raise RepresentationParseError
         if not isinstance(parsed, list):
             parsed = [parsed]
         return parsed

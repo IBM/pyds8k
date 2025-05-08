@@ -25,10 +25,10 @@ logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 def update_resource_id_in_url(old_id, new_id, url, field=''):
     if not field:
         if not isinstance(url, str):
-            raise URLParseError()
+            raise URLParseError
         return url.replace(old_id, new_id, 1)
     try:
         url[field] = str(url[field]).replace(old_id, new_id, 1)
     except Exception:
-        raise URLParseError()
+        raise URLParseError
     return url

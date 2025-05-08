@@ -56,7 +56,7 @@ class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
 
     def get_tserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         tserep = self.all(DS8K_TSEREP).list()
         self._start_updating()
         setattr(self, DS8K_TSEREP, tserep)
@@ -68,7 +68,7 @@ class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
 
     def get_eserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         eserep = self.all(DS8K_ESEREP).list()
         self._start_updating()
         setattr(self, DS8K_ESEREP, eserep)
@@ -80,32 +80,32 @@ class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
 
     def delete_tserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_TSEREP).delete()
 
     def delete_eserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_ESEREP).delete()
 
     def update_tserep_cap(self, cap, captype=''):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_TSEREP).update({'cap': cap, 'captype': captype})
 
     def update_eserep_cap(self, cap, captype=''):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_ESEREP).update({'cap': cap, 'captype': captype})
 
     def update_tserep_threshold(self, threshold):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_TSEREP).update({'threshold': threshold})
 
     def update_eserep_threshold(self, threshold):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_ESEREP).update({'threshold': threshold})
 
 

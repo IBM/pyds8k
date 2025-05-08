@@ -371,7 +371,7 @@ class Resource(UtilsMixin, BaseResource):
         elif isinstance(urls, list):
             pass
         else:
-            raise URLParseError()
+            raise URLParseError
         for url in urls:
             if url.get('rel') == 'self':
                 return url.get('href', '')
@@ -616,12 +616,12 @@ class Manager(UtilsMixin, BaseManager):
     def _get_data(self, response_body, method='', response=None):
         if not method:  # get or list
             if not response_body:
-                raise ResponseBodyMissingError()
+                raise ResponseBodyMissingError
             res_p = self.ResponseParser(response_body, self.resource_type)
             return res_p.get_representations()
         if method == POSTA:
             if not response_body:
-                raise ResponseBodyMissingError()
+                raise ResponseBodyMissingError
             res_p = self.ResponseParser(response_body, self.resource_type)
             return res_p.get_posta_response_data()
         if response_body:
@@ -687,7 +687,7 @@ class Manager(UtilsMixin, BaseManager):
                     self.url += '/' + resource_id
                     new = True
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             new = True
@@ -716,7 +716,7 @@ class Manager(UtilsMixin, BaseManager):
                 self.url = self.managed_object.url
                 parent = self.managed_object.parent
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
         if body:
@@ -744,7 +744,7 @@ class Manager(UtilsMixin, BaseManager):
             if self.managed_object is not None:
                 url = self.managed_object.url
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         resp, res_body = self.client.post(url, body=self._get_request_data(body))
         data = self._get_data(res_body, method=POST, response=resp)
 
@@ -757,7 +757,7 @@ class Manager(UtilsMixin, BaseManager):
                 self.url = self.managed_object.url
                 post_body = body or self.managed_object.representation
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             post_body = body or self.managed_object.representation
@@ -786,7 +786,7 @@ class Manager(UtilsMixin, BaseManager):
                 self.url = self.managed_object.url
                 put_body = body or self.managed_object.representation
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             put_body = body
@@ -803,7 +803,7 @@ class Manager(UtilsMixin, BaseManager):
                     body if body else self.managed_object._get_modified_info_dict()
                 )
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             patch_body = body
@@ -818,7 +818,7 @@ class Manager(UtilsMixin, BaseManager):
             if self.managed_object is not None:
                 self.url = self.managed_object.url
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
         resp, body = self.client.delete(self.url)

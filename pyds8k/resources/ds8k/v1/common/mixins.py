@@ -1745,7 +1745,7 @@ class VolumeMixin(object):
         if volume_id:
             return self.get_volume(volume_id)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         volumes = self.all(types.DS8K_VOLUME).list()
         self._start_updating()
         setattr(self, types.DS8K_VOLUME, volumes)
@@ -1765,7 +1765,7 @@ class VolumeMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_VOLUME, volume_id).get()
 
 
@@ -1785,7 +1785,7 @@ class FCPortMixin(object):
         if port_id:
             return self.get_ioport(port_id)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         ioports = self.all(types.DS8K_IOPORT).list()
         self._start_updating()
         setattr(self, types.DS8K_IOPORT, ioports)
@@ -1804,7 +1804,7 @@ class FCPortMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_IOPORT, port_id).get()
 
 
@@ -1824,7 +1824,7 @@ class HostPortMixin(object):
         if port_id:
             return self.get_host_port(port_id)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         host_ports = self.all(types.DS8K_HOST_PORT).list()
         self._start_updating()
         setattr(self, types.DS8K_HOST_PORT, host_ports)
@@ -1843,7 +1843,7 @@ class HostPortMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_HOST_PORT, port_id).get()
 
 
@@ -1861,7 +1861,7 @@ class FlashCopyMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if fcid:
             return self.one(types.DS8K_FLASHCOPY, fcid).get()
         flashcopies = self.all(types.DS8K_FLASHCOPY).list()
@@ -1896,7 +1896,7 @@ class FlashCopyMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if fcid:
             return self.one(
                 '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
@@ -1938,7 +1938,7 @@ class PPRCMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if pprc_id:
             return self.one(types.DS8K_PPRC, pprc_id).get()
         pprc = self.all(types.DS8K_PPRC).list()
@@ -2008,7 +2008,7 @@ class VolmapMixin(object):
         if lunid:
             return self.get_mapping(lunid)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         mappings = self.all(types.DS8K_VOLMAP).list()
         self._start_updating()
         setattr(self, types.DS8K_VOLMAP, mappings)
@@ -2027,7 +2027,7 @@ class VolmapMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_VOLMAP, lunid).get()
 
     def delete_mapping(self, lunid):
@@ -2042,7 +2042,7 @@ class VolmapMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         _, res = self.one(types.DS8K_VOLMAP, lunid).delete()
         return res
 
@@ -2060,7 +2060,7 @@ class VolmapMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if volumes:
             _, res = self.all(types.DS8K_VOLMAP).posta({'volumes': volumes})
         else:

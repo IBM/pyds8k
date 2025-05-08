@@ -279,7 +279,7 @@ class HTTPClient(object):
     def _get_uri_from_location(self, resp):
         link = resp.headers.get('Location')
         if not link:
-            raise exceptions.URLParseError()
+            raise exceptions.URLParseError
         return link
 
     def _parse_url(self, url):
@@ -293,4 +293,4 @@ class HTTPClient(object):
             return url
         if schma + '//' + domain == self.domain:
             return '/' + url2
-        raise exceptions.URLParseError()
+        raise exceptions.URLParseError

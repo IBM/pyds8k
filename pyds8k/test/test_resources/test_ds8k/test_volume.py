@@ -241,7 +241,7 @@ class TestVolume(TestDS8KWithConnect):
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(body, action_response['server'])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     @httpretty.activate
     def test_update_volume_map(self):
         volume_id = 'a_0000'

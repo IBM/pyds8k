@@ -129,7 +129,7 @@ class BaseManager(Manager):
                 #             if key not in self.managed_object.readonly_fileds
                 #             }
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             post_body = body
         return super(BaseManager, self)._post(url=url, body=post_body)
@@ -145,7 +145,7 @@ class BaseManager(Manager):
                     body if body else self.managed_object._get_modified_info_dict()
                 )
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             put_body = body

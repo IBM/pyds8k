@@ -223,7 +223,7 @@ class TestHost(TestDS8KWithConnect):
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(resp1, action_response['server'])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     @httpretty.activate
     def test_update_host_rm_volumes_all(self):
         host_name = 'host1'
@@ -262,12 +262,12 @@ class TestHost(TestDS8KWithConnect):
         self.assertEqual(data2, action_response['server'])
         self.assertEqual(resp2.status_code, 200)
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     @httpretty.activate
     def test_update_host_add_volumes(self):
         warnings.warn('test_update_host_add_volumes: not finished yet.')
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     @httpretty.activate
     def test_update_host_rm_volumes(self):
         warnings.warn('test_update_host_rm_volumes: not finished yet.')

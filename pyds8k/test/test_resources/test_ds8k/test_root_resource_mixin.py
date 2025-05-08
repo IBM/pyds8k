@@ -171,14 +171,14 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     def test_get_flashcopies(self):
         self._test_resource_list_by_route(types.DS8K_FLASHCOPY)
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     def test_get_flashcopy(self):
         self._test_resource_by_route(types.DS8K_FLASHCOPY)
 
     def test_get_pprc(self):
         self._test_resource_list_by_route(types.DS8K_PPRC)
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     def test_get_pprc_by_id(self):
         self._test_resource_by_route(types.DS8K_PPRC)
 
