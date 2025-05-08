@@ -1691,9 +1691,8 @@ class RootEventMixin(object):
         }.items():
             if v:
                 if not isinstance(v, datetime):
-                    raise InvalidArgumentError(
-                        'before/after must be an datetime instance.'
-                    )
+                    msg = 'before/after must be an datetime instance.'
+                    raise InvalidArgumentError(msg)
                 dttz = datetime(
                     year=v.year,
                     month=v.month,

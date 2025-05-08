@@ -157,25 +157,32 @@ class BaseManager(Manager):
         return self._put(url=url, body=body)
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
-        raise OperationNotAllowed('get', self.resource_class.__name__)
+        msg = 'get'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
-        raise OperationNotAllowed('list', self.resource_class.__name__)
+        msg = 'list'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
     def post(self, url='', body=None):
-        raise OperationNotAllowed('post', self.resource_class.__name__)
+        msg = 'post'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
     def posta(self, url='', body=None):
-        raise OperationNotAllowed('posta', self.resource_class.__name__)
+        msg = 'posta'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
     def put(self, url='', body=None):
-        raise OperationNotAllowed('put', self.resource_class.__name__)
+        msg = 'put'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
     def patch(self, url='', body=None):
-        raise OperationNotAllowed('patch', self.resource_class.__name__)
+        msg = 'patch'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
     def delete(self, url=''):
-        raise OperationNotAllowed('delete', self.resource_class.__name__)
+        msg = 'delete'
+        raise OperationNotAllowed(msg, self.resource_class.__name__)
 
 
 class ReadOnlyManager(BaseManager):

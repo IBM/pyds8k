@@ -143,7 +143,8 @@ class TestUtils(object):
             if route == types.DS8K_LSS:
                 res = self.system.get_lss_by_id(route_id)
             else:
-                raise Exception('Failed calling get_{}'.format(route))
+                msg = 'Failed calling get_{}'.format(route)
+                raise Exception(msg)
         self.assertIsInstance(res, res_class)
         sub_res_list = getattr(res, 'get_{}'.format(sub_route))()
         self.assertIs(getattr(res, sub_route), sub_res_list)
@@ -172,13 +173,15 @@ class TestUtils(object):
         try:
             return response.get('data').get(route)[0][id_field]
         except Exception:
-            raise Exception('Can not get the id of {} from response.'.format(route))
+            msg = 'Can not get the id of {} from response.'.format(route)
+            raise Exception(msg)
 
     def _get_resource_ids_from_resopnse(self, route, response, id_field='id'):
         try:
             return [re[id_field] for re in response.get('data').get(route)]
         except Exception:
-            raise Exception('Can not get the id of {} from response.'.format(route))
+            msg = 'Can not get the id of {} from response.'.format(route)
+            raise Exception(msg)
 
     def _get_class_by_name(self, name):
         prefix = '{}.{}'.format(self.client.service_type, self.client.service_version)
@@ -186,7 +189,8 @@ class TestUtils(object):
             "{}.{}".format(prefix, str(name).lower())
         )
         if res_class.__name__ == Resource.__name__:
-            raise Exception('Can not get resource class from route: {}'.format(name))
+            msg = 'Can not get resource class from route: {}'.format(name)
+            raise Exception(msg)
         return res_class
 
 

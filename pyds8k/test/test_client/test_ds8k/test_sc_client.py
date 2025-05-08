@@ -62,7 +62,8 @@ class TestClient(TestUtils, TestCaseWithConnect):
             "{}.{}".format(prefix, str(route).lower())
         )
         if res_class.__name__ == Resource.__name__:
-            raise Exception('Can not get resource class from route: {}'.format(route))
+            msg = 'Can not get resource class from route: {}'.format(route)
+            raise Exception(msg)
         id_field = res_class.id_field
         route_id = self._get_resource_id_from_resopnse(
             base_route, resource_response, id_field
@@ -139,7 +140,8 @@ class TestClient(TestUtils, TestCaseWithConnect):
             "{}.{}".format(prefix, str(route).lower())
         )
         if res_class.__name__ == Resource.__name__:
-            raise Exception('Can not get resource class from route: {}'.format(route))
+            msg = 'Can not get resource class from route: {}'.format(route)
+            raise Exception(msg)
         url = '/{}'.format(route.replace('.', '/'))
         base_route = route.split('.')[-1]
         httpretty.register_uri(

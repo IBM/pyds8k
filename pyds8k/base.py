@@ -768,7 +768,8 @@ class Manager(UtilsMixin, BaseManager):
         resp, body = self.client.post(self.url, body=self._get_request_data(post_body))
         data = self._get_data(body, method=POSTA, response=resp)
         if not isinstance(data, list):
-            raise Exception("The parsed posta response data should be a list.")
+            msg = "The parsed posta response data should be a list."
+            raise Exception(msg)
         res_list = []
         for s_data in data:
             res_data, res_url = s_data

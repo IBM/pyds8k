@@ -23,32 +23,32 @@ def get_response_data_by_type(resource_type):
     try:
         return success_response_one[resource_type]
     except KeyError:
-        raise KeyError('Can not get response data by type: {}'.format(resource_type))
+        msg = 'Can not get response data by type: {}'.format(resource_type)
+        raise KeyError(msg)
 
 
 def get_response_json_by_type(resource_type):
     try:
         return json.dumps(success_response_one[resource_type])
     except KeyError:
-        raise KeyError('Can not get response json by type: {}'.format(resource_type))
+        msg = 'Can not get response json by type: {}'.format(resource_type)
+        raise KeyError(msg)
 
 
 def get_response_list_data_by_type(resource_type):
     try:
         return success_response_all[resource_type]
     except KeyError:
-        raise KeyError(
-            'Can not get response list data by type: {}'.format(resource_type)
-        )
+        msg = 'Can not get response list data by type: {}'.format(resource_type)
+        raise KeyError(msg)
 
 
 def get_response_list_json_by_type(resource_type):
     try:
         return json.dumps(success_response_all[resource_type])
     except KeyError:
-        raise KeyError(
-            'Can not get response list json by type: {}'.format(resource_type)
-        )
+        msg = 'Can not get response list json by type: {}'.format(resource_type)
+        raise KeyError(msg)
 
 
 def get_request_json_body(body):
