@@ -5,18 +5,13 @@ dynamic = ["version"]
 readme = "README.md"
 license-files = ["LICENSE"]
 requires-python = ">=3.9"
-authors = [
-    { name = "Zhang Wu", email = "shwzhang@cn.ibm.com" },
-]
+authors = [{ name = "Zhang Wu", email = "shwzhang@cn.ibm.com" }]
 maintainers = [
     { name = "Randy Blea", email = "blead@us.ibm.com" },
     { name = "NjM3MjY5NzAgNzA3MzA3", email = "102704081+NjM3MjY5NzAgNzA3MzA3@users.noreply.github.com" },
 ]
-keywords = [
-    "IBM",
-    "DS8000 Storage"
-]
-classifiers=[
+keywords = ["IBM", "DS8000 Storage"]
+classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
@@ -29,20 +24,15 @@ classifiers=[
     'Programming Language :: Python :: 3.13',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
-dependencies = [
-    "requests>=2.31.0",
-]
+dependencies = ["requests>=2.31.0"]
 [dependency-groups]
-dev = [
-    "sphinx>=2.2.1",
-    "ruff>=0.11.6",
-]
+dev = ["sphinx>=2.2.1", "ruff>=0.11.6"]
 test = [
     "pytest>=7.0.0",
     "pytest-cov>=3.0.0",
     "mock>=3.0.5",
     "httpretty>=0.9.6",
-    "tox>=4.22.0"
+    "tox>=4.22.0",
 ]
 
 [build-system]
@@ -56,7 +46,7 @@ Issues = "https://github.com/IBM/pyds8k/issues"
 Repository = "https://github.com/IBM/pyds8k.git"
 
 [tool.setuptools.dynamic]
-version = {attr = "pyds8k.version"} # Set in pyds8k/__init__.py
+version = { attr = "pyds8k.version" } # Set in pyds8k/__init__.py
 
 [tool.setuptools.packages.find]
 exclude = ["cover", "images"]
@@ -84,7 +74,7 @@ extend-select = [
 ]
 
 ignore = [
-    "PLR0913" # Too many arguments in function definition
+    "PLR0913", # Too many arguments in function definition
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
@@ -96,9 +86,15 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
 "pyds8k/example.py" = ["T201"] # allow print
-"pyds8k/resources/ds8k/v1/common/mixins.py" = ["E741"] # Allow ambigous variable name 'O'
+"pyds8k/utils.py" = [
+    "PLW0603", # FIXME: Using the global statement to update logger is discouraged
+]
+"pyds8k/resources/ds8k/v1/common/mixins.py" = [
+    "E741", # Allow ambigous variable name 'O'
+]
 "pyds8k/httpclient.py" = ["PLR0912", "PLR0915"]
 "pyds8k/test/test_resources/test_ds8k/test_resource_group.py" = ["PLR0915"]
+
 
 [tool.ruff.format]
 # Project has mixed strings
