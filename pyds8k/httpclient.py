@@ -177,7 +177,6 @@ class HTTPClient(object):
 
     def request(self, url, method, **kwargs):
         log_required = True
-        url = url
         headers = kwargs.get('headers', {}).copy()
         with_http_headers = kwargs.get('with_http_headers', {})
 

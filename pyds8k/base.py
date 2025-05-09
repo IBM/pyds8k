@@ -376,7 +376,7 @@ class Resource(UtilsMixin, BaseResource):
         return ''
 
     def __getattr__(self, k):
-        if k == 'id' or k == self.id_field:
+        if k in ('id', self.id_field):
             if '_id' not in self.__dict__:
                 raise AttributeError(k)
             return self._id
@@ -400,7 +400,7 @@ class Resource(UtilsMixin, BaseResource):
             return None
         if self._is_init():
             return super(Resource, self).__setattr__(key, value)
-        if key == 'id' or key == self.id_field:
+        if key in ('id', self.id_field):
             raise FieldReadOnly(key)
         if not self.is_updating() and (
             key in self._template or key in self.representation

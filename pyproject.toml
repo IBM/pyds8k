@@ -80,9 +80,11 @@ extend-select = [
     "SIM",
     "TID",
     "PGH",
+    "PL",
 ]
 
 ignore = [
+    "PLR0913" # Too many arguments in function definition
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
@@ -95,6 +97,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.lint.per-file-ignores]
 "pyds8k/example.py" = ["T201"] # allow print
 "pyds8k/resources/ds8k/v1/common/mixins.py" = ["E741"] # Allow ambigous variable name 'O'
+"pyds8k/httpclient.py" = ["PLR0912", "PLR0915"]
+"pyds8k/test/test_resources/test_ds8k/test_resource_group.py" = ["PLR0915"]
 
 [tool.ruff.format]
 # Project has mixed strings
