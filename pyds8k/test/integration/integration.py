@@ -16,7 +16,7 @@
 
 import unittest
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import partial, wraps
 from logging import getLogger
 
@@ -135,8 +135,10 @@ class TestIntegration(unittest.TestCase):
 
     def test_events(self):
         sys = self.client.get_system()
-        before = datetime.now()
-        after = datetime(year=before.year, month=before.month, day=before.day)
+        before = datetime.now(tz=timezone.utc)
+        after = datetime(
+            year=before.year, month=before.month, day=before.day, tzinfo=timezone.utc
+        )
         logger.info('Starting GET /events request')
         events = sys.get_events_by_filter(
             warning=True, error=True, before=before, after=after

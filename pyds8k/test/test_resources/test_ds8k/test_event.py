@@ -14,7 +14,7 @@
 # limitations under the License.
 ##############################################################################
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import httpretty
 
@@ -60,8 +60,8 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_events_by_filter_set_date(self):
         url = '/events'
-        before = datetime(2015, 4, 1)
-        after = datetime(2015, 1, 1)
+        before = datetime(2015, 4, 1, tzinfo=timezone.utc)
+        after = datetime(2015, 1, 1, tzinfo=timezone.utc)
 
         httpretty.register_uri(
             httpretty.GET,
