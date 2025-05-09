@@ -1,4 +1,5 @@
 import json
+from http import HTTPStatus
 
 import httpretty
 
@@ -46,7 +47,7 @@ class TestFlashCopies(TestDS8KWithConnect):
                 **json.loads(request.body).get('request').get('params'),
                 **req.get_request_data().get('request').get('params'),
             } == json.loads(request.body).get('request').get('params')
-            return (201, headers, create_flashcopy_response_json)
+            return (HTTPStatus.CREATED, headers, create_flashcopy_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -76,7 +77,7 @@ class TestFlashCopies(TestDS8KWithConnect):
         resp2, data2 = new_fc2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], FlashCopies)
-        self.assertEqual(resp2.status_code, 201)
+        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
 
         # Way 3
         flashcopies = self.system.all(
@@ -91,7 +92,7 @@ class TestFlashCopies(TestDS8KWithConnect):
         resp3, data3 = new_fc3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], FlashCopies)
-        self.assertEqual(resp3.status_code, 201)
+        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
 
     @httpretty.activate
     def test_delete_cs_flashcopy(self):
@@ -106,14 +107,14 @@ class TestFlashCopies(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         # Way 1
         _ = self.system.delete_cs_flashcopy(name)
@@ -123,5 +124,5 @@ class TestFlashCopies(TestDS8KWithConnect):
         flashcopy = self.system.get_cs_flashcopies(name)
         self.assertIsInstance(flashcopy, FlashCopies)
         resp2, _ = flashcopy.delete()
-        self.assertEqual(resp2.status_code, 204)
+        self.assertEqual(resp2.status_code, HTTPStatus.NO_CONTENT)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)

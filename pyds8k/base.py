@@ -18,6 +18,7 @@ import contextlib
 import json
 import os
 import sys
+from http import HTTPStatus
 from logging import getLogger
 
 from pyds8k import PYDS8K_DEFAULT_LOGGER
@@ -28,8 +29,6 @@ from pyds8k.exceptions import (
     URLParseError,
 )
 from pyds8k.utils import (
-    HTTP200,
-    HTTP204,
     POST,
     POSTA,
     get_request_parser_class,
@@ -632,7 +631,7 @@ class Manager(UtilsMixin, BaseManager):
                     )
                 )
                 data = response_body
-        elif response.status_code in (HTTP200, HTTP204):
+        elif response.status_code in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
             data = messages.DEFAULT_SUCCESS_BODY_DICT
         else:
             res_id = ''

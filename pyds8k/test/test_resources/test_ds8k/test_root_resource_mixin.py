@@ -14,6 +14,8 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
+
 import httpretty
 import pytest
 
@@ -64,7 +66,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=system_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         sys = self.system.get_system()
         self.assertIsInstance(sys, System)
@@ -88,7 +90,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=lss_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         self.system.get_lss(lss_type=lss_type)
         self.assertEqual(
@@ -107,7 +109,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=lss_a_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         lss = self.system.get_lss_by_id(lss_id)
         self.assertIsInstance(lss, LSS)
@@ -197,7 +199,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         self.system.delete_tserep_by_pool(pool_name)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
@@ -211,7 +213,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         self.system.delete_eserep_by_pool(pool_name)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
@@ -225,7 +227,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=tserep_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         tserep = self.system.get_tserep_by_pool(pool_name)
         self.assertIsInstance(tserep, TSERep)
@@ -239,7 +241,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=eserep_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         eserep = self.system.get_eserep_by_pool(pool_name)
         self.assertIsInstance(eserep, ESERep)
@@ -259,7 +261,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=volume_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         vol_list = self.system.get_volumes_by_host(host_name=host_name)
         self.assertIsInstance(vol_list, list)
@@ -275,7 +277,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=volume_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         vol_list = self.system.get_volumes_by_lss(lss_id=lss_id)
         self.assertIsInstance(vol_list, list)
@@ -291,7 +293,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=volume_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         vol_list = self.system.get_volumes_by_pool(pool_id=pool_id)
         self.assertIsInstance(vol_list, list)

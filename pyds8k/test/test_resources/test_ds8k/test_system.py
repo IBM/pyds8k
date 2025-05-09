@@ -14,6 +14,8 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
+
 import httpretty
 
 from pyds8k.exceptions import OperationNotAllowed
@@ -43,7 +45,7 @@ class TestSystem(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=system_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         sys = self.system.get_system()
         self.assertIsInstance(sys, System)
@@ -58,7 +60,7 @@ class TestSystem(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=system_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         sys = self.system.get_system()
         with self.assertRaises(OperationNotAllowed):

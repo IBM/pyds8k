@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+from http import HTTPStatus
 
 import httpretty
 import pytest
@@ -128,14 +129,14 @@ class TestVolume(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         # Way 1
         _ = self.system.delete_volume(name)
@@ -146,7 +147,7 @@ class TestVolume(TestDS8KWithConnect):
         volume = self.system.get_volume(name)
         self.assertIsInstance(volume, Volume)
         resp2, _ = volume.delete()
-        self.assertEqual(resp2.status_code, 204)
+        self.assertEqual(resp2.status_code, HTTPStatus.NO_CONTENT)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
 
     @httpretty.activate
@@ -160,7 +161,7 @@ class TestVolume(TestDS8KWithConnect):
 
             resq = RequestParser({'name': new_name})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -191,7 +192,7 @@ class TestVolume(TestDS8KWithConnect):
 
             resq = RequestParser({'cap': new_size, 'captype': captype})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -222,7 +223,7 @@ class TestVolume(TestDS8KWithConnect):
 
             resq = RequestParser({'pool': new_pool})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -253,7 +254,7 @@ class TestVolume(TestDS8KWithConnect):
 
             resq = RequestParser({'host': host_name})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -299,7 +300,7 @@ class TestVolume(TestDS8KWithConnect):
                 **json.loads(request.body).get('request').get('params'),
                 **req.get_request_data().get('request').get('params'),
             } == json.loads(request.body).get('request').get('params')
-            return (201, headers, create_volume_response_json)
+            return (HTTPStatus.CREATED, headers, create_volume_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -334,7 +335,7 @@ class TestVolume(TestDS8KWithConnect):
         resp2, data2 = new_vol2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], Volume)
-        self.assertEqual(resp2.status_code, 201)
+        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
 
         # Way 3
         volume = self.system.all(DS8K_VOLUME, rebuild_url=True)
@@ -350,7 +351,7 @@ class TestVolume(TestDS8KWithConnect):
         resp3, data3 = new_vol3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], Volume)
-        self.assertEqual(resp3.status_code, 201)
+        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
 
         # Way 4
         # Don't init a resource instance by yourself when create new.
@@ -386,7 +387,7 @@ class TestVolume(TestDS8KWithConnect):
                 }
             )
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (201, headers, create_volumes_response_json)
+            return (HTTPStatus.CREATED, headers, create_volumes_response_json)
 
         def _verify_request2(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -405,7 +406,7 @@ class TestVolume(TestDS8KWithConnect):
                 }
             )
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (201, headers, create_volumes_response_json)
+            return (HTTPStatus.CREATED, headers, create_volumes_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -476,7 +477,11 @@ class TestVolume(TestDS8KWithConnect):
                 }
             )
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (201, headers, create_volumes_partial_failed_response_json)
+            return (
+                HTTPStatus.CREATED,
+                headers,
+                create_volumes_partial_failed_response_json,
+            )
 
         httpretty.register_uri(
             httpretty.POST,
@@ -600,7 +605,7 @@ class TestVolume(TestDS8KWithConnect):
         resp2, data2 = new_vol2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], Volume)
-        self.assertEqual(resp2.status_code, 201)
+        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
 
         # Way 3
         volume = self.system.all(DS8K_VOLUME, rebuild_url=True)
@@ -617,7 +622,7 @@ class TestVolume(TestDS8KWithConnect):
         resp3, data3 = new_vol3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], Volume)
-        self.assertEqual(resp3.status_code, 201)
+        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
 
         # Way 4
         # Don't init a resource instance by yourself when create new.

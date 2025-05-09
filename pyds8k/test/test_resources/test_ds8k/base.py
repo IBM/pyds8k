@@ -16,6 +16,7 @@
 
 import operator
 from functools import cmp_to_key, partial
+from http import HTTPStatus
 
 import httpretty
 
@@ -81,7 +82,7 @@ class TestUtils(object):
             self.domain + self.base_url + url,
             body=get_response_json_by_type(route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         res = getattr(self.system, 'get_{}'.format(route))(route_id)
         self.assertIsInstance(res, res_class)
@@ -100,7 +101,7 @@ class TestUtils(object):
             self.domain + self.base_url + url,
             body=get_response_list_json_by_type(route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         res_list = getattr(self.system, 'get_{}'.format(route))()
         self.assertIsInstance(res_list[0], res_class)
@@ -127,14 +128,14 @@ class TestUtils(object):
             self.domain + self.base_url + sub_route_url,
             body=get_response_list_json_by_type(sub_route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + route_url,
             body=get_response_json_by_type(route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         try:
             res = getattr(self.system, 'get_{}'.format(route))(route_id)

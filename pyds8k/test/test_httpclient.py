@@ -16,6 +16,7 @@
 
 import json
 import time
+from http import HTTPStatus
 
 import httpretty
 import pytest
@@ -74,14 +75,14 @@ class TestHTTPClient(base.TestCaseWithConnect):
             self.domain + self.base_url + url,
             content_type='application/json',
             adding_headers={'Location': new_url},
-            status=301,
+            status=HTTPStatus.MOVED_PERMANENTLY,
         )
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + new_url,
             body=default_a_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         de = self.resource.one(DEFAULT, 'old').get(allow_redirects=False)
         self.assertEqual(new_url, de.url)
@@ -96,7 +97,7 @@ class TestHTTPClient(base.TestCaseWithConnect):
 
         def _verify_request(request, uri, headers):
             time.sleep(10)
-            return (200, headers, default_a_response_json)
+            return (HTTPStatus.OK, headers, default_a_response_json)
 
         httpretty.register_uri(
             httpretty.GET,

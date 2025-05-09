@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+from http import HTTPStatus
 
 import httpretty
 
@@ -66,7 +67,11 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
                 **json.loads(request.body).get('request').get('params'),
                 **req.get_request_data().get('request').get('params'),
             } == json.loads(request.body).get('request').get('params')
-            return (201, headers, create_hmc_certificate_csr_response_json)
+            return (
+                HTTPStatus.CREATED,
+                headers,
+                create_hmc_certificate_csr_response_json,
+            )
 
         httpretty.register_uri(
             httpretty.POST,
@@ -99,4 +104,4 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
         # resp2, data2 = hmc_certificate_csr2.post()
         # self.assertEqual(httpretty.POST, httpretty.last_request().method)
         # # self.assertIsInstance(data2[0], HmcCertificateCsr)
-        # self.assertEqual(resp2.status_code, 201)
+        # self.assertEqual(resp2.status_code, HTTPStatus.CREATED)

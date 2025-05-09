@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+from http import HTTPStatus
 
 import httpretty
 
@@ -66,7 +67,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=400,
+            status=HTTPStatus.BAD_REQUEST,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -81,7 +82,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + '/tokens',
             body=json.dumps(response_token),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         httpretty.register_uri(
@@ -91,17 +92,17 @@ class TestHTTPException(base.TestCaseWithConnect):
                 httpretty.Response(
                     body=json.dumps(response_401),
                     content_type='application/json',
-                    status=401,
+                    status=HTTPStatus.UNAUTHORIZED,
                 ),
                 httpretty.Response(
                     body=json.dumps(default_a_response),
                     content_type='application/json',
-                    status=200,
+                    status=HTTPStatus.OK,
                 ),
                 httpretty.Response(
                     body=json.dumps(response_401),
                     content_type='application/json',
-                    status=401,
+                    status=HTTPStatus.UNAUTHORIZED,
                 ),
             ],
         )
@@ -122,7 +123,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + '/tokens',
             body=json.dumps(response_token_error),
             content_type='application/json',
-            status=401,
+            status=HTTPStatus.UNAUTHORIZED,
         )
 
         httpretty.register_uri(
@@ -132,17 +133,17 @@ class TestHTTPException(base.TestCaseWithConnect):
                 httpretty.Response(
                     body=json.dumps(response_401),
                     content_type='application/json',
-                    status=401,
+                    status=HTTPStatus.UNAUTHORIZED,
                 ),
                 httpretty.Response(
                     body=json.dumps(default_a_response),
                     content_type='application/json',
-                    status=200,
+                    status=HTTPStatus.OK,
                 ),
                 httpretty.Response(
                     body=json.dumps(response_401),
                     content_type='application/json',
-                    status=401,
+                    status=HTTPStatus.UNAUTHORIZED,
                 ),
             ],
         )
@@ -159,7 +160,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=403,
+            status=HTTPStatus.FORBIDDEN,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -175,7 +176,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=404,
+            status=HTTPStatus.NOT_FOUND,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -191,7 +192,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=405,
+            status=HTTPStatus.METHOD_NOT_ALLOWED,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -207,7 +208,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=409,
+            status=HTTPStatus.CONFLICT,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -223,7 +224,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=415,
+            status=HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -239,7 +240,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=500,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -255,7 +256,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=503,
+            status=HTTPStatus.SERVICE_UNAVAILABLE,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
@@ -271,7 +272,7 @@ class TestHTTPException(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=504,
+            status=HTTPStatus.GATEWAY_TIMEOUT,
         )
 
         vol = self.resource.one(DEFAULT, 'a')

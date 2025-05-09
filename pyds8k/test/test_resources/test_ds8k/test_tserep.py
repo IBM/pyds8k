@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+from http import HTTPStatus
 
 import httpretty
 
@@ -54,7 +55,7 @@ class TestTSERep(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=tserep_list_response_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         def _verify_request(request, uri, headers):
@@ -62,7 +63,7 @@ class TestTSERep(TestDS8KWithConnect):
 
             resq = RequestParser({'cap': cap, 'threshold': threshold})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,

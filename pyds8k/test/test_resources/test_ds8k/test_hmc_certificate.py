@@ -14,6 +14,8 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
+
 import httpretty
 
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_CERTIFICATE
@@ -38,7 +40,7 @@ class TestHmcCertificate(TestDS8KWithConnect):
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
             self.assertIn(upload_hmc_certificate_cert, request.body.decode('UTF-8'))
-            return (201, headers, action_response_json)
+            return (HTTPStatus.CREATED, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -50,7 +52,7 @@ class TestHmcCertificate(TestDS8KWithConnect):
         resp1 = self.system.upload_hmc_signed_certificate(upload_hmc_certificate_cert)
 
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertEqual(resp1[0].status_code, 201)
+        self.assertEqual(resp1[0].status_code, HTTPStatus.CREATED)
         self.assertEqual(resp1[1], action_response)
 
         # ???: Doesn't work because HmcCertificate doesn't have a template?
@@ -62,4 +64,4 @@ class TestHmcCertificate(TestDS8KWithConnect):
         # resp2, data2 = hmc_certificate_csr2.post()
         # self.assertEqual(httpretty.POST, httpretty.last_request().method)
         # # self.assertIsInstance(data2[0], HmcCertificate)
-        # self.assertEqual(resp2.status_code, 201)
+        # self.assertEqual(resp2.status_code, HTTPStatus.CREATED)

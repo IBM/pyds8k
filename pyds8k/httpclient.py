@@ -14,6 +14,7 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
 from logging import getLogger
 
 import requests
@@ -223,14 +224,14 @@ class HTTPClient(object):
                     body = None
                 # Requests will deal with redirect automatically, code here is
                 # not needed. You can set allow_redirects=False to disable it.
-                if resp.status_code == 301:
+                if resp.status_code == HTTPStatus.MOVED_PERMANENTLY:
                     old_url = url
                     link = self._get_uri_from_location(resp)
                     url = self._parse_url(link)
                     logger.info(REDIRECTING.format(old_url, url))
                     continue
 
-                if resp.status_code >= 400:
+                if resp.status_code >= HTTPStatus.BAD_REQUEST:
                     raise exceptions.raise_error(resp, body, self.service_type)
                 return resp, body
 

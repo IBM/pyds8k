@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+from http import HTTPStatus
 
 import httpretty
 
@@ -109,19 +110,19 @@ class TestResource(base.TestCaseWithConnect):
                     body=action_response_json,
                     content_type='application/json',
                     adding_headers={'Location': self.base_url + url + '/vol1_id'},
-                    status=201,
+                    status=HTTPStatus.CREATED,
                 ),
                 httpretty.Response(
                     body=action_response_json,
                     content_type='application/json',
                     adding_headers={'Location': self.base_url + url + '/vol2_id'},
-                    status=201,
+                    status=HTTPStatus.CREATED,
                 ),
                 httpretty.Response(
                     body=action_response_json,
                     content_type='application/json',
                     adding_headers={'Location': self.base_url + url + '/vol3_id'},
-                    status=201,
+                    status=HTTPStatus.CREATED,
                 ),
             ],
         )
@@ -133,7 +134,7 @@ class TestResource(base.TestCaseWithConnect):
                     body=action_response_json,
                     content_type='application/json',
                     adding_headers={'Location': self.base_url + url + '/vol3_id'},
-                    status=201,
+                    status=HTTPStatus.CREATED,
                 ),
             ],
         )
@@ -150,7 +151,7 @@ class TestResource(base.TestCaseWithConnect):
         self.assertEqual(vol1.representation, default_template)
         resp1, data1 = vol1.save()
         self.assertIsInstance(data1[0], Resource)
-        self.assertEqual(resp1.status_code, 201)
+        self.assertEqual(resp1.status_code, HTTPStatus.CREATED)
         self.assertEqual(resp1.headers['Location'], self.base_url + url + '/vol1_id')
         self.assertEqual(resp1.headers['Location'], vol1.url)
 
@@ -171,7 +172,7 @@ class TestResource(base.TestCaseWithConnect):
         self.assertEqual(vol2.representation, rep)
         resp2, data2 = vol2.save()
         self.assertIsInstance(data2[0], Resource)
-        self.assertEqual(resp2.status_code, 201)
+        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
         self.assertEqual(resp2.headers['Location'], self.base_url + url + '/vol2_id')
         self.assertEqual(resp2.headers['Location'], vol2.url)
 
@@ -192,7 +193,7 @@ class TestResource(base.TestCaseWithConnect):
         resp3, data3 = vol3.save()
         # default create method is put if id is specified.
         self.assertEqual(data3, action_response.get('server'))
-        self.assertEqual(resp3.status_code, 201)
+        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
         self.assertEqual(resp3.headers['Location'], self.base_url + url + '/vol3_id')
 
     def test_create(self):
@@ -424,7 +425,7 @@ class TestResource(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'status': 'updated'}),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
@@ -432,7 +433,7 @@ class TestResource(base.TestCaseWithConnect):
         vol.name = 'vol1_rename'
         resp, data = vol.put()
         self.assertEqual(data, {'status': 'updated'})
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, HTTPStatus.OK)
 
     @httpretty.activate
     def test_patch(self):
@@ -450,7 +451,7 @@ class TestResource(base.TestCaseWithConnect):
             domain + self.base_url + url,
             body=json.dumps({'status': 'updated'}),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
@@ -460,7 +461,7 @@ class TestResource(base.TestCaseWithConnect):
         self.assertEqual(vol._get_modified_info_dict(), {'name': 'vol1_rename_patch'})
         resp, data = vol.patch()
         self.assertEqual(data, {'status': 'updated'})
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, HTTPStatus.OK)
 
     @httpretty.activate
     def test_delete(self):
@@ -477,13 +478,13 @@ class TestResource(base.TestCaseWithConnect):
             httpretty.DELETE,
             domain + self.base_url + url,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
         self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
         resp, data = vol.delete()
-        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(resp.status_code, HTTPStatus.NO_CONTENT)
         self.assertEqual(data, DEFAULT_SUCCESS_BODY_DICT)
 
     def test_save(self):

@@ -15,6 +15,7 @@
 ##############################################################################
 import json
 from functools import cmp_to_key
+from http import HTTPStatus
 
 import httpretty
 
@@ -79,7 +80,7 @@ class TestLSS(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=get_response_json_by_type(DS8K_LSS),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         for item in LSS.related_resources_collection:
             sub_route_url = '{}/{}'.format(url, item)
@@ -88,7 +89,7 @@ class TestLSS(TestDS8KWithConnect):
                 self.domain + self.base_url + sub_route_url,
                 body=get_response_list_json_by_type(item),
                 content_type='application/json',
-                status=200,
+                status=HTTPStatus.OK,
             )
         lss = self.system.get_lss_by_id(lss_id)
 

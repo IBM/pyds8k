@@ -17,6 +17,7 @@
 import json
 import warnings
 from functools import cmp_to_key
+from http import HTTPStatus
 
 import httpretty
 import pytest
@@ -77,14 +78,14 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=get_response_json_by_type(DS8K_HOST),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         # Way 1
         _ = self.system.delete_host(host_name)
@@ -95,7 +96,7 @@ class TestHost(TestDS8KWithConnect):
         host = self.system.get_host(host_name)
         self.assertIsInstance(host, Host)
         resp2, _ = host.delete()
-        self.assertEqual(resp2.status_code, 204)
+        self.assertEqual(resp2.status_code, HTTPStatus.NO_CONTENT)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
         # self.assertEqual(resp2.text, action_response['server'])
         # self.assertEqual(data2, action_response['server'])
@@ -112,7 +113,7 @@ class TestHost(TestDS8KWithConnect):
             httpretty.DELETE,
             self.domain + self.base_url + url,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         resp1 = self.system.delete_host(host_name)
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
@@ -127,7 +128,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=action_response_failed_json,
             content_type='application/json',
-            status=500,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
         with self.assertRaises(InternalServerError) as cm:
             self.system.delete_host(host_name)
@@ -144,14 +145,14 @@ class TestHost(TestDS8KWithConnect):
 
             resq = RequestParser({'ioports': []})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
             body=get_response_json_by_type(DS8K_HOST),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.PUT,
@@ -170,28 +171,28 @@ class TestHost(TestDS8KWithConnect):
         resp2, data2 = host.update()
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(data2, action_response['server'])
-        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(resp2.status_code, HTTPStatus.OK)
 
         # Way 3 in DS8K, save works the same as update
         host.ioports = []
         resp3, data3 = host.save()
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(data3, action_response['server'])
-        self.assertEqual(resp3.status_code, 200)
+        self.assertEqual(resp3.status_code, HTTPStatus.OK)
 
         # Way 4
         host.ioports = []
         resp4, data4 = host.patch()
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(data4, action_response['server'])
-        self.assertEqual(resp4.status_code, 200)
+        self.assertEqual(resp4.status_code, HTTPStatus.OK)
 
         # Way 5 in DS8K, put works the same as patch
         host.ioports = []
         resp5, data5 = host.put()
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(data5, action_response['server'])
-        self.assertEqual(resp5.status_code, 200)
+        self.assertEqual(resp5.status_code, HTTPStatus.OK)
 
     @httpretty.activate
     def test_update_host_add_ioports_all(self):
@@ -203,14 +204,14 @@ class TestHost(TestDS8KWithConnect):
 
             resq = RequestParser({'ioports': 'all'})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
             body=get_response_json_by_type(DS8K_HOST),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.PUT,
@@ -234,14 +235,14 @@ class TestHost(TestDS8KWithConnect):
 
             resq = RequestParser({'volumes': []})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
             body=get_response_json_by_type(DS8K_HOST),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         httpretty.register_uri(
             httpretty.PUT,
@@ -260,7 +261,7 @@ class TestHost(TestDS8KWithConnect):
         resp2, data2 = host.update()
         self.assertEqual(httpretty.PUT, httpretty.last_request().method)
         self.assertEqual(data2, action_response['server'])
-        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(resp2.status_code, HTTPStatus.OK)
 
     @pytest.mark.skip
     @httpretty.activate
@@ -291,7 +292,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         def _verify_request(request, uri, headers):
@@ -300,7 +301,7 @@ class TestHost(TestDS8KWithConnect):
             ioport_ids.append(port_id)
             resq = RequestParser({'ioports': ioport_ids})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -314,7 +315,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + ioport_url,
             body=get_response_list_json_by_type(DS8K_IOPORT),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         host = self.system.get_host(host_name)
         resp = host.update_host_add_ioports(port_id)
@@ -340,7 +341,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         def _verify_request(request, uri, headers):
@@ -348,7 +349,7 @@ class TestHost(TestDS8KWithConnect):
 
             resq = RequestParser({'ioports': ioport_ids[1:]})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -362,7 +363,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + ioport_url,
             body=get_response_list_json_by_type(DS8K_IOPORT),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         host = self.system.get_host(host_name)
         resp = host.update_host_rm_ioports(port_id)
@@ -379,7 +380,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=action_response_failed_json,
             content_type='application/json',
-            status=500,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
         with self.assertRaises(InternalServerError) as cm:
             self.system.update_host_rm_ioports_all(host_name)
@@ -460,7 +461,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         for item in Host.related_resources_collection:
             sub_route_url = '{}/{}'.format(url, item)
@@ -469,7 +470,7 @@ class TestHost(TestDS8KWithConnect):
                 self.domain + self.base_url + sub_route_url,
                 body=get_response_list_json_by_type(item),
                 content_type='application/json',
-                status=200,
+                status=HTTPStatus.OK,
             )
         host = self.system.get_host(host_name)
 
@@ -540,7 +541,7 @@ class TestHost(TestDS8KWithConnect):
                 **json.loads(request.body).get('request').get('params'),
                 **req.get_request_data().get('request').get('params'),
             } == json.loads(request.body).get('request').get('params')
-            return (200, headers, create_host_response_json)
+            return (HTTPStatus.OK, headers, create_host_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -559,7 +560,7 @@ class TestHost(TestDS8KWithConnect):
         resp2, data2 = new_host2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data2[0], Host)
-        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(resp2.status_code, HTTPStatus.OK)
 
         # Way 3
         host = self.system.all(DS8K_HOST, rebuild_url=True)
@@ -567,7 +568,7 @@ class TestHost(TestDS8KWithConnect):
         resp3, data3 = new_host3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(data3[0], Host)
-        self.assertEqual(resp3.status_code, 200)
+        self.assertEqual(resp3.status_code, HTTPStatus.OK)
 
         # Way 4
         # Don't init a resource instance by yourself when create new.
@@ -584,7 +585,7 @@ class TestHost(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=action_response_failed_json,
             content_type='application/json',
-            status=500,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
         with self.assertRaises(InternalServerError) as cm:
             self.system.create_host(host_name, host_type)

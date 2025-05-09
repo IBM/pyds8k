@@ -14,6 +14,8 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
+
 import httpretty
 
 from pyds8k.base import Resource, get_resource_and_manager_class_by_route
@@ -74,7 +76,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
             self.domain + self.base_url + url,
             body=get_response_json_by_type(base_route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         return route_id
 
@@ -85,7 +87,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
             self.domain + self.base_url + sub_route_url,
             body=get_response_list_json_by_type(sub_route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
 
     def _post_sub_resource(self, route, route_id, sub_route, body):
@@ -98,7 +100,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
             self.assertEqual(
                 get_request_json_body(request.body), resq.get_request_data()
             )
-            return (200, headers, create_mappings_response_json)
+            return (HTTPStatus.OK, headers, create_mappings_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -149,7 +151,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
             self.domain + self.base_url + url,
             body=get_response_list_json_by_type(base_route),
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         func = func or 'get_{}'.format(route.replace('.', '_'))
         res = getattr(self.rest_client, func)()

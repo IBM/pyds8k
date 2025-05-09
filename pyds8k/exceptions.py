@@ -18,6 +18,8 @@
 Exception definitions.
 """
 
+from http import HTTPStatus
+
 from pyds8k import messages
 from pyds8k.utils import get_response_parser_class, get_subclasses
 
@@ -177,8 +179,8 @@ class BadRequest(ClientError):
     HTTP 400 - Bad request: you sent some malformed data.
     """
 
-    status_code = '400'
-    reason_phrase = "Bad Request"
+    status_code = str(HTTPStatus.BAD_REQUEST.value)
+    reason_phrase = HTTPStatus.BAD_REQUEST.phrase
 
 
 class Unauthorized(ClientError):
@@ -186,8 +188,8 @@ class Unauthorized(ClientError):
     HTTP 401 - Unauthorized: bad credentials.
     """
 
-    status_code = '401'
-    reason_phrase = "Unauthorized"
+    status_code = str(HTTPStatus.UNAUTHORIZED.value)
+    reason_phrase = HTTPStatus.UNAUTHORIZED.phrase
 
 
 class Forbidden(ClientError):
@@ -196,8 +198,8 @@ class Forbidden(ClientError):
     resource.
     """
 
-    status_code = '403'
-    reason_phrase = "Forbidden"
+    status_code = str(HTTPStatus.FORBIDDEN.value)
+    reason_phrase = HTTPStatus.FORBIDDEN.phrase
 
 
 class NotFound(ClientError):
@@ -205,8 +207,8 @@ class NotFound(ClientError):
     HTTP 404 - Not found
     """
 
-    status_code = '404'
-    reason_phrase = "Not Found"
+    status_code = str(HTTPStatus.NOT_FOUND.value)
+    reason_phrase = HTTPStatus.NOT_FOUND.phrase
 
 
 class MethodNotAllowed(ClientError):
@@ -214,8 +216,8 @@ class MethodNotAllowed(ClientError):
     HTTP 405 - Method Not Allowed
     """
 
-    status_code = '405'
-    reason_phrase = "Method Not Allowed"
+    status_code = str(HTTPStatus.METHOD_NOT_ALLOWED.value)
+    reason_phrase = HTTPStatus.METHOD_NOT_ALLOWED.phrase
 
 
 class Conflict(ClientError):
@@ -223,8 +225,8 @@ class Conflict(ClientError):
     HTTP 409 - Conflict
     """
 
-    status_code = '409'
-    reason_phrase = "Conflict"
+    status_code = str(HTTPStatus.CONFLICT.value)
+    reason_phrase = HTTPStatus.CONFLICT.phrase
 
 
 class UnsupportedMediaType(ClientError):
@@ -232,8 +234,8 @@ class UnsupportedMediaType(ClientError):
     HTTP 415 - Unsupported Media Type
     """
 
-    status_code = '415'
-    reason_phrase = "Unsupported Media Type"
+    status_code = str(HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value)
+    reason_phrase = HTTPStatus.UNSUPPORTED_MEDIA_TYPE.phrase
 
 
 class InternalServerError(ServerError):
@@ -242,8 +244,8 @@ class InternalServerError(ServerError):
     condition which prevented it from fulfilling the request.
     """
 
-    status_code = '500'
-    reason_phrase = "Internal Server Error"
+    status_code = str(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+    reason_phrase = HTTPStatus.INTERNAL_SERVER_ERROR.phrase
 
 
 class ServiceUnavailable(ServerError):
@@ -251,8 +253,8 @@ class ServiceUnavailable(ServerError):
     HTTP 503 - Service Unavailable
     """
 
-    status_code = '503'
-    reason_phrase = "Service Unavailable"
+    status_code = str(HTTPStatus.SERVICE_UNAVAILABLE.value)
+    reason_phrase = HTTPStatus.SERVICE_UNAVAILABLE.phrase
 
 
 class GatewayTimeout(ServerError):
@@ -260,8 +262,8 @@ class GatewayTimeout(ServerError):
     HTTP 504 - Gateway Timeout
     """
 
-    status_code = '504'
-    reason_phrase = "Gateway Timeout"
+    status_code = str(HTTPStatus.GATEWAY_TIMEOUT.value)
+    reason_phrase = HTTPStatus.GATEWAY_TIMEOUT.phrase
 
 
 _error_dict = dict((c.status_code, c) for c in get_subclasses(ClientException))

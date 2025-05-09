@@ -16,6 +16,7 @@
 
 import json
 from functools import cmp_to_key
+from http import HTTPStatus
 
 import httpretty
 
@@ -71,7 +72,7 @@ class TestPool(TestDS8KWithConnect):
             httpretty.DELETE,
             self.domain + self.base_url + url,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         self.pool.delete_tserep()
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
@@ -83,7 +84,7 @@ class TestPool(TestDS8KWithConnect):
             httpretty.DELETE,
             self.domain + self.base_url + url,
             content_type='application/json',
-            status=204,
+            status=HTTPStatus.NO_CONTENT,
         )
         self.pool.delete_eserep()
         self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
@@ -99,7 +100,7 @@ class TestPool(TestDS8KWithConnect):
 
             resq = RequestParser({'cap': cap, 'captype': captype})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -121,7 +122,7 @@ class TestPool(TestDS8KWithConnect):
 
             resq = RequestParser({'threshold': threshold})
             self.assertEqual(json.loads(request.body), resq.get_request_data())
-            return (200, headers, action_response_json)
+            return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -186,7 +187,7 @@ class TestPool(TestDS8KWithConnect):
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=200,
+            status=HTTPStatus.OK,
         )
         for item in Pool.related_resources_collection:
             sub_route_url = '{}/{}'.format(url, item)
@@ -195,7 +196,7 @@ class TestPool(TestDS8KWithConnect):
                 self.domain + self.base_url + sub_route_url,
                 body=get_response_list_json_by_type(item),
                 content_type='application/json',
-                status=200,
+                status=HTTPStatus.OK,
             )
         pool = self.system.get_pool(self.pool_id)
 

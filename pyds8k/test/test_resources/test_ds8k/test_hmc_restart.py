@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+from http import HTTPStatus
 
 import httpretty
 
@@ -42,7 +43,7 @@ class TestHmcRestart(TestDS8KWithConnect):
                 **json.loads(request.body).get('request').get('params'),
                 **req.get_request_data().get('request').get('params'),
             } == json.loads(request.body).get('request').get('params')
-            return (201, headers, action_response_json)
+            return (HTTPStatus.CREATED, headers, action_response_json)
 
         httpretty.register_uri(
             httpretty.POST,
@@ -54,5 +55,5 @@ class TestHmcRestart(TestDS8KWithConnect):
         resp1 = self.system.restart_hmc()
 
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertEqual(resp1[0].status_code, 201)
+        self.assertEqual(resp1[0].status_code, HTTPStatus.CREATED)
         self.assertEqual(resp1[1], action_response['server'])
