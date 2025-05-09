@@ -61,6 +61,7 @@ target-version = "py39"
 
 [tool.ruff.lint]
 extend-select = [
+    "A",
     "DTZ",
     "EM",
     "FURB",
@@ -92,6 +93,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
     "PLW0603", # FIXME: Using the global statement to update logger is discouraged
 ]
 "pyds8k/resources/ds8k/v1/common/mixins.py" = [
+    "A002", # Ignore id is shadowing a Python builtin
     "E741", # Allow ambigous variable name 'O'
 ]
 "pyds8k/httpclient.py" = ["PLR0912", "PLR0915"]

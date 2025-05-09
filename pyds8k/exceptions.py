@@ -117,7 +117,7 @@ class FieldReadOnly(Exception):
         return messages.FIELD_READONLY.format(self.field_name)
 
 
-class ConnectionError(Exception):
+class ConnectionError(Exception):  # noqa: A001
     """
     Could not open a connection to the API service.
     """

@@ -540,7 +540,7 @@ class TestVolume(TestDS8KWithConnect):
         captype = 'gib'
         tp = 'ese'
         lss = '00'
-        id = '0000'
+        _id = '0000'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -554,7 +554,7 @@ class TestVolume(TestDS8KWithConnect):
                     'captype': captype,
                     'lss': lss,
                     'tp': tp,
-                    'id': id,
+                    'id': _id,
                 }
             )
 
@@ -564,8 +564,8 @@ class TestVolume(TestDS8KWithConnect):
             } == json.loads(request.body).get('request').get('params')
 
             prepared_response = create_volume_response.copy()
-            prepared_response['data']['volumes'][0]['id'] = id
-            prepared_href = f"{self.domain}{self.base_url}{url}/{id}"
+            prepared_response['data']['volumes'][0]['id'] = _id
+            prepared_href = f"{self.domain}{self.base_url}{url}/{_id}"
             prepared_response['link']['href'] = prepared_href
 
             return 201, headers, json.dumps(prepared_response)
@@ -585,7 +585,7 @@ class TestVolume(TestDS8KWithConnect):
             captype=captype,
             lss=lss,
             tp=tp,
-            id=id,
+            id=_id,
         )
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
         self.assertIsInstance(resp1[0], Volume)
@@ -600,7 +600,7 @@ class TestVolume(TestDS8KWithConnect):
             captype=captype,
             lss=lss,
             tp=tp,
-            id=id,
+            id=_id,
         )
         resp2, data2 = new_vol2.posta()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
@@ -617,7 +617,7 @@ class TestVolume(TestDS8KWithConnect):
             captype=captype,
             lss=lss,
             tp=tp,
-            id=id,
+            id=_id,
         )
         resp3, data3 = new_vol3.save()
         self.assertEqual(httpretty.POST, httpretty.last_request().method)
