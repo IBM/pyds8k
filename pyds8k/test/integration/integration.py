@@ -257,7 +257,7 @@ class TestSCClient(unittest.TestCase):
                     new_volume = self.client.get_volume(volume.id)[0]
                     self.assertEqual(new_volume.get('pool'), new_pool_id)
                     logger.info(
-                        'Successfully move volume {} from pool {} to pool {}, response is {}'.format(  # noqa
+                        'Successfully move volume {} from pool {} to pool {}, response is {}'.format(
                             volume.id, old_pool_id, new_pool_id, res
                         )
                     )
@@ -294,7 +294,7 @@ class TestSCClient(unittest.TestCase):
             )
             res = self.client.unmap_volume_from_host(host_name, lunid)
             logger.info(
-                'Successfully unmap volume {} from host {}. res is {}'.format(  # noqa
+                'Successfully unmap volume {} from host {}. res is {}'.format(
                     volume.id, host_name, res
                 )
             )
@@ -321,7 +321,7 @@ class TestSCClient(unittest.TestCase):
             lunid = int('40' + volume.id[:2] + '40' + volume.id[2:], 16)
             res = self.client.unmap_volume_from_host(host_name, lunid)
             logger.info(
-                'Successfully unmap volume {} from host {}. res is {}'.format(  # noqa
+                'Successfully unmap volume {} from host {}. res is {}'.format(
                     volume.id, host_name, res
                 )
             )

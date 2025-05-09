@@ -404,7 +404,7 @@ class Resource(UtilsMixin, BaseResource):
             raise FieldReadOnly(key)
         if not self.is_updating() and (
             key in self._template or key in self.representation
-        ):  # noqa
+        ):
             self.representation[key] = value
             self._set_modified_info_dict(key, value)
         super(Resource, self).__setattr__(key, value)
@@ -478,9 +478,8 @@ class Resource(UtilsMixin, BaseResource):
                 resp, data = self.put()
             else:
                 if self.create_method.lower() not in ('posta', 'put'):
-                    raise Exception(
-                        "You should use POSTA or PUT method to create new resources"  # noqa
-                    )
+                    msg = "You should use POSTA or PUT method to create new resources"
+                    raise Exception(msg)
                 resp, data = getattr(self, self.create_method.lower())()
                 if self.create_method.lower() == 'posta' and isinstance(
                     data[0], Resource

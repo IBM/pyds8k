@@ -78,7 +78,8 @@ extend-select = [
     "RET",
     "RSE",
     "SIM",
-    "TID"
+    "TID",
+    "PGH",
 ]
 
 ignore = [
@@ -93,6 +94,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
 "pyds8k/example.py" = ["T201"] # allow print
+"pyds8k/resources/ds8k/v1/common/mixins.py" = ["E741"] # Allow ambigous variable name 'O'
 
 [tool.ruff.format]
 # Project has mixed strings

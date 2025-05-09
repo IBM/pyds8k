@@ -57,7 +57,7 @@ class TestUtils(object):
             if (
                 not isinstance(value, (dict, list))
                 and key not in resource.related_resources_collection
-            ):  # noqa
+            ):
                 self.assertEqual(value, getattr(resource, key))
                 self.assertEqual(value, resource.representation.get(key))
 

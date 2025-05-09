@@ -111,7 +111,7 @@ class ResponseParser(BaseResponseParser):
                 else:
                     res.append(
                         (
-                            {self.resource_data_key: self._parse_data(res_data)[0]},  # noqa
+                            {self.resource_data_key: self._parse_data(res_data)[0]},
                             res_url,
                         )
                     )
@@ -183,7 +183,7 @@ class ResponseParser(BaseResponseParser):
                     logger.debug(
                         "Failed to parse resource from data, return raw data: {}".format(
                             data
-                        )  # noqa
+                        )
                     )
                     parsed = data
         else:
