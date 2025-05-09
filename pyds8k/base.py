@@ -571,8 +571,7 @@ class Resource(UtilsMixin, BaseResource):
     @classmethod
     def set_base_url(cls, base):
         url = base
-        if url.endswith('/'):
-            url = url[:-1]
+        url = url.removesuffix('/')
         if not url.startswith('/'):
             url = '/' + url
         cls.base_url = url

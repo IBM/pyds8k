@@ -151,8 +151,7 @@ class ResponseParser(BaseResponseParser):
 
     @classmethod
     def get_resource_id_from_url(self, url, resource_type):
-        if url.endswith('/'):
-            url = url[:-1]
+        url = url.removesuffix('/')
         url_frag = url.split('/')
         if len(url_frag) > 1 and url_frag[-2] == resource_type:
             return url_frag[-1]

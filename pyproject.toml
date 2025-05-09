@@ -62,15 +62,16 @@ target-version = "py39"
 [tool.ruff.lint]
 extend-select = [
     "EM",
+    "FURB",
     "I",
+    "PGH",
     "PIE",
+    "PL",
     "PYI",
     "RET",
     "RSE",
     "SIM",
     "TID",
-    "PGH",
-    "PL",
 ]
 
 ignore = [
