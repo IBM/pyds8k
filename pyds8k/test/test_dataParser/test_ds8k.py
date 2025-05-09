@@ -18,9 +18,8 @@ import json
 
 from pyds8k.dataParser.ds8k import RequestParser, ResponseParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_VOLUME
-
-from .. import base
-from ..data import (
+from pyds8k.test import base
+from pyds8k.test.data import (
     default_request,
     get_response_data_by_type,
     get_response_list_data_by_type,

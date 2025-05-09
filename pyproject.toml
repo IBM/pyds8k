@@ -77,7 +77,8 @@ extend-select = [
     "PYI",
     "RET",
     "RSE",
-    "SIM"
+    "SIM",
+    "TID"
 ]
 
 ignore = [

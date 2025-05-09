@@ -15,8 +15,7 @@
 ##############################################################################
 
 from pyds8k.resources import utils
-
-from .. import base
+from pyds8k.test import base
 
 
 class TestUtils(base.TestCaseWithoutConnect):

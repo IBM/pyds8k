@@ -19,9 +19,8 @@ Hardware Management Console interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-
-from ..common.base import Base, BaseManager
-from ..common.types import DS8K_HMC
+from pyds8k.resources.ds8k.v1.common.base import Base, BaseManager
+from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC
 
 
 class HMC(Base, metaclass=ResourceMeta):

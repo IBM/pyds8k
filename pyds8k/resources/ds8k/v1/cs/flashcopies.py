@@ -19,10 +19,9 @@ advanced FlashCopies interface.
 """
 
 from pyds8k.base import ManagerMeta, ResourceMeta
-
-from ..common.base import Base, BaseManager
-from ..common.types import DS8K_CS_FLASHCOPY, DS8K_FLASHCOPY
-from ..volumes import Volume, VolumeManager
+from pyds8k.resources.ds8k.v1.common.base import Base, BaseManager
+from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_FLASHCOPY, DS8K_FLASHCOPY
+from pyds8k.resources.ds8k.v1.volumes import Volume, VolumeManager
 
 
 class FlashCopy(Base, metaclass=ResourceMeta):
