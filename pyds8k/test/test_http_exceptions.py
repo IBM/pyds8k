@@ -55,7 +55,7 @@ DEFAULT = 'default'
 
 class TestHTTPException(base.TestCaseWithConnect):
     def setUp(self):
-        super(TestHTTPException, self).setUp()
+        super().setUp()
 
     @httpretty.activate
     def test_response_status_400(self):

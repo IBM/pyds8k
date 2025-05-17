@@ -44,7 +44,7 @@ class TSERep(SingletonBase, metaclass=ResourceMeta):
     def __getattr__(self, key):
         if key in ('id', self.id_field):
             return f'tserep_in_pool_{self.pool}'
-        return super(TSERep, self).__getattr__(key)
+        return super().__getattr__(key)
 
 
 class TSERepManager(SingletonBaseManager, metaclass=ManagerMeta):

@@ -32,7 +32,7 @@ volume_list_response = get_response_list_data_by_type(DS8K_VOLUME)
 
 class TestClient(TestCaseWithConnect):
     def setUp(self):
-        super(TestClient, self).setUp()
+        super().setUp()
         self.rest_client = Client('http://localhost:8088/api/', 'admin', 'admin')
 
     @httpretty.activate

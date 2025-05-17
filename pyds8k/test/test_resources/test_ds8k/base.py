@@ -196,6 +196,6 @@ class TestUtils:
 
 class TestDS8KWithConnect(TestUtils, base.TestCaseWithConnect):
     def setUp(self):
-        super(TestDS8KWithConnect, self).setUp()
+        super().setUp()
         self.base_url = self.client.base_url
         self.system = System(self.client, SystemManager(self.client))

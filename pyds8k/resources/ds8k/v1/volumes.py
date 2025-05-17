@@ -102,7 +102,7 @@ class Volume(Base, metaclass=ResourceMeta):
         volume_type=types.DS8K_VOLUME_TYPE_FB,
     ):
         self.related_resource['_basevolume'] = (Volume, VolumeManager)
-        super(Volume, self).__init__(
+        super().__init__(
             client,
             manager=manager,
             url=url,
@@ -140,7 +140,7 @@ class Volume(Base, metaclass=ResourceMeta):
             setattr(self, types.DS8K_HOST, host_obj_list)
 
     def _add_details(self, info, force=False):
-        super(Volume, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
         self._start_updating()
         self._set_hosts()
         self._stop_updating()

@@ -43,7 +43,7 @@ volume_a_res = get_response_data_by_type(types.DS8K_VOLUME)
 
 class TestClient(TestUtils, TestCaseWithConnect):
     def setUp(self):
-        super(TestClient, self).setUp()
+        super().setUp()
         self.rest_client = SCClient('localhost:8088/api/', 'admin', 'admin')
 
     def _assert_equal_between_dicts(self, returned_dict, origin_dict):

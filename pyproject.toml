@@ -79,7 +79,6 @@ extend-select = [
 
 ignore = [
     "PLR0913", # Too many arguments in function definition
-    "UP008",   # super-call-with-parameters
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

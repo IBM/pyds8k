@@ -34,7 +34,7 @@ system_list_response_json = get_response_list_json_by_type(DS8K_SYSTEM)
 
 class TestSystem(TestDS8KWithConnect):
     def setUp(self):
-        super(TestSystem, self).setUp()
+        super().setUp()
         self.system = System(self.client, SystemManager(self.client))
 
     @httpretty.activate

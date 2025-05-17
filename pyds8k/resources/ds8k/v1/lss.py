@@ -72,7 +72,7 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
         lss_type=DS8K_VOLUME_TYPE_CKD,
         lcu_type=DS8K_LCU_TYPE_3990_6,
     ):
-        super(LSS, self).__init__(
+        super().__init__(
             client,
             manager=manager,
             url=url,

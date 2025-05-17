@@ -52,7 +52,7 @@ class HostPort(Base, metaclass=ResourceMeta):
     )
 
     def _add_details(self, info, force=False):
-        super(HostPort, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
         self._start_updating()
         self._set_ioports()
         self._stop_updating()

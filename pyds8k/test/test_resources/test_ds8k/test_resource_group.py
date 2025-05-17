@@ -38,7 +38,7 @@ response_a_json = get_response_json_by_type(DS8K_RESOURCE_GROUP)
 
 class TestResourceGroup(TestDS8KWithConnect):
     def setUp(self):
-        super(TestResourceGroup, self).setUp()
+        super().setUp()
         self.resource_group_id = self._get_resource_id_from_resopnse(
             DS8K_RESOURCE_GROUP, response_a, ResourceGroup.id_field
         )

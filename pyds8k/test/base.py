@@ -35,12 +35,12 @@ class TestCaseWithConnect(unittest.TestCase):
         # self.maxDiff = None
 
     def tearDown(self):
-        super(TestCaseWithConnect, self).tearDown()
+        super().tearDown()
 
 
 class TestCaseWithoutConnect(unittest.TestCase):
     def setUp(self):
-        super(TestCaseWithoutConnect, self).setUp()
+        super().setUp()
 
     def tearDown(self):
-        super(TestCaseWithoutConnect, self).tearDown()
+        super().tearDown()

@@ -58,7 +58,7 @@ class PPRC(Base, metaclass=ResourceMeta):
         self._start_updating()
         self._update_volume_info(info)
         self._stop_updating()
-        super(PPRC, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
 
 
 class PPRCManager(ReadOnlyManager, metaclass=ManagerMeta):

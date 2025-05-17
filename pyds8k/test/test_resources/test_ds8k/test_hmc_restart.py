@@ -29,7 +29,7 @@ from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 class TestHmcRestart(TestDS8KWithConnect):
     def setUp(self):
-        super(TestHmcRestart, self).setUp()
+        super().setUp()
 
     @httpretty.activate
     def test_hmc_restart(self):

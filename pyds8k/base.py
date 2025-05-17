@@ -90,7 +90,7 @@ def get_resource_route_prefix_by_class(cls):
 
 class ResourceMeta(type):
     def __new__(mcs, name, bases, dct):
-        new_class = super(ResourceMeta, mcs).__new__(mcs, name, bases, dct)
+        new_class = super().__new__(mcs, name, bases, dct)
         if "resource_type" in dct:
             prefix = get_resource_route_prefix_by_class(new_class)
             route = "{}.{}".format(prefix, dct["resource_type"])
@@ -100,7 +100,7 @@ class ResourceMeta(type):
 
 class ManagerMeta(type):
     def __new__(mcs, name, bases, dct):
-        new_class = super(ManagerMeta, mcs).__new__(mcs, name, bases, dct)
+        new_class = super().__new__(mcs, name, bases, dct)
         if "resource_type" in dct:
             prefix = get_resource_route_prefix_by_class(new_class)
             route = "{}.{}".format(prefix, dct["resource_type"])
@@ -389,10 +389,10 @@ class Resource(UtilsMixin, BaseResource):
         if key == '_id':
             self._add_id_to_url(value)
         if key.startswith('_'):
-            super(Resource, self).__setattr__(key, value)
+            super().__setattr__(key, value)
             return None
         if self._is_init():
-            return super(Resource, self).__setattr__(key, value)
+            return super().__setattr__(key, value)
         if key in ('id', self.id_field):
             raise FieldReadOnly(key)
         if not self.is_updating() and (
@@ -400,7 +400,7 @@ class Resource(UtilsMixin, BaseResource):
         ):
             self.representation[key] = value
             self._set_modified_info_dict(key, value)
-        super(Resource, self).__setattr__(key, value)
+        super().__setattr__(key, value)
 
         return None
 

@@ -46,7 +46,7 @@ class Base(RootResourceMixin, Resource):
     related_resources_collection = ()
 
     def _add_details(self, info, force=False):
-        super(Base, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
         self._start_updating()
         self._set_related_resources_collection()
         self._stop_updating()
@@ -72,7 +72,7 @@ class Base(RootResourceMixin, Resource):
     def __setattr__(self, key, value):
         if key in self.readonly_fileds and not self.is_updating():
             raise FieldReadOnly(key)
-        super(Base, self).__setattr__(key, value)
+        super().__setattr__(key, value)
         try:
             if key in self.related_resources_collection:
                 ids = [getattr(item, item.id_field) for item in value]
@@ -89,7 +89,7 @@ class Base(RootResourceMixin, Resource):
             except Exception as e:
                 logger.debug(f"Can not get {key} from {self}, reason is: {type(e)}")
                 raise AttributeError(key)
-        return super(Base, self).__getattr__(key)
+        return super().__getattr__(key)
 
     def __repr__(self):
         return f"<{self.__class__.__name__}: {self._get_id()}>"
@@ -127,7 +127,7 @@ class BaseManager(Manager):
                 raise URLNotSpecifiedError
         else:
             post_body = body
-        return super(BaseManager, self)._post(url=url, body=post_body)
+        return super()._post(url=url, body=post_body)
 
     # DS8K will use PUT in PATCH way, and don't use PATCH.
     def _put(self, url='', body=None):

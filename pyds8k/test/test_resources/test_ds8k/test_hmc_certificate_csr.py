@@ -33,7 +33,7 @@ from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 class TestHmcCertificateCsr(TestDS8KWithConnect):
     def setUp(self):
-        super(TestHmcCertificateCsr, self).setUp()
+        super().setUp()
 
     @httpretty.activate
     def test_create_hmc_certificate_csr(self):

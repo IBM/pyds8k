@@ -48,7 +48,7 @@ default_list_response_json = get_response_list_json_by_type(DEFAULT)
 # Note: The ds8k's data parser will be treated as the default parser here.
 class TestResource(base.TestCaseWithConnect):
     def setUp(self):
-        super(TestResource, self).setUp()
+        super().setUp()
 
     def test_one_all(self):
         url1 = '/default/a/default/b/default'

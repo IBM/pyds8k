@@ -44,7 +44,7 @@ class ESERep(SingletonBase, metaclass=ResourceMeta):
     def __getattr__(self, key):
         if key in ('id', self.id_field):
             return f'eserep_in_pool_{self.pool}'
-        return super(ESERep, self).__getattr__(key)
+        return super().__getattr__(key)
 
 
 class ESERepManager(SingletonBaseManager, metaclass=ManagerMeta):

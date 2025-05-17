@@ -45,7 +45,7 @@ mapping_response_json = get_response_json_by_type(DS8K_VOLMAP)
 
 class TestVolmap(TestDS8KWithConnect):
     def setUp(self):
-        super(TestVolmap, self).setUp()
+        super().setUp()
         self.host_id = self._get_resource_id_from_resopnse(
             DS8K_HOST, host_response, Host.id_field
         )

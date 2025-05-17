@@ -46,7 +46,7 @@ response_a_json = get_response_json_by_type(DS8K_HOST_PORT)
 
 class TestHostPort(TestDS8KWithConnect):
     def setUp(self):
-        super(TestHostPort, self).setUp()
+        super().setUp()
         self.host_port = HostPort(self.client, HostPortManager(self.client))
         self.wwpn = self._get_resource_id_from_resopnse(
             DS8K_HOST_PORT, response_a, HostPort.id_field

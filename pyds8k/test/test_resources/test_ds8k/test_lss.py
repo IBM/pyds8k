@@ -37,7 +37,7 @@ from .base import TestDS8KWithConnect
 
 class TestLSS(TestDS8KWithConnect):
     def setUp(self):
-        super(TestLSS, self).setUp()
+        super().setUp()
         self.lss = LSS(self.client, LSSManager(self.client))
 
     def test_get_volumes(self):

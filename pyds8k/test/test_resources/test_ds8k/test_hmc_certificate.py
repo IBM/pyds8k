@@ -31,7 +31,7 @@ from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 class TestHmcCertificate(TestDS8KWithConnect):
     def setUp(self):
-        super(TestHmcCertificate, self).setUp()
+        super().setUp()
 
     @httpretty.activate
     def test_upload_hmc_certificate(self):

@@ -49,7 +49,7 @@ class FlashCopy(Base, metaclass=ResourceMeta):
         return f"<FlashCopy: {self._get_id()}>"
 
     def _add_details(self, info, force=False):
-        super(FlashCopy, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
         if DS8K_FLASHCOPY in info:
             self._id = info[DS8K_FLASHCOPY][0]['id']
 

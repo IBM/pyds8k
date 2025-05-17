@@ -48,7 +48,7 @@ response_a_json = get_response_json_by_type(DS8K_POOL)
 
 class TestPool(TestDS8KWithConnect):
     def setUp(self):
-        super(TestPool, self).setUp()
+        super().setUp()
         self.pool_id = self._get_resource_id_from_resopnse(
             DS8K_POOL, response_a, Pool.id_field
         )

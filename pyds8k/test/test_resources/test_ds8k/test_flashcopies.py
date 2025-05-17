@@ -22,7 +22,7 @@ from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 class TestFlashCopies(TestDS8KWithConnect):
     def setUp(self):
-        super(TestFlashCopies, self).setUp()
+        super().setUp()
         self.maxDiff = None
 
     @httpretty.activate

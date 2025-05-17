@@ -78,7 +78,7 @@ class TestIntegration(unittest.TestCase):
 
             return partial(route_getter, self)
 
-        return super(TestIntegration, self).__getattr__(k)
+        return super().__getattr__(k)
 
     def test_system(self):
         logger.info('Starting GET /systems request')

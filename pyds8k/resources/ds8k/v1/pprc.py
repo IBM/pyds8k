@@ -45,7 +45,7 @@ class PPRC(Base, metaclass=ResourceMeta):
     }
 
     def _add_details(self, info, force=False):
-        super(PPRC, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
         self._id = self.representation['id'] = '{}:{}'.format(

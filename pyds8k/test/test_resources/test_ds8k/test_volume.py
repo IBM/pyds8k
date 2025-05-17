@@ -47,7 +47,7 @@ from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 class TestVolume(TestDS8KWithConnect):
     def setUp(self):
-        super(TestVolume, self).setUp()
+        super().setUp()
         self.volume = Volume(self.client, VolumeManager(self.client))
         self.maxDiff = None
 

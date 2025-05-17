@@ -47,7 +47,7 @@ default_list_response_json = get_response_list_json_by_type(DEFAULT)
 
 class TestHTTPClient(base.TestCaseWithConnect):
     def setUp(self):
-        super(TestHTTPClient, self).setUp()
+        super().setUp()
 
     # DSANSIBLE-62, removing test_parse_url
     def test_parse_url(self):
