@@ -204,7 +204,7 @@ class TestResource(base.TestCaseWithConnect):
         domain = self.client.domain
         url_list = '/default'
         vol_id = default_a_response['data']['default'][0]['id']
-        url_a = '/default/{}'.format(vol_id)
+        url_a = f'/default/{vol_id}'
         httpretty.register_uri(
             httpretty.GET,
             domain + self.base_url + url_list,
@@ -510,9 +510,7 @@ class TestResource(base.TestCaseWithConnect):
 
     def test_update_list_field(self):
         re1 = Resource(self.client, resource_id='test')
-        re1.re_list = [
-            Resource(self.client, resource_id='test{}'.format(n)) for n in range(10)
-        ]
+        re1.re_list = [Resource(self.client, resource_id=f'test{n}') for n in range(10)]
         re_not_in = Resource(self.client, resource_id='test11')
         re_in = Resource(self.client, resource_id='test1')
         with self.assertRaises(KeyError):

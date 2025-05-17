@@ -80,13 +80,11 @@ class TestVolume(TestDS8KWithConnect):
             volume.lss = 'new_lss'
 
     def test_related_resources_collection(self):
-        hosts = [Host(self.client, resource_id='host{}'.format(i)) for i in range(10)]
+        hosts = [Host(self.client, resource_id=f'host{i}') for i in range(10)]
 
-        flashcopies = [
-            FlashCopy(self.client, resource_id='fc{}'.format(i)) for i in range(10)
-        ]
+        flashcopies = [FlashCopy(self.client, resource_id=f'fc{i}') for i in range(10)]
 
-        pprc = [PPRC(self.client, resource_id='pprc{}'.format(i)) for i in range(10)]
+        pprc = [PPRC(self.client, resource_id=f'pprc{i}') for i in range(10)]
 
         # init without related_resources collection
         volume = Volume(
@@ -123,7 +121,7 @@ class TestVolume(TestDS8KWithConnect):
         name = self._get_resource_id_from_resopnse(
             DS8K_VOLUME, response_a, Volume.id_field
         )
-        url = '/volumes/{}'.format(name)
+        url = f'/volumes/{name}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -153,7 +151,7 @@ class TestVolume(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_volume_rename(self):
         volume_id = 'a_0000'
-        url = '/volumes/{}'.format(volume_id)
+        url = f'/volumes/{volume_id}'
         new_name = 'new_name'
 
         def _verify_request(request, uri, headers):
@@ -183,7 +181,7 @@ class TestVolume(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_volume_extend(self):
         volume_id = 'a_0000'
-        url = '/volumes/{}'.format(volume_id)
+        url = f'/volumes/{volume_id}'
         new_size = '100'
         captype = 'gib'
 
@@ -215,7 +213,7 @@ class TestVolume(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_volume_move(self):
         volume_id = 'a_0000'
-        url = '/volumes/{}'.format(volume_id)
+        url = f'/volumes/{volume_id}'
         new_pool = 'new_pool'
 
         def _verify_request(request, uri, headers):
@@ -246,7 +244,7 @@ class TestVolume(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_volume_map(self):
         volume_id = 'a_0000'
-        url = '/volumes/{}'.format(volume_id)
+        url = f'/volumes/{volume_id}'
         host_name = 'host1'
 
         def _verify_request(request, uri, headers):
@@ -363,7 +361,7 @@ class TestVolume(TestDS8KWithConnect):
 
         name = 'volume1'
         quantity = '10'
-        namecol = ['volume{}'.format(i) for i in range(10)]
+        namecol = [f'volume{i}' for i in range(10)]
         cap = '10'
         pool = 'testpool_0'
         stgtype = types.DS8K_VOLUME_TYPE_FB

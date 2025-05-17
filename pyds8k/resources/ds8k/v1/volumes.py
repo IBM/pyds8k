@@ -116,7 +116,7 @@ class Volume(Base, metaclass=ResourceMeta):
         self._template = self.get_template_from_volume_type(volume_type)
 
     def __repr__(self):
-        return "<Storage Volume: {0}>".format(self._get_id())
+        return f"<Storage Volume: {self._get_id()}>"
 
     def get_template_from_volume_type(self, volume_type):
         return self.template_dict[volume_type]

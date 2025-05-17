@@ -155,7 +155,7 @@ class ResponseParser(BaseResponseParser):
         url_frag = url.split('/')
         if len(url_frag) > 1 and url_frag[-2] == resource_type:
             return url_frag[-1]
-        logger.debug("Failed to get resource id from url {}".format(url))
+        logger.debug(f"Failed to get resource id from url {url}")
         raise IDMissingError
 
     @classmethod
@@ -180,9 +180,7 @@ class ResponseParser(BaseResponseParser):
                 parsed = data.get(self.resource_key)
                 if parsed is None:
                     logger.debug(
-                        "Failed to parse resource from data, return raw data: {}".format(
-                            data
-                        )
+                        f"Failed to parse resource from data, return raw data: {data}"
                     )
                     parsed = data
         else:

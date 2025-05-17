@@ -46,7 +46,7 @@ class FlashCopy(Base, metaclass=ResourceMeta):
     }
 
     def __repr__(self):
-        return "<FlashCopy: {0}>".format(self._get_id())
+        return f"<FlashCopy: {self._get_id()}>"
 
     def _add_details(self, info, force=False):
         super(FlashCopy, self)._add_details(info, force=force)

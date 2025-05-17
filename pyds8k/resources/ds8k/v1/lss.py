@@ -89,7 +89,7 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
         self._template = self.template_dict[self._lss_type]
 
     def __repr__(self):
-        return "<Storage LSS: {0}>".format(self._get_id())
+        return f"<Storage LSS: {self._get_id()}>"
 
 
 class LSSManager(BaseManager, metaclass=ManagerMeta):

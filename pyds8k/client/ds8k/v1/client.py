@@ -24,7 +24,7 @@ logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 DEFAULT_PORT = 8452
 
 
-class Client(object):
+class Client:
     """
     Top-level object to access all the DS8K resources.
 

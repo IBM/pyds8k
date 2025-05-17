@@ -60,7 +60,7 @@ def get_config_settings(category="settings"):
         config.read(CONFIG_FILE_PATH)
         for setting, value in config.items(category):
             result_dict[setting] = value
-    except IOError as e:
+    except OSError as e:
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
@@ -78,7 +78,7 @@ def get_config_all():
             result_dict[section] = dict()
             for setting, value in config.items(section):
                 result_dict[section][setting] = value
-    except IOError as e:
+    except OSError as e:
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
@@ -95,7 +95,7 @@ def get_config_all_items():
         for section in config.sections():
             for setting, value in config.items(section):
                 result_dict[setting] = value
-    except IOError as e:
+    except OSError as e:
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
@@ -143,13 +143,13 @@ def set_runtime_service_type(service_type):
 
 def get_request_parser_class(service_type):
     prefix = service_type
-    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix))
+    Parser = import_module(f'{__package__}.dataParser.{prefix}')
     return Parser.RequestParser
 
 
 def get_response_parser_class(service_type):
     prefix = service_type
-    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix))
+    Parser = import_module(f'{__package__}.dataParser.{prefix}')
     return Parser.ResponseParser
 
 
@@ -159,9 +159,7 @@ def timer(func):
         result = func(self, *args, **kwargs)
         end = time.time()
         _get_logger().info(
-            "Successfully called method '{}' in {} seconds".format(
-                func.__name__, round(end - start, 2)
-            )
+            f"Successfully called method '{func.__name__}' in {round(end - start, 2)} seconds"
         )
         return result
 
@@ -175,11 +173,11 @@ def res_timer_recorder(func):
         end = time.time()
         sec = round(end - start, 2)
         if not res:
-            _get_logger().info("Successfully got 0 resources in {} seconds".format(sec))
+            _get_logger().info(f"Successfully got 0 resources in {sec} seconds")
             return []
         _get_logger().info(
-            "Successfully got {} resources in {} seconds, \
-{} seconds per 100 instances.".format(len(res), sec, round(sec / len(res) * 100, 2))
+            f"Successfully got {len(res)} resources in {sec} seconds, \
+{round(sec / len(res) * 100, 2)} seconds per 100 instances."
         )
         return res
 

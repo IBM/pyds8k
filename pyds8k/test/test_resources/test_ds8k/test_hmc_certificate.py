@@ -35,7 +35,7 @@ class TestHmcCertificate(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_upload_hmc_certificate(self):
-        url = '/{}/{}'.format(DS8K_HMC, DS8K_HMC_CERTIFICATE)
+        url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)

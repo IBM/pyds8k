@@ -25,7 +25,7 @@ from .client import Client
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
 
-class SCClient(object):
+class SCClient:
     """
     SC side client. Used to interaction with current side client.
 
@@ -205,7 +205,7 @@ class SCClient(object):
                 port_id=host_port.id, host_name=host_name
             )
         except NotFound:
-            logger.debug('host port {} is not found, creating new...'.format(wwpn))
+            logger.debug(f'host port {wwpn} is not found, creating new...')
             return self.client.create_host_port(port_id=wwpn, host_name=host_name)
 
     # APIs below are deprecated.

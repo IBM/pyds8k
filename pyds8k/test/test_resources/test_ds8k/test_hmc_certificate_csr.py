@@ -37,9 +37,7 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_create_hmc_certificate_csr(self):
-        url = '/{}/{}/{}'.format(
-            DS8K_HMC, DS8K_HMC_CERTIFICATE, DS8K_HMC_CERTIFICATE_CSR
-        )
+        url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}/{DS8K_HMC_CERTIFICATE_CSR}'
 
         O = "IBM"  # noqa: E741
         OU = "DS8000"

@@ -20,7 +20,7 @@ AUTH_URL = '/tokens'
 DEFAULT_BASE_URL = ''
 
 
-class Auth(object):
+class Auth:
     base_url = DEFAULT_BASE_URL
     auth_url = AUTH_URL
 

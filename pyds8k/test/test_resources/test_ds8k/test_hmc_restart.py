@@ -33,7 +33,7 @@ class TestHmcRestart(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_hmc_restart(self):
-        url = '/{}/{}'.format(DS8K_HMC, DS8K_HMC_RESTART)
+        url = f'/{DS8K_HMC}/{DS8K_HMC_RESTART}'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)

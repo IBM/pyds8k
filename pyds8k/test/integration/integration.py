@@ -39,25 +39,17 @@ def add_logger(route):
         @wraps(func)
         def inner(self, route_id=None):
             if route_id:
-                logger.info('Starting GET /{}/{} request'.format(route, route_id))
+                logger.info(f'Starting GET /{route}/{route_id} request')
                 res = func(self, route_id)
                 logger.info(
-                    'Successfully got {}: {}, detail is: {}'.format(
-                        route, res, res.representation
-                    )
+                    f'Successfully got {route}: {res}, detail is: {res.representation}'
                 )
-                logger.info('Finish GET /{}/{} request'.format(route, res.id))
+                logger.info(f'Finish GET /{route}/{res.id} request')
             else:
-                logger.info('Starting GET /{} request'.format(route))
+                logger.info(f'Starting GET /{route} request')
                 res = func(self)
-                logger.info(
-                    'Successfully got {} {}: {}'.format(
-                        len(res),
-                        route,
-                        res,
-                    )
-                )
-                logger.info('Finish GET /{} request'.format(route))
+                logger.info(f'Successfully got {len(res)} {route}: {res}')
+                logger.info(f'Finish GET /{route} request')
             return res
 
         return inner
@@ -91,9 +83,7 @@ class TestIntegration(unittest.TestCase):
     def test_system(self):
         logger.info('Starting GET /systems request')
         sys = self.client.get_system()
-        logger.info(
-            'Successfully got system: {}, detail is: {}'.format(sys, sys.representation)
-        )
+        logger.info(f'Successfully got system: {sys}, detail is: {sys.representation}')
         logger.info('Finish GET /systems request')
 
     def test_nodes(self):
@@ -143,7 +133,7 @@ class TestIntegration(unittest.TestCase):
         events = sys.get_events_by_filter(
             warning=True, error=True, before=before, after=after
         )
-        logger.info('Successfully got {} events'.format(len(events)))
+        logger.info(f'Successfully got {len(events)} events')
         logger.info('Finish GET /events request')
 
     def test_pools(self):
@@ -195,15 +185,11 @@ class TestIntegration(unittest.TestCase):
 
     @res_timer_recorder
     def _get_sub_resource_by(self, route, parent_res, sub_route):
-        logger.info(
-            'Starting GET /{}/{}/{} request'.format(route, parent_res.id, sub_route)
-        )
+        logger.info(f'Starting GET /{route}/{parent_res.id}/{sub_route} request')
         # Lazy-loading
         sub_res = getattr(parent_res, sub_route)
-        logger.info('Successfully got {} {}'.format(len(sub_res), sub_route))
-        logger.info(
-            'Finish GET /{}/{}/{} request'.format(route, parent_res.id, sub_route)
-        )
+        logger.info(f'Successfully got {len(sub_res)} {sub_route}')
+        logger.info(f'Finish GET /{route}/{parent_res.id}/{sub_route} request')
         return sub_res
 
 
@@ -229,9 +215,7 @@ class TestSCClient(unittest.TestCase):
             new_volume = self.client.get_volume(volume.id)[0]
             self.assertEqual(new_volume.get('name'), new_name)
             logger.info(
-                'Successfully renamed the volume {}, response is {}'.format(
-                    volume.id, res
-                )
+                f'Successfully renamed the volume {volume.id}, response is {res}'
             )
 
     def test_volume_extend(self):
@@ -243,9 +227,7 @@ class TestSCClient(unittest.TestCase):
                 new_volume.get('cap'), str(convert_size_gib_to_bytes(int(new_size)))
             )
             logger.info(
-                'Successfully extended the volume {}, response is {}'.format(
-                    volume.id, res
-                )
+                f'Successfully extended the volume {volume.id}, response is {res}'
             )
 
     def test_volume_move(self):
@@ -259,9 +241,7 @@ class TestSCClient(unittest.TestCase):
                     new_volume = self.client.get_volume(volume.id)[0]
                     self.assertEqual(new_volume.get('pool'), new_pool_id)
                     logger.info(
-                        'Successfully move volume {} from pool {} to pool {}, response is {}'.format(
-                            volume.id, old_pool_id, new_pool_id, res
-                        )
+                        f'Successfully move volume {volume.id} from pool {old_pool_id} to pool {new_pool_id}, response is {res}'
                     )
                     break
 
@@ -279,26 +259,18 @@ class TestSCClient(unittest.TestCase):
             ]
             lunid = unused_lunids[0]
             logger.info(
-                'Trying to map volume {} to host {} with lunid {}'.format(
-                    volume.id, host_name, lunid
-                )
+                f'Trying to map volume {volume.id} to host {host_name} with lunid {lunid}'
             )
             res = self.client.map_volume_to_host(
                 host_name=host_name, volume_id=volume.id, lunid=lunid
             )
             logger.info(
-                'Successfully map volume {} to host {}. res is {}'.format(
-                    volume.id, host_name, res
-                )
+                f'Successfully map volume {volume.id} to host {host_name}. res is {res}'
             )
-            logger.info(
-                'Trying to unmap volume {} from host {}.'.format(volume.id, host_name)
-            )
+            logger.info(f'Trying to unmap volume {volume.id} from host {host_name}.')
             res = self.client.unmap_volume_from_host(host_name, lunid)
             logger.info(
-                'Successfully unmap volume {} from host {}. res is {}'.format(
-                    volume.id, host_name, res
-                )
+                f'Successfully unmap volume {volume.id} from host {host_name}. res is {res}'
             )
 
     def test_volume_map_and_unmap_to_zlinux_type_host(self):
@@ -306,26 +278,18 @@ class TestSCClient(unittest.TestCase):
             self.get_test_zlinux_type_host() as host_name,
             self.get_test_volume() as volume,
         ):
-            logger.info(
-                'Trying to map volume {} to host {}'.format(volume.id, host_name)
-            )
+            logger.info(f'Trying to map volume {volume.id} to host {host_name}')
             res = self.client.map_volume_to_host(
                 host_name=host_name, volume_id=volume.id, lunid=''
             )
             logger.info(
-                'Successfully map volume {} to host {}. res is {}'.format(
-                    volume.id, host_name, res
-                )
+                f'Successfully map volume {volume.id} to host {host_name}. res is {res}'
             )
-            logger.info(
-                'Trying to unmap volume {} from host {}.'.format(volume.id, host_name)
-            )
+            logger.info(f'Trying to unmap volume {volume.id} from host {host_name}.')
             lunid = int('40' + volume.id[:2] + '40' + volume.id[2:], 16)
             res = self.client.unmap_volume_from_host(host_name, lunid)
             logger.info(
-                'Successfully unmap volume {} from host {}. res is {}'.format(
-                    volume.id, host_name, res
-                )
+                f'Successfully unmap volume {volume.id} from host {host_name}. res is {res}'
             )
 
     def _prepare_volume(self):
@@ -337,11 +301,11 @@ class TestSCClient(unittest.TestCase):
             sam='ese',
             volume_names_list=['loutest_volume1'],
         )
-        logger.info('Task done, the volume {} is created.'.format(res))
+        logger.info(f'Task done, the volume {res} is created.')
         return res[0]
 
     def _destroy_volume(self, volume_id):
-        logger.info('Destroying the created volume {}'.format(volume_id))
+        logger.info(f'Destroying the created volume {volume_id}')
         # delete may fail if it is mapped to hosts.
         self.client.delete_volume(volume_id)
         logger.info('Task done, the volume is deleted successfully.')
@@ -349,7 +313,7 @@ class TestSCClient(unittest.TestCase):
     def _prepare_host(self):
         logger.info('Preparing a new host for test purpose.')
         res = self.client.crate_host(host_name='loutest_host1', wwpn='1')
-        logger.info('Task done, the host {} is created.'.format(res))
+        logger.info(f'Task done, the host {res} is created.')
         return res
 
     def _prepare_host_of_zlinux(self):
@@ -357,11 +321,11 @@ class TestSCClient(unittest.TestCase):
         res = self.client.crate_host(
             host_name='zlinuxtest_host1', wwpn='1', host_type='zLinux'
         )
-        logger.info('Task done, the zLinux type host {} is created.'.format(res))
+        logger.info(f'Task done, the zLinux type host {res} is created.')
         return res
 
     def _destroy_host(self, host_name):
-        logger.info('Destroying the created host {}'.format(host_name))
+        logger.info(f'Destroying the created host {host_name}')
         self.client.delete_host(host_name)
         logger.info('Task done, the host is deleted successfully.')
 

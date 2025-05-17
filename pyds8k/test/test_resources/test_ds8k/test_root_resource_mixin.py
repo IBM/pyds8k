@@ -103,7 +103,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_lss_by_id(self):
         lss_id = '00'
-        url = '/lss/{}'.format(lss_id)
+        url = f'/lss/{lss_id}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -193,7 +193,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_delete_tserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/tserep'.format(pool_name)
+        url = f'/pools/{pool_name}/tserep'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -207,7 +207,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_delete_eserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/eserep'.format(pool_name)
+        url = f'/pools/{pool_name}/eserep'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -221,7 +221,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_tserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/tserep'.format(pool_name)
+        url = f'/pools/{pool_name}/tserep'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -235,7 +235,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_eserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/eserep'.format(pool_name)
+        url = f'/pools/{pool_name}/eserep'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -255,7 +255,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_volumes_by_host(self):
         host_name = 'testhost'
-        url = '/hosts/{}/volumes'.format(host_name)
+        url = f'/hosts/{host_name}/volumes'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -271,7 +271,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_volumes_by_lss(self):
         lss_id = '00'
-        url = '/lss/{}/volumes'.format(lss_id)
+        url = f'/lss/{lss_id}/volumes'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -287,7 +287,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_volumes_by_pool(self):
         pool_id = 'P0'
-        url = '/pools/{}/volumes'.format(pool_id)
+        url = f'/pools/{pool_id}/volumes'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,

@@ -54,7 +54,7 @@ class TestHostPort(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_host_port(self):
-        url = '/host_ports/{}'.format(self.wwpn)
+        url = f'/host_ports/{self.wwpn}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -89,7 +89,7 @@ class TestHostPort(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_host_port_without_resp_body(self):
-        url = '/host_ports/{}'.format(self.wwpn)
+        url = f'/host_ports/{self.wwpn}'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -102,7 +102,7 @@ class TestHostPort(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_host_port_failed(self):
-        url = '/host_ports/{}'.format(self.wwpn)
+        url = f'/host_ports/{self.wwpn}'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -117,7 +117,7 @@ class TestHostPort(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_update_host_port(self):
-        url = '/host_ports/{}'.format(self.wwpn)
+        url = f'/host_ports/{self.wwpn}'
         new_host_name = 'new_host'
 
         def _verify_request(request, uri, headers):
@@ -177,7 +177,7 @@ class TestHostPort(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_update_host_port_failed(self):
-        url = '/host_ports/{}'.format(self.wwpn)
+        url = f'/host_ports/{self.wwpn}'
         new_host_name = 'new_host'
 
         httpretty.register_uri(

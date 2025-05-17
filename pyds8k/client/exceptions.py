@@ -146,14 +146,14 @@ class ClientException(Exception):
         self.detail = detail
         self.error_data = origin_data
         if self.message and self.detail:
-            self.details = '[{}] {}'.format(self.message, self.detail)
+            self.details = f'[{self.message}] {self.detail}'
         elif self.message or self.detail:
             self.details = self.message or self.detail
         else:
             self.details = ''
 
     def __str__(self):
-        return "HTTP {0} {1}. {2}".format(self.code, self.reason_phrase, self.details)
+        return f"HTTP {self.code} {self.reason_phrase}. {self.details}"
 
 
 class ClientError(ClientException):

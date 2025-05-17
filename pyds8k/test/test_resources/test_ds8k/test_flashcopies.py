@@ -66,7 +66,7 @@ class TestFlashCopies(TestDS8KWithConnect):
 
         # Way 2
         flashcopies = self.system.all(
-            '{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_CS_FLASHCOPY),
+            f'{DS8K_COPY_SERVICE_PREFIX}.{DS8K_CS_FLASHCOPY}',
             rebuild_url=True,
         )
         new_fc2 = flashcopies.create(
@@ -81,7 +81,7 @@ class TestFlashCopies(TestDS8KWithConnect):
 
         # Way 3
         flashcopies = self.system.all(
-            '{}.{}'.format(DS8K_COPY_SERVICE_PREFIX, DS8K_CS_FLASHCOPY),
+            f'{DS8K_COPY_SERVICE_PREFIX}.{DS8K_CS_FLASHCOPY}',
             rebuild_url=True,
         )
         new_fc3 = flashcopies.create(
@@ -101,7 +101,7 @@ class TestFlashCopies(TestDS8KWithConnect):
         name = self._get_resource_id_from_resopnse(
             DS8K_FLASHCOPY, response_a, FlashCopy.id_field
         )
-        url = '/cs/flashcopies/{}'.format(name)
+        url = f'/cs/flashcopies/{name}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,

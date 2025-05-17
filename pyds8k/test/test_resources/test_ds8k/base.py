@@ -38,7 +38,7 @@ def cmp(a, b):
     return 0
 
 
-class TestUtils(object):
+class TestUtils:
     def _sort_by(self, key, obj1, obj2):
         if isinstance(obj1, dict):
             return cmp(obj1.get(key), obj2.get(key))
@@ -76,7 +76,7 @@ class TestUtils(object):
         route_id = self._get_resource_id_from_resopnse(
             route, resource_response, id_field
         )
-        url = '/{}/{}'.format(route, route_id)
+        url = f'/{route}/{route_id}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -84,7 +84,7 @@ class TestUtils(object):
             content_type='application/json',
             status=HTTPStatus.OK,
         )
-        res = getattr(self.system, 'get_{}'.format(route))(route_id)
+        res = getattr(self.system, f'get_{route}')(route_id)
         self.assertIsInstance(res, res_class)
         res_data = resource_response['data'][route][0]
         self._assert_equal_between_dict_and_resource(res_data, res)
@@ -92,7 +92,7 @@ class TestUtils(object):
     @httpretty.activate
     def _test_resource_list_by_route(self, route, cmp_func=None):
         res_list_resp = get_response_list_data_by_type(route)
-        url = '/{}'.format(route)
+        url = f'/{route}'
         res_class = self._get_class_by_name(route)
         id_field = res_class.id_field
         cmp_f = cmp_func if cmp_func else self._get_sort_func_by(id_field)
@@ -103,7 +103,7 @@ class TestUtils(object):
             content_type='application/json',
             status=HTTPStatus.OK,
         )
-        res_list = getattr(self.system, 'get_{}'.format(route))()
+        res_list = getattr(self.system, f'get_{route}')()
         self.assertIsInstance(res_list[0], res_class)
         res_list.sort(key=cmp_to_key(cmp_f))
         res_list_data = list(res_list_resp['data'][route])
@@ -120,8 +120,8 @@ class TestUtils(object):
         res_class = self._get_class_by_name(route)
         id_field = res_class.id_field
         route_id = self._get_resource_id_from_resopnse(route, res_resp, id_field)
-        route_url = '/{}/{}'.format(route, route_id)
-        sub_route_url = '/{}/{}/{}'.format(route, route_id, sub_route)
+        route_url = f'/{route}/{route_id}'
+        sub_route_url = f'/{route}/{route_id}/{sub_route}'
         cmp_f = cmp_func if cmp_func else self._sorted_by_id
         httpretty.register_uri(
             httpretty.GET,
@@ -138,15 +138,15 @@ class TestUtils(object):
             status=HTTPStatus.OK,
         )
         try:
-            res = getattr(self.system, 'get_{}'.format(route))(route_id)
+            res = getattr(self.system, f'get_{route}')(route_id)
         except AttributeError:
             if route == types.DS8K_LSS:
                 res = self.system.get_lss_by_id(route_id)
             else:
-                msg = 'Failed calling get_{}'.format(route)
+                msg = f'Failed calling get_{route}'
                 raise Exception(msg)
         self.assertIsInstance(res, res_class)
-        sub_res_list = getattr(res, 'get_{}'.format(sub_route))()
+        sub_res_list = getattr(res, f'get_{sub_route}')()
         self.assertIs(getattr(res, sub_route), sub_res_list)
         sub_res_list.sort(key=cmp_to_key(cmp_f))
         sub_res_list_data = list(sub_res_list_resp['data'][sub_route])
@@ -173,23 +173,23 @@ class TestUtils(object):
         try:
             return response.get('data').get(route)[0][id_field]
         except Exception:
-            msg = 'Can not get the id of {} from response.'.format(route)
+            msg = f'Can not get the id of {route} from response.'
             raise Exception(msg)
 
     def _get_resource_ids_from_resopnse(self, route, response, id_field='id'):
         try:
             return [re[id_field] for re in response.get('data').get(route)]
         except Exception:
-            msg = 'Can not get the id of {} from response.'.format(route)
+            msg = f'Can not get the id of {route} from response.'
             raise Exception(msg)
 
     def _get_class_by_name(self, name):
-        prefix = '{}.{}'.format(self.client.service_type, self.client.service_version)
+        prefix = f'{self.client.service_type}.{self.client.service_version}'
         res_class, _ = get_resource_and_manager_class_by_route(
-            "{}.{}".format(prefix, str(name).lower())
+            f"{prefix}.{str(name).lower()}"
         )
         if res_class.__name__ == Resource.__name__:
-            msg = 'Can not get resource class from route: {}'.format(name)
+            msg = f'Can not get resource class from route: {name}'
             raise Exception(msg)
         return res_class
 

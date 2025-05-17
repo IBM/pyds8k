@@ -72,7 +72,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_delete_host(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -108,7 +108,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_delete_host_without_resp_body(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -122,7 +122,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_delete_host_failed(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -138,7 +138,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_host_rm_ioports_all(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -197,7 +197,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_host_add_ioports_all(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -228,7 +228,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_host_rm_volumes_all(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -286,7 +286,7 @@ class TestHost(TestDS8KWithConnect):
         )
         port_id = 'new_port_id'
 
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -309,7 +309,7 @@ class TestHost(TestDS8KWithConnect):
             body=_verify_request,
             content_type='application/json',
         )
-        ioport_url = '{}/{}'.format(url, DS8K_IOPORT)
+        ioport_url = f'{url}/{DS8K_IOPORT}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + ioport_url,
@@ -335,7 +335,7 @@ class TestHost(TestDS8KWithConnect):
         )
         port_id = ioport_ids[0]
 
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -357,7 +357,7 @@ class TestHost(TestDS8KWithConnect):
             body=_verify_request,
             content_type='application/json',
         )
-        ioport_url = '{}/{}'.format(url, DS8K_IOPORT)
+        ioport_url = f'{url}/{DS8K_IOPORT}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + ioport_url,
@@ -373,7 +373,7 @@ class TestHost(TestDS8KWithConnect):
     @httpretty.activate
     def test_update_host_failed(self):
         host_name = 'host1'
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
 
         httpretty.register_uri(
             httpretty.PUT,
@@ -400,16 +400,11 @@ class TestHost(TestDS8KWithConnect):
             host.lbs = 'new_lbs'
 
     def test_set_related_resources_collection(self):
-        volumes = [
-            Volume(self.client, resource_id='volume{}'.format(i)) for i in range(10)
-        ]
+        volumes = [Volume(self.client, resource_id=f'volume{i}') for i in range(10)]
         host_ports = [
-            HostPort(self.client, resource_id='host_port{}'.format(i))
-            for i in range(10)
+            HostPort(self.client, resource_id=f'host_port{i}') for i in range(10)
         ]
-        ioports = [
-            IOPort(self.client, resource_id='ioport{}'.format(i)) for i in range(10)
-        ]
+        ioports = [IOPort(self.client, resource_id=f'ioport{i}') for i in range(10)]
 
         # init without related_resources collection
         host = Host(
@@ -455,7 +450,7 @@ class TestHost(TestDS8KWithConnect):
         host_name = self._get_resource_id_from_resopnse(
             DS8K_HOST, response_a, Host.id_field
         )
-        url = '/hosts/{}'.format(host_name)
+        url = f'/hosts/{host_name}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -464,7 +459,7 @@ class TestHost(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         for item in Host.related_resources_collection:
-            sub_route_url = '{}/{}'.format(url, item)
+            sub_route_url = f'{url}/{item}'
             httpretty.register_uri(
                 httpretty.GET,
                 self.domain + self.base_url + sub_route_url,

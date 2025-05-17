@@ -37,7 +37,7 @@ class Volmap(Base, metaclass=ResourceMeta):
     }
 
     def __repr__(self):
-        return "<Host Volume Mapping: {0}>".format(self._get_id())
+        return f"<Host Volume Mapping: {self._get_id()}>"
 
 
 class VolmapManager(BaseManager, metaclass=ManagerMeta):

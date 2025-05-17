@@ -67,7 +67,7 @@ class TestPool(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_tserep(self):
-        url = '/pools/{}/tserep'.format(self.pool_id)
+        url = f'/pools/{self.pool_id}/tserep'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -79,7 +79,7 @@ class TestPool(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_eserep(self):
-        url = '/pools/{}/eserep'.format(self.pool_id)
+        url = f'/pools/{self.pool_id}/eserep'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -91,7 +91,7 @@ class TestPool(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_update_tserep_cap(self):
-        url = '/pools/{}/tserep'.format(self.pool_id)
+        url = f'/pools/{self.pool_id}/tserep'
         cap = '10'
         captype = 'gib'
 
@@ -114,7 +114,7 @@ class TestPool(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_update_tserep_threshold(self):
-        url = '/pools/{}/tserep'.format(self.pool_id)
+        url = f'/pools/{self.pool_id}/tserep'
         threshold = '70'
 
         def _verify_request(request, uri, headers):
@@ -141,9 +141,7 @@ class TestPool(TestDS8KWithConnect):
         pass
 
     def test_set_related_resources_collection(self):
-        volumes = [
-            Volume(self.client, resource_id='volume{}'.format(i)) for i in range(10)
-        ]
+        volumes = [Volume(self.client, resource_id=f'volume{i}') for i in range(10)]
         tserep = [
             TSERep(self.client, info={'pool': {'name': 'testpool_0'}}),
         ]
@@ -181,7 +179,7 @@ class TestPool(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_lazy_loading_related_resources_collection(self):
-        url = '/pools/{}'.format(self.pool_id)
+        url = f'/pools/{self.pool_id}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -190,7 +188,7 @@ class TestPool(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         for item in Pool.related_resources_collection:
-            sub_route_url = '{}/{}'.format(url, item)
+            sub_route_url = f'{url}/{item}'
             httpretty.register_uri(
                 httpretty.GET,
                 self.domain + self.base_url + sub_route_url,

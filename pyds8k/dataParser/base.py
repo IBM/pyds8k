@@ -17,7 +17,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseRequestParser(object, metaclass=ABCMeta):
+class BaseRequestParser(metaclass=ABCMeta):
     # Parse the data user wants to send to server,
     # in the right format that server defined.
 
@@ -30,7 +30,7 @@ class BaseRequestParser(object, metaclass=ABCMeta):
         pass
 
 
-class BaseResponseParser(object, metaclass=ABCMeta):
+class BaseResponseParser(metaclass=ABCMeta):
     # Parser response data, to get resource link, representation, etc.
 
     response_key = ''

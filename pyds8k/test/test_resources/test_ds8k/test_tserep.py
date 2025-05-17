@@ -47,7 +47,7 @@ class TestTSERep(TestDS8KWithConnect):
     @httpretty.activate
     def test_update(self):
         pool_id = 'P1'
-        url = '/pools/{}/tserep'.format(pool_id)
+        url = f'/pools/{pool_id}/tserep'
         cap = '10'
         threshold = '70'
         httpretty.register_uri(

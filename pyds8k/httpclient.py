@@ -40,7 +40,7 @@ DEFAULT_SERVICE_VERSION = 'v1'
 disable_warnings(InsecureRequestWarning)
 
 
-class HTTPClient(object):
+class HTTPClient:
     """
     An HTTP client interacting with RESTAPI web service.
 
@@ -156,12 +156,12 @@ class HTTPClient(object):
         string_parts = ['curl -i']
         for element in args:
             if element in ('GET', 'POST', 'DELETE', 'PUT', 'PATCH'):
-                string_parts.append(' -X {}'.format(element))
+                string_parts.append(f' -X {element}')
             else:
-                string_parts.append(' {}'.format(element))
+                string_parts.append(f' {element}')
 
         for element in kwargs['headers']:
-            header = ' -H "{0}: {1}"'.format(element, kwargs['headers'][element])
+            header = ' -H "{}: {}"'.format(element, kwargs['headers'][element])
             string_parts.append(header)
 
         if 'data' in kwargs:
@@ -171,9 +171,7 @@ class HTTPClient(object):
     @classmethod
     def log_resp(cls, resp):
         logger.debug(
-            "\nRESP: [{0}] {1}\nRESP BODY: {2}\n".format(
-                resp.status_code, resp.headers, resp.text
-            )
+            f"\nRESP: [{resp.status_code}] {resp.headers}\nRESP BODY: {resp.text}\n"
         )
 
     def request(self, url, method, **kwargs):
@@ -283,7 +281,7 @@ class HTTPClient(object):
         return link
 
     def _parse_url(self, url):
-        schma = '{}:'.format(self.schema)
+        schma = f'{self.schema}:'
         if '//' in url:
             schma, url1 = url.split('//')
         else:

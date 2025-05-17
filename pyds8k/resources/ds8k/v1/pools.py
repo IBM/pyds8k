@@ -52,7 +52,7 @@ class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
     related_resources_collection = (DS8K_VOLUME, DS8K_TSEREP, DS8K_ESEREP)
 
     def __repr__(self):
-        return "<Extent Pool: {0}>".format(self._get_id())
+        return f"<Extent Pool: {self._get_id()}>"
 
     def get_tserep(self):
         if not self.id:

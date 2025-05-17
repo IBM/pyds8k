@@ -44,7 +44,7 @@ RESOURCES = {}
 MANAGERS = {}
 
 
-class URLBuilderMixin(object):
+class URLBuilderMixin:
     def one(self, route, resource_id):
         pass
 
@@ -52,7 +52,7 @@ class URLBuilderMixin(object):
         pass
 
 
-class UtilsMixin(object):
+class UtilsMixin:
     def _update_list_field(self, field_name, value_list, operator='+'):
         if not isinstance(value_list, list):
             value_list = [value_list]
@@ -112,9 +112,7 @@ def get_resource_class_by_route(route):
     try:
         return RESOURCES[route]
     except KeyError:
-        logger.debug(
-            'Failed to get resource by name: {}, return default one.'.format(route)
-        )
+        logger.debug(f'Failed to get resource by name: {route}, return default one.')
         return Resource
 
 
@@ -122,9 +120,7 @@ def get_manager_class_by_route(route):
     try:
         return MANAGERS[route]
     except KeyError:
-        logger.debug(
-            'Failed to get manager by name: {}, return default one.'.format(route)
-        )
+        logger.debug(f'Failed to get manager by name: {route}, return default one.')
         return DefaultManager
 
 
@@ -132,7 +128,7 @@ def get_resource_and_manager_class_by_route(route):
     return get_resource_class_by_route(route), get_manager_class_by_route(route)
 
 
-class BaseResource(object):
+class BaseResource:
     pass
 
 
@@ -255,10 +251,8 @@ class Resource(UtilsMixin, BaseResource):
         return res
 
     def _get_resource_by_route(self, route, client, url, parent=None, resource_id=None):
-        prefix = '{}.{}'.format(client.service_type, client.service_version)
-        r, m = get_resource_and_manager_class_by_route(
-            "{}.{}".format(prefix, str(route).lower())
-        )
+        prefix = f'{client.service_type}.{client.service_version}'
+        r, m = get_resource_and_manager_class_by_route(f"{prefix}.{str(route).lower()}")
         return r(
             client=client,
             manager=m(client=client),
@@ -279,20 +273,20 @@ class Resource(UtilsMixin, BaseResource):
         #       cs.pprcs => cs/pprcs
         route = route.replace('.', '/')
         if resource_id:
-            url += '/{}/{}'.format(route, resource_id)
+            url += f'/{route}/{resource_id}'
         else:
-            url += '/{}'.format(route)
+            url += f'/{route}'
         return url
 
     def _add_id_to_url(self, resource_id):
-        if not self.url.endswith('/{}'.format(resource_id)):
-            self.url += '/{}'.format(resource_id)
+        if not self.url.endswith(f'/{resource_id}'):
+            self.url += f'/{resource_id}'
 
     def _rm_id_in_url(self, resource_id=''):
         if not hasattr(self, 'id'):
             return self.url
         res_id = resource_id or self.id
-        if self.url.endswith('/{}'.format(res_id)):
+        if self.url.endswith(f'/{res_id}'):
             return self.url[: len(self.url) - len(self.id) - 1]
         return self.url
 
@@ -416,8 +410,8 @@ class Resource(UtilsMixin, BaseResource):
             for k in self.__dict__
             if not str(k).startswith('_') and k not in ('manager', 'client')
         )
-        info = ", ".join("{0}={1}".format(k, getattr(self, k)) for k in reprkeys)
-        return "<{0} {1}>".format(self.__class__.__name__, info)
+        info = ", ".join(f"{k}={getattr(self, k)}" for k in reprkeys)
+        return f"<{self.__class__.__name__} {info}>"
 
     def get(self, resource_id='', force=False, **kwargs):
         self.set_loaded(True)
@@ -584,7 +578,7 @@ class Resource(UtilsMixin, BaseResource):
         pass
 
 
-class BaseManager(object):
+class BaseManager:
     pass
 
 

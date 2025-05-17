@@ -25,7 +25,7 @@ from . import types
 FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 
 
-class RootBaseMixin(object):
+class RootBaseMixin:
     pass
 
 
@@ -37,7 +37,7 @@ class RootBaseMixin(object):
 #       lss and pprc do not have singular form.
 
 
-class RootSystemMixin(object):
+class RootSystemMixin:
     def get_systems(self):
         """
         Get DS8000 System Object
@@ -50,7 +50,7 @@ class RootSystemMixin(object):
         return self.all(types.DS8K_SYSTEM, rebuild_url=True).list()
 
 
-class RootNodeMixin(object):
+class RootNodeMixin:
     def get_nodes(self, node_id=None):
         """
         Get nodes
@@ -80,7 +80,7 @@ class RootNodeMixin(object):
         return self.one(types.DS8K_NODE, node_id, rebuild_url=True).get()
 
 
-class RootMarrayMixin(object):
+class RootMarrayMixin:
     def get_marrays(self, marray_id=None):
         """
         Get managed arrays
@@ -111,7 +111,7 @@ class RootMarrayMixin(object):
         return self.one(types.DS8K_MARRAY, marray_id, rebuild_url=True).get()
 
 
-class RootUserMixin(object):
+class RootUserMixin:
     def get_users(self, user_name=None):
         """
         Get users.
@@ -141,7 +141,7 @@ class RootUserMixin(object):
         return self.one(types.DS8K_USER, user_name, rebuild_url=True).get()
 
 
-class RootIOEnclosureMixin(object):
+class RootIOEnclosureMixin:
     def get_io_enclosures(self, enclosure_id=None):
         """
         Get IO Enclosures.
@@ -173,7 +173,7 @@ class RootIOEnclosureMixin(object):
         return self.one(types.DS8K_IOENCLOSURE, enclosure_id, rebuild_url=True).get()
 
 
-class RootEncryptionGroupMixin(object):
+class RootEncryptionGroupMixin:
     def get_encryption_groups(self, group_id=None):
         """
         Get Encryption Groups.
@@ -205,7 +205,7 @@ class RootEncryptionGroupMixin(object):
         return self.one(types.DS8K_ENCRYPTION_GROUP, group_id, rebuild_url=True).get()
 
 
-class RootPoolMixin(object):
+class RootPoolMixin:
     def get_pools(self, pool_id=None):
         """
         Get Extent Pools
@@ -315,7 +315,7 @@ class RootPoolMixin(object):
         )
 
 
-class RootResourceGroupMixin(object):
+class RootResourceGroupMixin:
     def get_resource_groups(self, resource_group_id=None):
         """
         Get Resource Groups
@@ -440,7 +440,7 @@ class RootResourceGroupMixin(object):
         return res
 
 
-class RootVolumeMixin(object):
+class RootVolumeMixin:
     def get_volumes(self, volume_id=None):
         """
         Get Volumes
@@ -868,7 +868,7 @@ class RootVolumeMixin(object):
     #    return res
 
 
-class RootIOPortMixin(object):
+class RootIOPortMixin:
     def get_ioports(self, port_id=None):
         """
         Get IO Ports
@@ -899,7 +899,7 @@ class RootIOPortMixin(object):
         return self.one(types.DS8K_IOPORT, port_id, rebuild_url=True).get()
 
 
-class RootHostPortMixin(object):
+class RootHostPortMixin:
     def get_host_ports(self, port_id=None):
         """
         Get Host Ports.
@@ -978,7 +978,7 @@ class RootHostPortMixin(object):
         return res
 
 
-class RootHostMixin(object):
+class RootHostMixin:
     def get_hosts(self, host_name=None):
         """
         Get Hosts.
@@ -1167,7 +1167,7 @@ class RootHostMixin(object):
         return res
 
 
-class RootLSSMixin(object):
+class RootLSSMixin:
     def get_lss(self, lss_id=None, lss_type=''):
         """
         Get LSS
@@ -1267,7 +1267,7 @@ class RootLSSMixin(object):
         return self.one(types.DS8K_LSS, lss_id, rebuild_url=True).delete()
 
 
-class RootFlashCopyMixin(object):
+class RootFlashCopyMixin:
     def get_flashcopies(self, volume_id=None):
         """
         Get Flash Copies. Deprecated after R8.
@@ -1333,12 +1333,12 @@ class RootFlashCopyMixin(object):
         """
         if fcid:
             return self.one(
-                '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
+                f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
                 fcid,
                 rebuild_url=True,
             ).get()
         return self.all(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
             rebuild_url=True,
         ).list()
 
@@ -1372,7 +1372,7 @@ class RootFlashCopyMixin(object):
         for option in options:
             self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
             rebuild_url=True,
         ).posta({"volume_pairs": volume_pairs, "options": options})
         return res
@@ -1389,14 +1389,14 @@ class RootFlashCopyMixin(object):
 
         """
         _, res = self.one(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
             flashcopy_id,
             rebuild_url=True,
         ).delete()
         return res
 
 
-class RootPPRCMixin(object):
+class RootPPRCMixin:
     def get_pprc(self, pprc_id=None):
         """
         Get PPRC.
@@ -1443,7 +1443,7 @@ class RootPPRCMixin(object):
         if pprc_id:
             return self.get_cs_pprc(pprc_id)
         return self.all(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
             rebuild_url=True,
         ).list()
 
@@ -1459,13 +1459,13 @@ class RootPPRCMixin(object):
 
         """
         return self.one(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
             pprc_id,
             rebuild_url=True,
         ).get()
 
 
-class RootHMCMixin(object):
+class RootHMCMixin:
     def restart_hmc(self):
         """
         Restart the Hardware Management Console.
@@ -1474,7 +1474,7 @@ class RootHMCMixin(object):
             tuple: tuple of HTTP Response and DS8000 server message.
         """
         return self.all(
-            '{}.{}'.format(types.DS8K_HMC, types.DS8K_HMC_RESTART), rebuild_url=True
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_RESTART}', rebuild_url=True
         ).post(body=None)
 
     def create_hmc_csr(
@@ -1516,11 +1516,7 @@ class RootHMCMixin(object):
         """
 
         res, _ = self.all(
-            '{}.{}.{}'.format(
-                types.DS8K_HMC,
-                types.DS8K_HMC_CERTIFICATE,
-                types.DS8K_HMC_CERTIFICATE_CSR,
-            ),
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE_CSR}',
             rebuild_url=True,
         ).post(
             {
@@ -1577,11 +1573,7 @@ class RootHMCMixin(object):
         """
 
         return self.all(
-            '{}.{}.{}'.format(
-                types.DS8K_HMC,
-                types.DS8K_HMC_CERTIFICATE,
-                types.DS8K_HMC_CERTIFICATE_SELFSIGNED,
-            ),
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE_SELFSIGNED}',
             rebuild_url=True,
         ).post(
             {
@@ -1614,14 +1606,12 @@ class RootHMCMixin(object):
         # build the urls. It didn't expect calls to object in /object/objects?
         # Force to match object.object.
         return self.all(
-            '{}.{}.{}'.format(
-                types.DS8K_HMC, types.DS8K_HMC_CERTIFICATE, types.DS8K_HMC_CERTIFICATE
-            ),
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE}',
             rebuild_url=True,
         ).post(body=certificate)
 
 
-class RootEventMixin(object):
+class RootEventMixin:
     def get_events(self, evt_id=None, evt_filter={}):
         """
         Get Events.
@@ -1729,7 +1719,7 @@ class RootResourceMixin(
     pass
 
 
-class VolumeMixin(object):
+class VolumeMixin:
     def get_volumes(self, volume_id=None):
         """
         Get Volumes for the Caller Object.
@@ -1769,7 +1759,7 @@ class VolumeMixin(object):
         return self.one(types.DS8K_VOLUME, volume_id).get()
 
 
-class FCPortMixin(object):
+class FCPortMixin:
     def get_ioports(self, port_id=None):
         """
         Get IO Ports for the Caller Object.
@@ -1808,7 +1798,7 @@ class FCPortMixin(object):
         return self.one(types.DS8K_IOPORT, port_id).get()
 
 
-class HostPortMixin(object):
+class HostPortMixin:
     def get_host_ports(self, port_id=None):
         """
         Get Host Ports for the Caller Object.
@@ -1847,7 +1837,7 @@ class HostPortMixin(object):
         return self.one(types.DS8K_HOST_PORT, port_id).get()
 
 
-class FlashCopyMixin(object):
+class FlashCopyMixin:
     def get_flashcopies(self, fcid=None):
         """
         Get Flash Copies for the Caller Object.
@@ -1899,11 +1889,11 @@ class FlashCopyMixin(object):
             raise IDMissingError
         if fcid:
             return self.one(
-                '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
+                f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
                 fcid,
             ).get()
         flashcopies = self.all(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY)
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}'
         ).list()
         self._start_updating()
         setattr(self, types.DS8K_CS_FLASHCOPY, flashcopies)
@@ -1925,7 +1915,7 @@ class FlashCopyMixin(object):
         return self.get_cs_flashcopies(fcid)
 
 
-class PPRCMixin(object):
+class PPRCMixin:
     def get_pprc(self, pprc_id=None):
         """
         Get PPRC for the Caller Object.
@@ -1963,12 +1953,12 @@ class PPRCMixin(object):
         if pprc_id:
             return self.get_cs_pprc(pprc_id)
         pprcs = self.all(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC)
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}'
         ).list()
         self._start_updating()
         setattr(
             self,
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
             pprcs,
         )
         self._stop_updating()
@@ -1988,11 +1978,11 @@ class PPRCMixin(object):
         if not self.id:
             raise IDMissingError
         return self.one(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC), pprc_id
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}', pprc_id
         ).get()
 
 
-class VolmapMixin(object):
+class VolmapMixin:
     def get_mappings(self, lunid=None):
         """
         Get Mappings of the Volume by Volume id for the Caller Object.

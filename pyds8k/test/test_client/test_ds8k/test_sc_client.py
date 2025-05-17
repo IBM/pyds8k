@@ -59,12 +59,12 @@ class TestClient(TestUtils, TestCaseWithConnect):
     def _set_resource_list(self, route):
         base_route = route.split('.')[-1]
         resource_response = get_response_data_by_type(base_route)
-        prefix = '{}.{}'.format(self.client.service_type, self.client.service_version)
+        prefix = f'{self.client.service_type}.{self.client.service_version}'
         res_class, _ = get_resource_and_manager_class_by_route(
-            "{}.{}".format(prefix, str(route).lower())
+            f"{prefix}.{str(route).lower()}"
         )
         if res_class.__name__ == Resource.__name__:
-            msg = 'Can not get resource class from route: {}'.format(route)
+            msg = f'Can not get resource class from route: {route}'
             raise Exception(msg)
         id_field = res_class.id_field
         route_id = self._get_resource_id_from_resopnse(
@@ -81,7 +81,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         return route_id
 
     def _set_sub_resource(self, route, route_id, sub_route):
-        sub_route_url = '/{}/{}/{}'.format(route, route_id, sub_route)
+        sub_route_url = f'/{route}/{route_id}/{sub_route}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + sub_route_url,
@@ -91,7 +91,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         )
 
     def _post_sub_resource(self, route, route_id, sub_route, body):
-        sub_route_url = '/{}/{}/{}'.format(route, route_id, sub_route)
+        sub_route_url = f'/{route}/{route_id}/{sub_route}'
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + sub_route_url)
@@ -137,12 +137,12 @@ class TestClient(TestUtils, TestCaseWithConnect):
 
     @httpretty.activate
     def _test_resource_list_by_route(self, route, func=None):
-        prefix = '{}.{}'.format(self.client.service_type, self.client.service_version)
+        prefix = f'{self.client.service_type}.{self.client.service_version}'
         res_class, _ = get_resource_and_manager_class_by_route(
-            "{}.{}".format(prefix, str(route).lower())
+            f"{prefix}.{str(route).lower()}"
         )
         if res_class.__name__ == Resource.__name__:
-            msg = 'Can not get resource class from route: {}'.format(route)
+            msg = f'Can not get resource class from route: {route}'
             raise Exception(msg)
         url = '/{}'.format(route.replace('.', '/'))
         base_route = route.split('.')[-1]
@@ -166,7 +166,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
     def _test_sub_resource_post(self, route, sub_route, func, body, *params):
         route_id = self._set_resource_list(route)
         self._post_sub_resource(route, route_id, sub_route, body)
-        func = func or 'get_{}'.format(route)
+        func = func or f'get_{route}'
         res = getattr(self.rest_client, func)(route_id, *params)[0]
         rep = ResponseParser(
             get_response_data_by_type(sub_route), sub_route
@@ -225,7 +225,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
 
     def test_list_cs_flashcopies(self):
         self._test_resource_list_by_route(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_FLASHCOPY),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
             'list_cs_flashcopies',
         )
 
@@ -238,7 +238,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
 
     def test_list_remotecopies(self):
         self._test_resource_list_by_route(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
             'list_remotecopies',
         )
 
@@ -251,7 +251,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
 
     def test_get_cs_remotecopy(self):
         self._test_resource_by_route(
-            '{}.{}'.format(types.DS8K_COPY_SERVICE_PREFIX, types.DS8K_CS_PPRC),
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
             'get_remotecopy',
         )
 

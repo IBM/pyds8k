@@ -30,5 +30,5 @@ success_response_one = {}
 success_response_all = {}
 
 for re in mocks:
-    success_response_one[re] = import_module('{0}.{1}'.format(__name__, re)).ONE
-    success_response_all[re] = import_module('{0}.{1}'.format(__name__, re)).ALL
+    success_response_one[re] = import_module(f'{__name__}.{re}').ONE
+    success_response_all[re] = import_module(f'{__name__}.{re}').ALL

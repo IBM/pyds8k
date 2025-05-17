@@ -85,22 +85,18 @@ class Base(RootResourceMixin, Resource):
     def __getattr__(self, key):
         if key in self.related_resources_collection:
             try:
-                return getattr(self, 'get_{}'.format(key))()
+                return getattr(self, f'get_{key}')()
             except Exception as e:
-                logger.debug(
-                    "Can not get {} from {}, reason is: {}".format(key, self, type(e))
-                )
+                logger.debug(f"Can not get {key} from {self}, reason is: {type(e)}")
                 raise AttributeError(key)
         return super(Base, self).__getattr__(key)
 
     def __repr__(self):
-        return "<{0}: {1}>".format(self.__class__.__name__, self._get_id())
+        return f"<{self.__class__.__name__}: {self._get_id()}>"
 
     def _get_resource_class_by_name(self, resource_type):
-        prefix = '{}.{}'.format(self.client.service_type, self.client.service_version)
-        return get_resource_and_manager_class_by_route(
-            "{}.{}".format(prefix, resource_type)
-        )
+        prefix = f'{self.client.service_type}.{self.client.service_version}'
+        return get_resource_and_manager_class_by_route(f"{prefix}.{resource_type}")
 
     def _verify_type(self, new_type, valid_type_list):
         if new_type and new_type not in valid_type_list:

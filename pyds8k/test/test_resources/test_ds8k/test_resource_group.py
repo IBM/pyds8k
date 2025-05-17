@@ -48,7 +48,7 @@ class TestResourceGroup(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_resource_group(self):
-        url = '/resource_groups/{}'.format(self.resource_group_id)
+        url = f'/resource_groups/{self.resource_group_id}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -77,7 +77,7 @@ class TestResourceGroup(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_update_resource_group(self):
-        url = '/resource_groups/{}'.format(self.resource_group_id)
+        url = f'/resource_groups/{self.resource_group_id}'
         new_name = 'new_name'
         new_label = 'new_label'
         new_cs_global = 'SECRET'

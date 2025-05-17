@@ -46,9 +46,7 @@ class TestLSS(TestDS8KWithConnect):
         )
 
     def test_set_related_resources_collection(self):
-        volumes = [
-            Volume(self.client, resource_id='volume{}'.format(i)) for i in range(10)
-        ]
+        volumes = [Volume(self.client, resource_id=f'volume{i}') for i in range(10)]
 
         # init without related_resources collection
         lss = LSS(
@@ -74,7 +72,7 @@ class TestLSS(TestDS8KWithConnect):
     @httpretty.activate
     def test_lazy_loading_related_resources_collection(self):
         lss_id = '00'
-        url = '/lss/{}'.format(lss_id)
+        url = f'/lss/{lss_id}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -83,7 +81,7 @@ class TestLSS(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         for item in LSS.related_resources_collection:
-            sub_route_url = '{}/{}'.format(url, item)
+            sub_route_url = f'{url}/{item}'
             httpretty.register_uri(
                 httpretty.GET,
                 self.domain + self.base_url + sub_route_url,

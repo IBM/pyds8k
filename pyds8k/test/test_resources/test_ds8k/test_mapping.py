@@ -74,7 +74,7 @@ class TestVolmap(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_mapping(self):
-        url = '/hosts/{}/mappings/{}'.format(self.host_id, self.lunid)
+        url = f'/hosts/{self.host_id}/mappings/{self.lunid}'
         httpretty.register_uri(
             httpretty.GET,
             self.domain + self.base_url + url,
@@ -103,7 +103,7 @@ class TestVolmap(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_delete_mapping_failed(self):
-        url = '/hosts/{}/mappings/{}'.format(self.host_id, self.lunid)
+        url = f'/hosts/{self.host_id}/mappings/{self.lunid}'
         httpretty.register_uri(
             httpretty.DELETE,
             self.domain + self.base_url + url,
@@ -118,8 +118,8 @@ class TestVolmap(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_create_mappings_with_volume_id(self):
-        url = '/hosts/{}/mappings'.format(self.host_id)
-        volumes = ['000{}'.format(i) for i in range(10)]
+        url = f'/hosts/{self.host_id}/mappings'
+        volumes = [f'000{i}' for i in range(10)]
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -141,8 +141,8 @@ class TestVolmap(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_create_mappings_with_mappings(self):
-        url = '/hosts/{}/mappings'.format(self.host_id)
-        mappings = [{'0{}'.format(i): '000{}'.format(i)} for i in range(10)]
+        url = f'/hosts/{self.host_id}/mappings'
+        mappings = [{f'0{i}': f'000{i}'} for i in range(10)]
 
         def _verify_request(request, uri, headers):
             self.assertEqual(uri, self.domain + self.base_url + url)
@@ -164,7 +164,7 @@ class TestVolmap(TestDS8KWithConnect):
 
     @httpretty.activate
     def test_create_mapping_with_volume_and_lunid(self):
-        url = '/hosts/{}/mappings'.format(self.host_id)
+        url = f'/hosts/{self.host_id}/mappings'
         lunid = '00'
         volume_id = '0000'
 
@@ -190,7 +190,7 @@ class TestVolmap(TestDS8KWithConnect):
 
         @httpretty.activate
         def test_create_mapping_with_volume(self):
-            url = '/hosts/{}/mappings'.format(self.host_id)
+            url = f'/hosts/{self.host_id}/mappings'
             volume_id = '0000'
 
             def _verify_request(request, uri, headers):

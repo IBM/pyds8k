@@ -23,7 +23,7 @@ from . import base
 
 class TestUtils(base.TestCaseWithoutConnect):
     def test_get_subclasses(self):
-        class A(object):
+        class A:
             pass
 
         class B(A):

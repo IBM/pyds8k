@@ -43,7 +43,7 @@ class System(Base, metaclass=ResourceMeta):
     }
 
     def __repr__(self):
-        return "<Storage System: {0}>".format(self.id)
+        return f"<Storage System: {self.id}>"
 
     def get_system(self):
         return self.get_systems()[0]

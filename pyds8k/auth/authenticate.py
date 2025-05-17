@@ -18,7 +18,5 @@ from importlib import import_module
 
 
 def get_authenticate(service_type, service_version):
-    auth_module = import_module(
-        '{0}.{1}.{2}.auth'.format(__package__, service_type, service_version)
-    )
+    auth_module = import_module(f'{__package__}.{service_type}.{service_version}.auth')
     return auth_module.Auth
