@@ -14,18 +14,12 @@
 # limitations under the License.
 ##############################################################################
 
-import os
 from importlib import import_module
 
-_PATH = os.path.abspath(os.path.dirname(__file__))
-mocks = set(
-    [
-        os.path.splitext(resource)[0]
-        for resource in os.listdir(_PATH)
-        if os.path.isfile(os.path.join(_PATH, resource))
-        and not str(resource).startswith('__init__')
-    ]
-)
+from pyds8k.test.utils import get_dir_mocks, get_mocks
+
+mocks = get_mocks(__file__)
+dir_mocks = get_dir_mocks(__file__)
 success_response_one = {}
 success_response_all = {}
 

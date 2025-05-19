@@ -16,10 +16,10 @@
 
 import contextlib
 import json
-import os
 import sys
 from http import HTTPStatus
 from logging import getLogger
+from pathlib import Path
 
 from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.exceptions import (
@@ -83,9 +83,8 @@ class UtilsMixin:
 # all the resources are under folder "resources",
 # the route prefix of a resource resources/a/b/c.py is a.b
 def get_resource_route_prefix_by_class(cls):
-    path = os.path.abspath(os.path.dirname(sys.modules[cls.__module__].__file__))
-    route = path.replace(os.sep, ".")
-    return route.rsplit(".resources.", 2)[1]
+    path = Path(sys.modules[cls.__module__].__file__).parent.resolve()
+    return '.'.join(path.parts[path.parts.index("resources") + 1 :])
 
 
 class ResourceMeta(type):

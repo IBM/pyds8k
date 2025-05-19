@@ -15,15 +15,15 @@
 ##############################################################################
 
 import configparser
-import os
 import time
 from importlib import import_module
+from pathlib import Path
 
 from pyds8k.messages import GET_CONFIG_SETTINGS_ERROR, GET_CONFIG_SETTINGS_IOERROR
 
-_PATH = os.path.abspath(os.path.dirname(__file__))
+PATH = Path(__file__).parent.resolve()
 CONFIG_FILE_NAME = 'config.ini'
-CONFIG_FILE_PATH = os.path.join(_PATH, CONFIG_FILE_NAME)
+CONFIG_FILE_PATH = PATH.joinpath(CONFIG_FILE_NAME)
 logger = None
 
 # HTTP METHODS
@@ -115,7 +115,7 @@ def set_config_by_name(name, value):
     config.read(CONFIG_FILE_PATH)
     config.set('settings', name, value)
 
-    with open(CONFIG_FILE_PATH, 'wb') as config_file:
+    with CONFIG_FILE_PATH.open('wb') as config_file:
         config.write(config_file)
 
 
