@@ -73,11 +73,7 @@ class UtilsMixin:
         return self.id if hasattr(self, 'id') else id(self)
 
     def remove_None_fields_from_dict(self, input_dict):
-        new_dict = {}
-        for key, value in input_dict.items():
-            if value is not None:
-                new_dict[key] = value
-        return new_dict
+        return {key: value for key, value in input_dict.items() if value is not None}
 
 
 # all the resources are under folder "resources",
@@ -220,10 +216,9 @@ class Resource(UtilsMixin, BaseResource):
         return result
 
     def create(self, **kwargs):
-        custom_info = {}
-        for k, v in kwargs.items():
-            if k in list(self._template.keys()):
-                custom_info[k] = v
+        custom_info = {
+            k: v for k, v in kwargs.items() if k in list(self._template.keys())
+        }
         return self.create_from_template(custom_info)
 
     def create_from_template(self, custom_info={}):

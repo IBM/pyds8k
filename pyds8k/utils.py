@@ -58,8 +58,7 @@ def get_config_settings(category="settings"):
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
-        for setting, value in config.items(category):
-            result_dict[setting] = value
+        result_dict = {config.items(category)}
     except OSError as e:
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
@@ -93,8 +92,7 @@ def get_config_all_items():
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
         for section in config.sections():
-            for setting, value in config.items(section):
-                result_dict[setting] = value
+            result_dict = {config.items(section)}
     except OSError as e:
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
@@ -191,10 +189,8 @@ def dictionarize(func):
             res_obj = [
                 res_obj,
             ]
-        coverted = []
-        for res in res_obj:
-            coverted.append(res.representation)
-        return coverted
+
+        return [res.representation for res in res_obj]
 
     return inner
 
