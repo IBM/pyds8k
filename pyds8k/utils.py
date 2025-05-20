@@ -54,7 +54,7 @@ def get_subclasses(cls):
 
 
 def get_config_settings(category="settings"):
-    result_dict = dict()
+    result_dict = {}
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
@@ -70,12 +70,12 @@ def get_config_settings(category="settings"):
 
 
 def get_config_all():
-    result_dict = dict()
+    result_dict = {}
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
         for section in config.sections():
-            result_dict[section] = dict()
+            result_dict[section] = {}
             for setting, value in config.items(section):
                 result_dict[section][setting] = value
     except OSError as e:
@@ -88,7 +88,7 @@ def get_config_all():
 
 
 def get_config_all_items():
-    result_dict = dict()
+    result_dict = {}
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)

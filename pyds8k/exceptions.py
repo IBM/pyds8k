@@ -266,7 +266,7 @@ class GatewayTimeout(ServerError):
     reason_phrase = HTTPStatus.GATEWAY_TIMEOUT.phrase
 
 
-_error_dict = dict((c.status_code, c) for c in get_subclasses(ClientException))
+_error_dict = {c.status_code: c for c in get_subclasses(ClientException)}
 
 
 def raise_error(response, body, service_type=''):

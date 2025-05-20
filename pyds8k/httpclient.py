@@ -142,7 +142,7 @@ class HTTPClient:
         self.cert = cert
         self.timeout = timeout
         self.defaultHeaders = self.DefaultHeaders.copy()
-        self.defaultHeaders = dict()
+        self.defaultHeaders = {}
         if default_headers is not None and isinstance(default_headers, dict):
             self.defaultHeaders.update(default_headers)
         self.defaultQuerystrings = {}

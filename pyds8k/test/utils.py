@@ -39,13 +39,11 @@ def get_mocks(path):
         set: A set containing mock names.
     """
     _PATH = Path(path).parent.absolute()
-    return set(
-        [
-            resource.stem
-            for resource in _PATH.iterdir()
-            if resource.is_file() and not resource.stem.startswith('__init__')
-        ]
-    )
+    return {
+        resource.stem
+        for resource in _PATH.iterdir()
+        if resource.is_file() and not resource.stem.startswith('__init__')
+    }
 
 
 def get_dir_mocks(path):

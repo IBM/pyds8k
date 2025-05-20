@@ -62,6 +62,7 @@ target-version = "py39"
 [tool.ruff.lint]
 extend-select = [
     "A",
+    "C4",
     "DTZ",
     "EM",
     "FURB",
