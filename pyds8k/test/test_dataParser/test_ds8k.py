@@ -39,32 +39,28 @@ volume_list_response = get_response_list_data_by_type(DS8K_VOLUME)
 class TestDataParser(base.TestCaseWithoutConnect):
     def test_responseParser(self):
         re = ResponseParser(volume_a_response, 'volumes')
-        self.assertEqual(re.response_key, 'data')
-        self.assertEqual(re.url_field, 'link')
-        self.assertEqual(re.get_representations(), volume_a_response['data']['volumes'])
+        assert re.response_key == 'data'
+        assert re.url_field == 'link'
+        assert re.get_representations() == volume_a_response['data']['volumes']
         re.representation = re.get_representations()[0]
-        self.assertEqual(
-            re.get_link(), volume_a_response['data']['volumes'][0]['link']['href']
-        )
+        assert re.get_link() == volume_a_response['data']['volumes'][0]['link']['href']
 
         re1 = ResponseParser(volume_list_response, 'volumes')
-        self.assertEqual(re1.response_key, 'data')
-        self.assertEqual(re1.url_field, 'link')
-        self.assertEqual(
-            re1.get_representations(), volume_list_response['data']['volumes']
-        )
+        assert re1.response_key == 'data'
+        assert re1.url_field == 'link'
+        assert re1.get_representations() == volume_list_response['data']['volumes']
         re1.representation = re1.get_representations()[0]
-        self.assertEqual(
-            re1.get_link(), volume_list_response['data']['volumes'][0]['link']['href']
+        assert (
+            re1.get_link() == volume_list_response['data']['volumes'][0]['link']['href']
         )
 
         re2 = ResponseParser(token_response_error)
-        self.assertEqual(re2.get_status_body(), token_response_error['server'])
-        self.assertEqual(re2.get_error_code(), token_response_error['server']['code'])
-        self.assertEqual(re2.get_error_msg(), token_response_error['server']['message'])
-        self.assertEqual(re2.get_status(), token_response_error['server']['status'])
+        assert re2.get_status_body() == token_response_error['server']
+        assert re2.get_error_code() == token_response_error['server']['code']
+        assert re2.get_error_msg() == token_response_error['server']['message']
+        assert re2.get_status() == token_response_error['server']['status']
 
     def test_requestParser(self):
         re = RequestParser(default_request['request']['params'])
-        self.assertEqual(re.request_key, 'request')
-        self.assertEqual(re.get_request_data(), default_request)
+        assert re.request_key == 'request'
+        assert re.get_request_data() == default_request

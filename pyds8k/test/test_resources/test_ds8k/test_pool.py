@@ -75,7 +75,7 @@ class TestPool(TestDS8KWithConnect):
             status=HTTPStatus.NO_CONTENT,
         )
         self.pool.delete_tserep()
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_delete_eserep(self):
@@ -87,7 +87,7 @@ class TestPool(TestDS8KWithConnect):
             status=HTTPStatus.NO_CONTENT,
         )
         self.pool.delete_eserep()
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_update_tserep_cap(self):
@@ -96,10 +96,10 @@ class TestPool(TestDS8KWithConnect):
         captype = 'gib'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser({'cap': cap, 'captype': captype})
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
@@ -109,8 +109,8 @@ class TestPool(TestDS8KWithConnect):
             content_type='application/json',
         )
         _, body = self.pool.update_tserep_cap(cap, captype)
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(body, action_response['server'])
+        assert httpretty.last_request().method == httpretty.PUT
+        assert body == action_response['server']
 
     @httpretty.activate
     def test_update_tserep_threshold(self):
@@ -118,10 +118,10 @@ class TestPool(TestDS8KWithConnect):
         threshold = '70'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser({'threshold': threshold})
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
@@ -131,8 +131,8 @@ class TestPool(TestDS8KWithConnect):
             content_type='application/json',
         )
         _, body = self.pool.update_tserep_threshold(threshold)
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(body, action_response['server'])
+        assert httpretty.last_request().method == httpretty.PUT
+        assert body == action_response['server']
 
     def test_update_eserep_cap(self):
         pass
@@ -162,8 +162,8 @@ class TestPool(TestDS8KWithConnect):
             },
         )
         for i in pool.related_resources_collection:
-            self.assertEqual('', pool.representation.get(i))
-            self.assertFalse(hasattr(pool, i))
+            assert pool.representation.get(i) == ''
+            assert not hasattr(pool, i)
 
         # loading related resources collection
         pool._start_updating()
@@ -174,7 +174,7 @@ class TestPool(TestDS8KWithConnect):
         ):
             setattr(pool, item[0], item[1])
             for j, value in enumerate(pool.representation[item[0]]):
-                self.assertEqual(value, getattr(item[1][j], item[1][j].id_field))
+                assert value == getattr(item[1][j], item[1][j].id_field)
         pool._stop_updating()
 
     @httpretty.activate
@@ -200,7 +200,7 @@ class TestPool(TestDS8KWithConnect):
 
         for item in Pool.related_resources_collection:
             res_collection = getattr(pool, item)
-            self.assertNotEqual(0, len(res_collection))
+            assert len(res_collection) != 0
             res_collection.sort(
                 key=cmp_to_key(self._get_sort_func_by(res_collection[0].id_field))
             )
@@ -211,7 +211,7 @@ class TestPool(TestDS8KWithConnect):
                 key=cmp_to_key(self._get_sort_func_by(res_collection[0].id_field))
             )
 
-            self.assertEqual(len(res_collection_data), len(res_collection))
+            assert len(res_collection_data) == len(res_collection)
             self._assert_equal_between_sorted_dict_and_resource_list(
                 res_collection_data, res_collection
             )
@@ -230,5 +230,5 @@ class TestPool(TestDS8KWithConnect):
             },
         )
 
-        self.assertEqual('0000', pool.representation.get('volumes')[0])
-        self.assertEqual('0000', pool.volumes[0].id)
+        assert pool.representation.get('volumes')[0] == '0000'
+        assert pool.volumes[0].id == '0000'

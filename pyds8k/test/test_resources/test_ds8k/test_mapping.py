@@ -18,6 +18,7 @@ import json
 from http import HTTPStatus
 
 import httpretty
+import pytest
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.exceptions import InternalServerError
@@ -62,10 +63,10 @@ class TestVolmap(TestDS8KWithConnect):
         mapping_info = mapping_response['data'][DS8K_VOLMAP][0]
         volume_id = mapping_info['volume'][Volume.id_field]
         mapping = Volmap(self.client, info=mapping_info)
-        self.assertEqual(mapping.volume, volume_id)
-        self.assertEqual(mapping.representation['volume'], volume_id)
-        self.assertIsInstance(mapping._volume, Volume)
-        self.assertEqual(mapping._volume.id, volume_id)
+        assert mapping.volume == volume_id
+        assert mapping.representation['volume'] == volume_id
+        assert isinstance(mapping._volume, Volume)
+        assert mapping._volume.id == volume_id
 
     def test_get_mappings(self):
         self._test_sub_resource_list_by_route(
@@ -91,15 +92,15 @@ class TestVolmap(TestDS8KWithConnect):
         )
         # Way 1
         _ = self.host.delete_mapping(self.lunid)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
         # self.assertEqual(resp1, action_response['server'])
 
         # Way 2
         mapping = self.host.get_mapping(self.lunid)
-        self.assertIsInstance(mapping, Volmap)
+        assert isinstance(mapping, Volmap)
         resp2, _ = mapping.delete()
-        self.assertEqual(resp2.status_code, HTTPStatus.NO_CONTENT)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert resp2.status_code == HTTPStatus.NO_CONTENT
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_delete_mapping_failed(self):
@@ -111,10 +112,10 @@ class TestVolmap(TestDS8KWithConnect):
             content_type='application/json',
             status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
-        with self.assertRaises(InternalServerError) as cm:
+        with pytest.raises(InternalServerError) as cm:
             self.host.delete_mapping(self.lunid)
-        self.assertEqual(action_response_failed['server'], cm.exception.error_data)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert action_response_failed['server'] == cm.value.error_data
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_create_mappings_with_volume_id(self):
@@ -122,10 +123,10 @@ class TestVolmap(TestDS8KWithConnect):
         volumes = [f'000{i}' for i in range(10)]
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser({'volumes': volumes})
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, create_mappings_response_json)
 
         httpretty.register_uri(
@@ -136,8 +137,8 @@ class TestVolmap(TestDS8KWithConnect):
         )
         # Way 1
         resp1 = self.host.create_mappings(volumes=volumes)
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(resp1[0], Volmap)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(resp1[0], Volmap)
 
     @httpretty.activate
     def test_create_mappings_with_mappings(self):
@@ -145,10 +146,10 @@ class TestVolmap(TestDS8KWithConnect):
         mappings = [{f'0{i}': f'000{i}'} for i in range(10)]
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser({'mappings': mappings})
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, create_mappings_response_json)
 
         httpretty.register_uri(
@@ -159,8 +160,8 @@ class TestVolmap(TestDS8KWithConnect):
         )
         # Way 1
         resp1 = self.host.create_mappings(mappings=mappings)
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(resp1[0], Volmap)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(resp1[0], Volmap)
 
     @httpretty.activate
     def test_create_mapping_with_volume_and_lunid(self):
@@ -169,10 +170,10 @@ class TestVolmap(TestDS8KWithConnect):
         volume_id = '0000'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser({'lunid': lunid, 'volume': volume_id})
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, create_mapping_response_json)
 
         httpretty.register_uri(
@@ -184,9 +185,9 @@ class TestVolmap(TestDS8KWithConnect):
         mapping = self.host.all(DS8K_VOLMAP)
         new_mapping = mapping.create(lunid=lunid, volume=volume_id)
         resp, data = new_mapping.save()
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(data[0], Volmap)
-        self.assertEqual(resp.status_code, HTTPStatus.OK)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(data[0], Volmap)
+        assert resp.status_code == HTTPStatus.OK
 
         @httpretty.activate
         def test_create_mapping_with_volume(self):
@@ -194,10 +195,10 @@ class TestVolmap(TestDS8KWithConnect):
             volume_id = '0000'
 
             def _verify_request(request, uri, headers):
-                self.assertEqual(uri, self.domain + self.base_url + url)
+                assert uri == f"{self.domain}{self.base_url}{url}"
 
                 resq = RequestParser({'lunid': '', 'volume': volume_id})
-                self.assertEqual(json.loads(request.body), resq.get_request_data())
+                assert json.loads(request.body) == resq.get_request_data()
                 return (HTTPStatus.OK, headers, create_mapping_response_json)
 
             httpretty.register_uri(
@@ -209,6 +210,6 @@ class TestVolmap(TestDS8KWithConnect):
             mapping = self.host.all(DS8K_VOLMAP)
             new_mapping = mapping.create(lunid='', volume=volume_id)
             resp, data = new_mapping.save()
-            self.assertEqual(httpretty.POST, httpretty.last_request().method)
-            self.assertIsInstance(data[0], Volmap)
-            self.assertEqual(resp.status_code, HTTPStatus.OK)
+            assert httpretty.last_request().method == httpretty.POST
+            assert isinstance(data[0], Volmap)
+            assert resp.status_code == HTTPStatus.OK

@@ -18,7 +18,9 @@ import json
 from http import HTTPStatus
 
 import httpretty
+import pytest
 
+from pyds8k import messages
 from pyds8k.base import DefaultManager, Resource
 from pyds8k.messages import DEFAULT_SUCCESS_BODY_DICT
 
@@ -59,17 +61,17 @@ class TestResource(base.TestCaseWithConnect):
         # test rebuild url
         vol3 = vol2.one(DEFAULT, 'a', rebuild_url=True).one(DEFAULT, 'b').all(DEFAULT)
 
-        self.assertIsInstance(vol1, Resource)
-        self.assertIsInstance(vol2, Resource)
-        self.assertIsInstance(vol3, Resource)
+        assert isinstance(vol1, Resource)
+        assert isinstance(vol2, Resource)
+        assert isinstance(vol3, Resource)
 
-        self.assertIsInstance(vol1.parent, Resource)
-        self.assertIsInstance(vol2.parent, Resource)
-        self.assertIsInstance(vol3.parent, Resource)
+        assert isinstance(vol1.parent, Resource)
+        assert isinstance(vol2.parent, Resource)
+        assert isinstance(vol3.parent, Resource)
 
-        self.assertEqual(vol1.url, url1)
-        self.assertEqual(vol2.url, url2)
-        self.assertEqual(vol3.url, url1)
+        assert vol1.url == url1
+        assert vol2.url == url2
+        assert vol3.url == url1
 
     @httpretty.activate
     def test_toUrl(self):
@@ -91,12 +93,12 @@ class TestResource(base.TestCaseWithConnect):
         )
         vol = self.resource.one(DEFAULT, 'a').one(DEFAULT, 'b').one(DEFAULT, 'c')
         _, body1 = vol.toUrl(method)
-        self.assertEqual(vol.url, url)
-        self.assertEqual(body1, custom_method_get)
+        assert vol.url == url
+        assert body1 == custom_method_get
 
         _, body2 = vol.toUrl(method, body)
-        self.assertEqual(vol.url, url)
-        self.assertEqual(body2, action_response['server'])
+        assert vol.url == url
+        assert body2 == action_response['server']
 
     @httpretty.activate
     def test_create_from_template_and_save(self):
@@ -144,16 +146,16 @@ class TestResource(base.TestCaseWithConnect):
             .all(DEFAULT)
             .create_from_template(default_template)
         )
-        self.assertIsInstance(vol1, Resource)
-        self.assertIsInstance(vol1.manager, DefaultManager)
-        self.assertEqual(vol1.name, default_template['name'])
-        self.assertEqual(vol1.url, url)
-        self.assertEqual(vol1.representation, default_template)
+        assert isinstance(vol1, Resource)
+        assert isinstance(vol1.manager, DefaultManager)
+        assert vol1.name == default_template['name']
+        assert vol1.url == url
+        assert vol1.representation == default_template
         resp1, data1 = vol1.save()
-        self.assertIsInstance(data1[0], Resource)
-        self.assertEqual(resp1.status_code, HTTPStatus.CREATED)
-        self.assertEqual(resp1.headers['Location'], self.base_url + url + '/vol1_id')
-        self.assertEqual(resp1.headers['Location'], vol1.url)
+        assert isinstance(data1[0], Resource)
+        assert resp1.status_code == HTTPStatus.CREATED
+        assert resp1.headers['Location'] == self.base_url + url + '/vol1_id'
+        assert resp1.headers['Location'] == vol1.url
 
         vol2 = (
             self.resource.one(DEFAULT, 'a')
@@ -163,18 +165,18 @@ class TestResource(base.TestCaseWithConnect):
         )
         vol2._template = default_template
         vol2.name = 'vol2'
-        self.assertIsInstance(vol2, Resource)
-        self.assertIsInstance(vol2.manager, DefaultManager)
-        self.assertEqual(vol2.name, 'vol2')
-        self.assertEqual(vol2.url, url)
+        assert isinstance(vol2, Resource)
+        assert isinstance(vol2.manager, DefaultManager)
+        assert vol2.name == 'vol2'
+        assert vol2.url == url
         rep = default_template.copy()
         rep.update({'name': 'vol2'})
-        self.assertEqual(vol2.representation, rep)
+        assert vol2.representation == rep
         resp2, data2 = vol2.save()
-        self.assertIsInstance(data2[0], Resource)
-        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
-        self.assertEqual(resp2.headers['Location'], self.base_url + url + '/vol2_id')
-        self.assertEqual(resp2.headers['Location'], vol2.url)
+        assert isinstance(data2[0], Resource)
+        assert resp2.status_code == HTTPStatus.CREATED
+        assert resp2.headers['Location'] == self.base_url + url + '/vol2_id'
+        assert resp2.headers['Location'] == vol2.url
 
         rep_with_id = default_template.copy()
         rep_with_id.update({'name': 'vol3', 'id': 'vol3_id'})
@@ -184,17 +186,17 @@ class TestResource(base.TestCaseWithConnect):
             .one(DEFAULT, 'c')
             .create_from_template(rep_with_id)
         )
-        self.assertIsInstance(vol3, Resource)
-        self.assertIsInstance(vol3.manager, DefaultManager)
-        self.assertEqual(vol3.name, 'vol3')
-        self.assertEqual(vol3.id, 'vol3_id')
-        self.assertEqual(vol3.url, url + '/vol3_id')
-        self.assertEqual(vol3.representation, rep_with_id)
+        assert isinstance(vol3, Resource)
+        assert isinstance(vol3.manager, DefaultManager)
+        assert vol3.name == 'vol3'
+        assert vol3.id == 'vol3_id'
+        assert vol3.url == url + '/vol3_id'
+        assert vol3.representation == rep_with_id
         resp3, data3 = vol3.save()
         # default create method is put if id is specified.
-        self.assertEqual(data3, action_response.get('server'))
-        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
-        self.assertEqual(resp3.headers['Location'], self.base_url + url + '/vol3_id')
+        assert data3 == action_response.get('server')
+        assert resp3.status_code == HTTPStatus.CREATED
+        assert resp3.headers['Location'] == self.base_url + url + '/vol3_id'
 
     def test_create(self):
         pass
@@ -220,89 +222,91 @@ class TestResource(base.TestCaseWithConnect):
 
         de_list = self.resource.all(DEFAULT).list()
         de0 = de_list[0]
-        self.assertIsInstance(de0, Resource)
-        self.assertIsInstance(de0.manager, DefaultManager)
+        assert isinstance(de0, Resource)
+        assert isinstance(de0.manager, DefaultManager)
         de0._template = {'id': '', 'name': ''}
-        self.assertEqual(de0.id, default_list_response['data']['default'][0]['id'])
-        self.assertFalse('name' in de0.representation)
+        assert de0.id == default_list_response['data']['default'][0]['id']
+        assert 'name' not in de0.representation
         # 'unknown' is not in _template
-        self.assertRaises(AttributeError, getattr, de0, 'unknown')
-        self.assertFalse(de0.is_loaded())
+        with pytest.raises(AttributeError):
+            getattr(de0, 'uknown')
+
+        assert not de0.is_loaded()
         # loading details
-        self.assertEqual(de0.name, default_a_response['data']['default'][0]['name'])
-        self.assertTrue('name' in de0.representation)
-        self.assertTrue(de0.is_loaded())
+        assert de0.name == default_a_response['data']['default'][0]['name']
+        assert 'name' in de0.representation
+        assert de0.is_loaded()
 
     def test_get_url(self):
-        self.assertEqual(self.resource._get_url('/test'), '/test')
-        self.assertEqual(
-            self.resource._get_url({'rel': 'self', 'href': '/test'}), '/test'
-        )
-        self.assertEqual(
+        assert self.resource._get_url('/test') == '/test'
+        assert self.resource._get_url({'rel': 'self', 'href': '/test'}) == '/test'
+        assert (
             self.resource._get_url(
                 [
                     {'rel': 'self', 'href': '/test'},
                     {'rel': 'bookmark', 'href': '/bookmark'},
                 ]
-            ),
-            '/test',
+            )
+            == '/test'
         )
-        self.assertEqual(
+        assert (
             self.resource._get_url(
                 [
                     {'rel': 'self_', 'href': '/test'},
                     {'rel': 'bookmark', 'href': '/bookmark'},
                 ]
-            ),
-            '',
+            )
+            == ''
         )
-        self.assertEqual(
+        assert (
             self.resource._get_url(
                 [
                     {'rel': 'self', 'href_': '/test'},
                     {'rel': 'bookmark', 'href_': '/bookmark'},
                 ]
-            ),
-            '',
+            )
+            == ''
         )
-        self.assertEqual(
+        assert (
             self.resource._get_url(
                 [
                     {'rel_': 'self', 'href': '/test'},
                     {'rel_': 'bookmark', 'href': '/bookmark'},
                 ]
-            ),
-            '',
+            )
+            == ''
         )
-        self.assertRaises(Exception, self.resource._get_url, object())
+        with pytest.raises(Exception, match=messages.CAN_NOT_GET_URL):
+            self.resource._get_url(object())
 
     def test_id(self):
-        self.assertFalse(hasattr(self.resource, 'id'))
-        self.assertFalse(hasattr(self.resource, '_id'))
+        assert not hasattr(self.resource, 'id')
+        assert not hasattr(self.resource, '_id')
         self.resource._add_details(info)
-        self.assertTrue(hasattr(self.resource, 'id'))
-        self.assertTrue(hasattr(self.resource, '_id'))
+        assert hasattr(self.resource, 'id')
+        assert hasattr(self.resource, '_id')
 
         def set_id(_id):
             self.resource.id = _id
 
-        self.assertRaises(Exception, set_id, 'a')
+        with pytest.raises(Exception, match="The field id is read only."):
+            set_id('a')
 
     def test_modified_info_dict(self):
         re = Resource(self.client, DefaultManager(self.client))
-        self.assertEqual(re._get_modified_info_dict(), {})
+        assert re._get_modified_info_dict() == {}
         re._set_modified_info_dict('key1', 'val1')
-        self.assertEqual(re._get_modified_info_dict(), {'key1': 'val1'})
+        assert re._get_modified_info_dict() == {'key1': 'val1'}
         re._del_modified_info_dict_key('key')
-        self.assertEqual(re._get_modified_info_dict(), {'key1': 'val1'})
+        assert re._get_modified_info_dict() == {'key1': 'val1'}
         re._del_modified_info_dict_key('key1')
-        self.assertEqual(re._get_modified_info_dict(), {})
+        assert re._get_modified_info_dict() == {}
         re._set_modified_info_dict('key2', 'val2')
-        self.assertEqual(re._get_modified_info_dict(), {'key2': 'val2'})
+        assert re._get_modified_info_dict() == {'key2': 'val2'}
         re._del_modified_info_dict_keys({'key1': 'val1'})
-        self.assertEqual(re._get_modified_info_dict(), {'key2': 'val2'})
+        assert re._get_modified_info_dict() == {'key2': 'val2'}
         re._del_modified_info_dict_keys({'key2': 'val2'})
-        self.assertEqual(re._get_modified_info_dict(), {})
+        assert re._get_modified_info_dict() == {}
 
         re1 = Resource(
             self.client,
@@ -310,15 +314,15 @@ class TestResource(base.TestCaseWithConnect):
         )
         re1._template = {'key1': '', 'key2': ''}
         re1._add_details(info={'key1': 'val1'})
-        self.assertEqual(re1._get_modified_info_dict(), {})
-        self.assertEqual(re1.key1, 'val1')
+        assert re1._get_modified_info_dict() == {}
+        assert re1.key1 == 'val1'
         re1.key1 = 'val1_changed'
-        self.assertEqual(re1._get_modified_info_dict(), {'key1': 'val1_changed'})
-        self.assertEqual(re1.key1, 'val1_changed')
+        assert re1._get_modified_info_dict() == {'key1': 'val1_changed'}
+        assert re1.key1 == 'val1_changed'
 
         # set attr not in _template
         re1.key3 = 'val3'
-        self.assertEqual(re1._get_modified_info_dict(), {'key1': 'val1_changed'})
+        assert re1._get_modified_info_dict() == {'key1': 'val1_changed'}
 
     def test_force_get(self):
         re1 = Resource(
@@ -327,17 +331,17 @@ class TestResource(base.TestCaseWithConnect):
         )
         re1._template = {'key1': '', 'key2': ''}
         re1._add_details(info={'key1': 'val1'})
-        self.assertEqual(re1._get_modified_info_dict(), {})
-        self.assertEqual(re1.key1, 'val1')
+        assert re1._get_modified_info_dict() == {}
+        assert re1.key1 == 'val1'
         re1.key1 = 'val1_changed'
-        self.assertEqual(re1._get_modified_info_dict(), {'key1': 'val1_changed'})
-        self.assertEqual(re1.key1, 'val1_changed')
+        assert re1._get_modified_info_dict() == {'key1': 'val1_changed'}
+        assert re1.key1 == 'val1_changed'
 
         re1._add_details(info={'key1': 'val1'})
-        self.assertEqual(re1.key1, 'val1_changed')
+        assert re1.key1 == 'val1_changed'
 
         re1._add_details(info={'key1': 'val1'}, force=True)
-        self.assertEqual(re1.key1, 'val1')
+        assert re1.key1 == 'val1'
 
     @httpretty.activate
     def test_list(self):
@@ -358,19 +362,18 @@ class TestResource(base.TestCaseWithConnect):
         )
 
         vol = self.resource.all(DEFAULT)
-        self.assertEqual(vol.url, url)
-        self.assertRaises(AttributeError, getattr, vol, 'id')
+        assert vol.url == url
+        with pytest.raises(AttributeError):
+            getattr(vol, 'id')
         vol_list = vol.list()
-        self.assertIsInstance(vol_list, list)
+        assert isinstance(vol_list, list)
         vol1 = vol_list[0]
-        self.assertEqual(
-            vol1.url, default_list_response['data']['default'][0]['link']['href']
-        )
-        self.assertEqual(vol1.id, default_a_response['data']['default'][0]['id'])
+        assert vol1.url == default_list_response['data']['default'][0]['link']['href']
+        assert vol1.id == default_a_response['data']['default'][0]['id']
 
         # lazy loading
         vol1._template = {'id': '', 'name': ''}
-        self.assertEqual(vol1.name, default_a_response['data']['default'][0]['name'])
+        assert vol1.name == default_a_response['data']['default'][0]['name']
 
     @httpretty.activate
     def test_get(self):
@@ -385,19 +388,15 @@ class TestResource(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, vol_id)
-        self.assertEqual(vol.url, url)
-        self.assertEqual(vol.id, vol_id)
+        assert vol.url == url
+        assert vol.id == vol_id
         vol.get()
-        self.assertEqual(
-            vol.url, default_a_response['data']['default'][0]['link']['href']
-        )
-        self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
+        assert vol.url == default_a_response['data']['default'][0]['link']['href']
+        assert vol.name == default_a_response['data']['default'][0]['name']
 
         vol1 = self.resource.all(DEFAULT).get(vol_id)
-        self.assertEqual(
-            vol1.url, default_a_response['data']['default'][0]['link']['href']
-        )
-        self.assertEqual(vol1.name, default_a_response['data']['default'][0]['name'])
+        assert vol1.url == default_a_response['data']['default'][0]['link']['href']
+        assert vol1.name == default_a_response['data']['default'][0]['name']
 
     @httpretty.activate
     def test_post(self):
@@ -429,11 +428,11 @@ class TestResource(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
-        self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
+        assert vol.name == default_a_response['data']['default'][0]['name']
         vol.name = 'vol1_rename'
         resp, data = vol.put()
-        self.assertEqual(data, {'status': 'updated'})
-        self.assertEqual(resp.status_code, HTTPStatus.OK)
+        assert data == {'status': 'updated'}
+        assert resp.status_code == HTTPStatus.OK
 
     @httpretty.activate
     def test_patch(self):
@@ -455,13 +454,13 @@ class TestResource(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
-        self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
+        assert vol.name == default_a_response['data']['default'][0]['name']
         vol._template = default_template
         vol.name = 'vol1_rename_patch'
-        self.assertEqual(vol._get_modified_info_dict(), {'name': 'vol1_rename_patch'})
+        assert vol._get_modified_info_dict() == {'name': 'vol1_rename_patch'}
         resp, data = vol.patch()
-        self.assertEqual(data, {'status': 'updated'})
-        self.assertEqual(resp.status_code, HTTPStatus.OK)
+        assert data == {'status': 'updated'}
+        assert resp.status_code == HTTPStatus.OK
 
     @httpretty.activate
     def test_delete(self):
@@ -482,10 +481,10 @@ class TestResource(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
-        self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
+        assert vol.name == default_a_response['data']['default'][0]['name']
         resp, data = vol.delete()
-        self.assertEqual(resp.status_code, HTTPStatus.NO_CONTENT)
-        self.assertEqual(data, DEFAULT_SUCCESS_BODY_DICT)
+        assert resp.status_code == HTTPStatus.NO_CONTENT
+        assert data == DEFAULT_SUCCESS_BODY_DICT
 
     def test_save(self):
         # save new: tested in test_create_from_template_and_save
@@ -503,21 +502,21 @@ class TestResource(base.TestCaseWithConnect):
         re1 = Resource(self.client, resource_id='test')
         re2 = Resource(self.client, resource_id='test')
         re3 = Resource(self.client, resource_id='test3')
-        self.assertTrue(re1 == re2)
-        self.assertFalse(re1 == re3)
-        self.assertFalse(re1 is re2)
-        self.assertTrue(re1 in [re2])
+        assert re1 == re2
+        assert re1 != re3
+        assert re1 is not re2
+        assert re1 in [re2]
 
     def test_update_list_field(self):
         re1 = Resource(self.client, resource_id='test')
         re1.re_list = [Resource(self.client, resource_id=f'test{n}') for n in range(10)]
         re_not_in = Resource(self.client, resource_id='test11')
         re_in = Resource(self.client, resource_id='test1')
-        with self.assertRaises(KeyError):
+        with pytest.raises(KeyError):
             re1._update_list_field('re_list', re_not_in, '-')
-        with self.assertRaises(KeyError):
+        with pytest.raises(KeyError):
             re1._update_list_field('re_list', re_in)
         re1._update_list_field('re_list', re_not_in)
-        self.assertTrue(re_not_in in re1.re_list)
+        assert re_not_in in re1.re_list
         re1._update_list_field('re_list', re_in, '-')
-        self.assertTrue(re_in not in re1.re_list)
+        assert re_in not in re1.re_list

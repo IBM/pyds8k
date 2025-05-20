@@ -33,7 +33,7 @@ class TestFlashCopies(TestDS8KWithConnect):
         target_volume = '0001'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             req = RequestParser(
                 {
@@ -61,8 +61,8 @@ class TestFlashCopies(TestDS8KWithConnect):
                 {'source_volume': source_volume, 'target_volume': target_volume}
             ]
         )
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(resp1[0], FlashCopies)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(resp1[0], FlashCopies)
 
         # Way 2
         flashcopies = self.system.all(
@@ -75,9 +75,9 @@ class TestFlashCopies(TestDS8KWithConnect):
             ]
         )
         resp2, data2 = new_fc2.posta()
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(data2[0], FlashCopies)
-        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(data2[0], FlashCopies)
+        assert resp2.status_code == HTTPStatus.CREATED
 
         # Way 3
         flashcopies = self.system.all(
@@ -90,9 +90,9 @@ class TestFlashCopies(TestDS8KWithConnect):
             ]
         )
         resp3, data3 = new_fc3.save()
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(data3[0], FlashCopies)
-        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(data3[0], FlashCopies)
+        assert resp3.status_code == HTTPStatus.CREATED
 
     @httpretty.activate
     def test_delete_cs_flashcopy(self):
@@ -118,11 +118,11 @@ class TestFlashCopies(TestDS8KWithConnect):
         )
         # Way 1
         _ = self.system.delete_cs_flashcopy(name)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
         # Way 2
         flashcopy = self.system.get_cs_flashcopies(name)
-        self.assertIsInstance(flashcopy, FlashCopies)
+        assert isinstance(flashcopy, FlashCopies)
         resp2, _ = flashcopy.delete()
-        self.assertEqual(resp2.status_code, HTTPStatus.NO_CONTENT)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert resp2.status_code == HTTPStatus.NO_CONTENT
+        assert httpretty.last_request().method == httpretty.DELETE

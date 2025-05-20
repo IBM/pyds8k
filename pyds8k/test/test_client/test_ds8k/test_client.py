@@ -15,6 +15,7 @@
 ##############################################################################
 
 import httpretty
+import pytest
 
 from pyds8k.client.ds8k.v1.client import Client
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM, DS8K_VOLUME
@@ -55,9 +56,9 @@ class TestClient(TestCaseWithConnect):
         )
 
         vol_list = self.rest_client.get_volumes()
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(len(vol_list), len(volume_list_response['data']['volumes']))
-        with self.assertRaises(AttributeError):
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
+        with pytest.raises(AttributeError):
             # 'base_url' is an attr from System, not a method
             self.rest_client.base_url

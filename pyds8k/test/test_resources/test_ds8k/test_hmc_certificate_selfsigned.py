@@ -49,7 +49,7 @@ class TestHmcCertificateSelfsigned(TestDS8KWithConnect):
         days = 1
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             req = RequestParser(
                 {
@@ -79,6 +79,6 @@ class TestHmcCertificateSelfsigned(TestDS8KWithConnect):
             O=O, OU=OU, C=C, ST=ST, L=L, email=email, days=days
         )
 
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertEqual(resp1[0].status_code, HTTPStatus.CREATED)
-        self.assertEqual(resp1[1], action_response['server'])
+        assert httpretty.last_request().method == httpretty.POST
+        assert resp1[0].status_code == HTTPStatus.CREATED
+        assert resp1[1] == action_response['server']

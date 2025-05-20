@@ -69,7 +69,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         sys = self.system.get_system()
-        self.assertIsInstance(sys, System)
+        assert isinstance(sys, System)
         sys_data = system_list_response['data']['systems'][0]
         self._assert_equal_between_dict_and_resource(sys_data, sys)
 
@@ -93,12 +93,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         self.system.get_lss(lss_type=lss_type)
-        self.assertEqual(
-            [
-                lss_type,
-            ],
-            httpretty.last_request().querystring.get('type'),
-        )
+        assert [lss_type] == httpretty.last_request().querystring.get('type')
 
     @httpretty.activate
     def test_get_lss_by_id(self):
@@ -112,7 +107,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         lss = self.system.get_lss_by_id(lss_id)
-        self.assertIsInstance(lss, LSS)
+        assert isinstance(lss, LSS)
         lss_data = lss_a_response['data']['lss'][0]
         self._assert_equal_between_dict_and_resource(lss_data, lss)
 
@@ -202,7 +197,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.NO_CONTENT,
         )
         self.system.delete_tserep_by_pool(pool_name)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_delete_eserep_by_pool(self):
@@ -216,7 +211,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.NO_CONTENT,
         )
         self.system.delete_eserep_by_pool(pool_name)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_get_tserep_by_pool(self):
@@ -230,7 +225,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         tserep = self.system.get_tserep_by_pool(pool_name)
-        self.assertIsInstance(tserep, TSERep)
+        assert isinstance(tserep, TSERep)
 
     @httpretty.activate
     def test_get_eserep_by_pool(self):
@@ -244,7 +239,7 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         eserep = self.system.get_eserep_by_pool(pool_name)
-        self.assertIsInstance(eserep, ESERep)
+        assert isinstance(eserep, ESERep)
 
     def test_get_volumes(self):
         self._test_resource_list_by_route(types.DS8K_VOLUME)
@@ -264,9 +259,9 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         vol_list = self.system.get_volumes_by_host(host_name=host_name)
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(len(vol_list), len(volume_list_response['data']['volumes']))
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
 
     @httpretty.activate
     def test_get_volumes_by_lss(self):
@@ -280,9 +275,9 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         vol_list = self.system.get_volumes_by_lss(lss_id=lss_id)
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(len(vol_list), len(volume_list_response['data']['volumes']))
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
 
     @httpretty.activate
     def test_get_volumes_by_pool(self):
@@ -296,9 +291,9 @@ class TestRootResourceMixin(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         vol_list = self.system.get_volumes_by_pool(pool_id=pool_id)
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(len(vol_list), len(volume_list_response['data']['volumes']))
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
 
     def test_get_resource_groups(self):
         self._test_resource_list_by_route(types.DS8K_RESOURCE_GROUP)

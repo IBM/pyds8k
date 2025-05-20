@@ -59,8 +59,8 @@ class TestUtils:
                 not isinstance(value, (dict, list))
                 and key not in resource.related_resources_collection
             ):
-                self.assertEqual(value, getattr(resource, key))
-                self.assertEqual(value, resource.representation.get(key))
+                assert value == getattr(resource, key)
+                assert value == resource.representation.get(key)
 
     def _assert_equal_between_sorted_dict_and_resource_list(
         self, dict_list, resource_list
@@ -85,7 +85,7 @@ class TestUtils:
             status=HTTPStatus.OK,
         )
         res = getattr(self.system, f'get_{route}')(route_id)
-        self.assertIsInstance(res, res_class)
+        assert isinstance(res, res_class)
         res_data = resource_response['data'][route][0]
         self._assert_equal_between_dict_and_resource(res_data, res)
 
@@ -104,11 +104,11 @@ class TestUtils:
             status=HTTPStatus.OK,
         )
         res_list = getattr(self.system, f'get_{route}')()
-        self.assertIsInstance(res_list[0], res_class)
+        assert isinstance(res_list[0], res_class)
         res_list.sort(key=cmp_to_key(cmp_f))
         res_list_data = list(res_list_resp['data'][route])
         res_list_data.sort(key=cmp_to_key(cmp_f))
-        self.assertEqual(len(res_list_data), len(res_list))
+        assert len(res_list_data) == len(res_list)
         self._assert_equal_between_sorted_dict_and_resource_list(
             res_list_data, res_list
         )
@@ -145,14 +145,14 @@ class TestUtils:
             else:
                 msg = f'Failed calling get_{route}'
                 raise Exception(msg)
-        self.assertIsInstance(res, res_class)
+        assert isinstance(res, res_class)
         sub_res_list = getattr(res, f'get_{sub_route}')()
-        self.assertIs(getattr(res, sub_route), sub_res_list)
+        assert getattr(res, sub_route) is sub_res_list
         sub_res_list.sort(key=cmp_to_key(cmp_f))
         sub_res_list_data = list(sub_res_list_resp['data'][sub_route])
         sub_res_list_data.sort(key=cmp_to_key(cmp_f))
-        self.assertNotEqual(0, len(sub_res_list))
-        self.assertEqual(len(sub_res_list_data), len(sub_res_list))
+        assert len(sub_res_list) != 0
+        assert len(sub_res_list_data) == len(sub_res_list)
         self._assert_equal_between_sorted_dict_and_resource_list(
             sub_res_list_data, sub_res_list
         )
@@ -164,10 +164,10 @@ class TestUtils:
             rel_class, _ = relclass_tuple
             rel_id = info[rel[1:]][rel_class.id_field]
             res = res_class(self.client, info=info)
-            self.assertEqual(getattr(res, rel[1:]), rel_id)
-            self.assertEqual(res.representation[rel[1:]], rel_id)
-            self.assertIsInstance(getattr(res, rel), rel_class)
-            self.assertEqual(getattr(res, rel).id, rel_id)
+            assert getattr(res, rel[1:]) == rel_id
+            assert res.representation[rel[1:]] == rel_id
+            assert isinstance(getattr(res, rel), rel_class)
+            assert getattr(res, rel).id == rel_id
 
     def _get_resource_id_from_resopnse(self, route, response, id_field='id'):
         try:

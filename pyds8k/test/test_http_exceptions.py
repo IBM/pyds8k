@@ -18,6 +18,7 @@ import json
 from http import HTTPStatus
 
 import httpretty
+import pytest
 
 from pyds8k import exceptions
 
@@ -71,7 +72,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.BadRequest, vol.get)
+        with pytest.raises(exceptions.BadRequest):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_401(self):
@@ -108,11 +110,10 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
         vol = self.resource.one(DEFAULT, 'a')
         vol.get()
-        self.assertEqual(
-            vol.url, default_a_response['data']['default'][0]['link']['href']
-        )
-        self.assertEqual(vol.name, default_a_response['data']['default'][0]['name'])
-        self.assertRaises(exceptions.Unauthorized, vol.get)
+        assert vol.url == default_a_response['data']['default'][0]['link']['href']
+        assert vol.name == default_a_response['data']['default'][0]['name']
+        with pytest.raises(exceptions.Unauthorized):
+            vol.get()
 
     @httpretty.activate
     def test_auth_fail(self):
@@ -148,7 +149,8 @@ class TestHTTPException(base.TestCaseWithConnect):
             ],
         )
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.Unauthorized, vol.get)
+        with pytest.raises(exceptions.Unauthorized):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_403(self):
@@ -164,7 +166,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.Forbidden, vol.get)
+        with pytest.raises(exceptions.Forbidden):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_404(self):
@@ -180,7 +183,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.NotFound, vol.get)
+        with pytest.raises(exceptions.NotFound):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_405(self):
@@ -196,7 +200,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.MethodNotAllowed, vol.get)
+        with pytest.raises(exceptions.MethodNotAllowed):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_409(self):
@@ -212,7 +217,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.Conflict, vol.get)
+        with pytest.raises(exceptions.Conflict):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_415(self):
@@ -228,7 +234,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.UnsupportedMediaType, vol.get)
+        with pytest.raises(exceptions.UnsupportedMediaType):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_500(self):
@@ -244,7 +251,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.InternalServerError, vol.get)
+        with pytest.raises(exceptions.InternalServerError):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_503(self):
@@ -260,7 +268,8 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.ServiceUnavailable, vol.get)
+        with pytest.raises(exceptions.ServiceUnavailable):
+            vol.get()
 
     @httpretty.activate
     def test_response_status_504(self):
@@ -276,4 +285,5 @@ class TestHTTPException(base.TestCaseWithConnect):
         )
 
         vol = self.resource.one(DEFAULT, 'a')
-        self.assertRaises(exceptions.GatewayTimeout, vol.get)
+        with pytest.raises(exceptions.GatewayTimeout):
+            vol.get()

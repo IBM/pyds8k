@@ -65,15 +65,15 @@ class TestResourceGroup(TestDS8KWithConnect):
         )
         # Way 1
         _ = self.system.delete_resource_group(self.resource_group_id)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
         # self.assertEqual(resp1, action_response['server'])
 
         # Way 2
         resource_group = self.system.get_resource_group(self.resource_group_id)
-        self.assertIsInstance(resource_group, ResourceGroup)
+        assert isinstance(resource_group, ResourceGroup)
         resp2, _ = resource_group.delete()
-        self.assertEqual(resp2.status_code, HTTPStatus.NO_CONTENT)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert resp2.status_code == HTTPStatus.NO_CONTENT
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_update_resource_group(self):
@@ -86,7 +86,7 @@ class TestResourceGroup(TestDS8KWithConnect):
         new_gm_sessions = ['FE', 'FD']
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser(
                 {
@@ -98,7 +98,7 @@ class TestResourceGroup(TestDS8KWithConnect):
                     'gm_sessions': new_gm_sessions,
                 },
             )
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(
@@ -125,8 +125,8 @@ class TestResourceGroup(TestDS8KWithConnect):
             gm_masters=new_gm_masters,
             gm_sessions=new_gm_sessions,
         )
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(res, action_response['server'])
+        assert httpretty.last_request().method == httpretty.PUT
+        assert res == action_response['server']
 
         resource_group = self.system.get_resource_group(self.resource_group_id)
         # Way 2
@@ -137,9 +137,9 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp2, data2 = resource_group.update()
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(data2, action_response['server'])
-        self.assertEqual(resp2.status_code, HTTPStatus.OK)
+        assert httpretty.last_request().method == httpretty.PUT
+        assert data2 == action_response['server']
+        assert resp2.status_code == HTTPStatus.OK
 
         # Way 3 in DS8K, save works the same as update
         resource_group.label = new_label
@@ -149,9 +149,9 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp3, data3 = resource_group.save()
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(data3, action_response['server'])
-        self.assertEqual(resp3.status_code, HTTPStatus.OK)
+        assert httpretty.last_request().method == httpretty.PUT
+        assert data3 == action_response['server']
+        assert resp3.status_code == HTTPStatus.OK
 
         # Way 4
         resource_group.label = new_label
@@ -161,9 +161,9 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp4, data4 = resource_group.patch()
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(data4, action_response['server'])
-        self.assertEqual(resp4.status_code, HTTPStatus.OK)
+        assert httpretty.last_request().method == httpretty.PUT
+        assert data4 == action_response['server']
+        assert resp4.status_code == HTTPStatus.OK
 
         # Way 5 in DS8K, put works the same as patch
         resource_group.label = new_label
@@ -173,9 +173,9 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp5, data5 = resource_group.put()
-        self.assertEqual(httpretty.PUT, httpretty.last_request().method)
-        self.assertEqual(data5, action_response['server'])
-        self.assertEqual(resp5.status_code, HTTPStatus.OK)
+        assert httpretty.last_request().method == httpretty.PUT
+        assert data5 == action_response['server']
+        assert resp5.status_code == HTTPStatus.OK
 
     @httpretty.activate
     def test_create_resource_group(self):
@@ -185,7 +185,7 @@ class TestResourceGroup(TestDS8KWithConnect):
         name = 'group1'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             req = RequestParser(
                 {
@@ -210,8 +210,8 @@ class TestResourceGroup(TestDS8KWithConnect):
             label=label,
             name=name,
         )
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(resp1[0], ResourceGroup)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(resp1[0], ResourceGroup)
 
         # Way 2
         resource_group = self.system.all(DS8K_RESOURCE_GROUP, rebuild_url=True)
@@ -220,9 +220,9 @@ class TestResourceGroup(TestDS8KWithConnect):
             name=name,
         )
         resp2, data2 = resource_group2.posta()
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(data2[0], ResourceGroup)
-        self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(data2[0], ResourceGroup)
+        assert resp2.status_code == HTTPStatus.CREATED
 
         # Way 3
         resource_group = self.system.all(DS8K_RESOURCE_GROUP, rebuild_url=True)
@@ -231,9 +231,9 @@ class TestResourceGroup(TestDS8KWithConnect):
             name=name,
         )
         resp3, data3 = resource_group3.save()
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(data3[0], ResourceGroup)
-        self.assertEqual(resp3.status_code, HTTPStatus.CREATED)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(data3[0], ResourceGroup)
+        assert resp3.status_code == HTTPStatus.CREATED
 
         # Way 4
         # Don't init a resource instance by yourself when create new.

@@ -39,10 +39,10 @@ class TestTSERep(TestDS8KWithConnect):
         tserep = get_response_list_data_by_type(DS8K_TSEREP)['data'][DS8K_TSEREP][0]
         pool_id = tserep['pool'][Pool.id_field]
         tse = TSERep(self.client, info=tserep)
-        self.assertEqual(tse.pool, pool_id)
-        self.assertEqual(tse.representation['pool'], pool_id)
-        self.assertIsInstance(tse._pool, Pool)
-        self.assertEqual(tse._pool.id, pool_id)
+        assert tse.pool == pool_id
+        assert tse.representation['pool'] == pool_id
+        assert isinstance(tse._pool, Pool)
+        assert tse._pool.id == pool_id
 
     @httpretty.activate
     def test_update(self):
@@ -59,10 +59,10 @@ class TestTSERep(TestDS8KWithConnect):
         )
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             resq = RequestParser({'cap': cap, 'threshold': threshold})
-            self.assertEqual(json.loads(request.body), resq.get_request_data())
+            assert json.loads(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, action_response_json)
 
         httpretty.register_uri(

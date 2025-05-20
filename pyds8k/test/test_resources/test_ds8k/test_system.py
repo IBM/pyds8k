@@ -17,6 +17,7 @@
 from http import HTTPStatus
 
 import httpretty
+import pytest
 
 from pyds8k.exceptions import OperationNotAllowed
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM
@@ -48,7 +49,7 @@ class TestSystem(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         sys = self.system.get_system()
-        self.assertIsInstance(sys, System)
+        assert isinstance(sys, System)
         sys_data = system_list_response['data']['systems'][0]
         self._assert_equal_between_dict_and_resource(sys_data, sys)
 
@@ -63,16 +64,16 @@ class TestSystem(TestDS8KWithConnect):
             status=HTTPStatus.OK,
         )
         sys = self.system.get_system()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.put()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.patch()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.posta()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.delete()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.update()
-        with self.assertRaises(OperationNotAllowed) as cm:
+        with pytest.raises(OperationNotAllowed) as cm:
             sys.save()
-        self.assertEqual(System.__name__, cm.exception.resource_name)
+        assert System.__name__ == cm.value.resource_name

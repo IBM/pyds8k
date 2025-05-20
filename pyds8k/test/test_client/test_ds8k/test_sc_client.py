@@ -49,12 +49,12 @@ class TestClient(TestUtils, TestCaseWithConnect):
     def _assert_equal_between_dicts(self, returned_dict, origin_dict):
         for key, value in origin_dict.items():
             if not isinstance(value, dict):
-                self.assertEqual(value, returned_dict.get(key))
+                assert value == returned_dict.get(key)
 
     def _assert_equal_between_obj_and_dict(self, returned_obj, origin_dict):
         for key, value in origin_dict.items():
             if not isinstance(value, dict):
-                self.assertEqual(value, getattr(returned_obj, key))
+                assert value == getattr(returned_obj, key)
 
     def _set_resource_list(self, route):
         base_route = route.split('.')[-1]
@@ -94,12 +94,10 @@ class TestClient(TestUtils, TestCaseWithConnect):
         sub_route_url = f'/{route}/{route_id}/{sub_route}'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + sub_route_url)
+            assert uri == f"{self.domain}{self.base_url}{sub_route_url}"
 
             resq = RequestParser(body)
-            self.assertEqual(
-                get_request_json_body(request.body), resq.get_request_data()
-            )
+            assert get_request_json_body(request.body) == resq.get_request_data()
             return (HTTPStatus.OK, headers, create_mappings_response_json)
 
         httpretty.register_uri(
@@ -117,7 +115,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
             for sub_route in sub_resource:
                 self._set_sub_resource(route, route_id, sub_route)
         res = getattr(self.rest_client, func)(route_id)[0]
-        self.assertIsInstance(res, dict)
+        assert isinstance(res, dict)
         rep = ResponseParser(
             get_response_data_by_type(base_route), base_route
         ).get_representations()[0]
@@ -128,7 +126,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         route_id = self._set_resource_list(route)
         self._set_sub_resource(route, route_id, sub_route)
         res = getattr(self.rest_client, func)(route_id)[0]
-        self.assertIsInstance(res, dict)
+        assert isinstance(res, dict)
         # print "&&&&&&&&&&&{}".format(res)
         rep = ResponseParser(
             get_response_data_by_type(sub_route), sub_route
@@ -155,8 +153,8 @@ class TestClient(TestUtils, TestCaseWithConnect):
         )
         func = func or 'get_{}'.format(route.replace('.', '_'))
         res = getattr(self.rest_client, func)()
-        self.assertIsInstance(res, list)
-        self.assertIsInstance(res[0], dict)
+        assert isinstance(res, list)
+        assert isinstance(res[0], dict)
         rep = ResponseParser(
             get_response_list_data_by_type(base_route), base_route
         ).get_representations()[0]
@@ -185,7 +183,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         )
 
         sys = self.rest_client.get_system()[0]
-        self.assertIsInstance(sys, dict)
+        assert isinstance(sys, dict)
         rep = ResponseParser(system_list_res, types.DS8K_SYSTEM).get_representations()[
             0
         ]

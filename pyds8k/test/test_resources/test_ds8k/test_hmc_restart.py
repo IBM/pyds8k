@@ -36,7 +36,7 @@ class TestHmcRestart(TestDS8KWithConnect):
         url = f'/{DS8K_HMC}/{DS8K_HMC_RESTART}'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             req = RequestParser({})
             assert {
@@ -54,6 +54,6 @@ class TestHmcRestart(TestDS8KWithConnect):
         # Way 1
         resp1 = self.system.restart_hmc()
 
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertEqual(resp1[0].status_code, HTTPStatus.CREATED)
-        self.assertEqual(resp1[1], action_response['server'])
+        assert httpretty.last_request().method == httpretty.POST
+        assert resp1[0].status_code == HTTPStatus.CREATED
+        assert resp1[1] == action_response['server']

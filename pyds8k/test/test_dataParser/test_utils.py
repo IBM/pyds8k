@@ -26,10 +26,10 @@ class TestUtils(base.TestCaseWithoutConnect):
         new_url_str = f'/default/{new_id}'
         old_url_dict = {'rel': 'self', 'href': old_url_str}
         new_url_dict = {'rel': 'self', 'href': new_url_str}
-        self.assertEqual(
-            utils.update_resource_id_in_url(old_id, new_id, old_url_str), new_url_str
+        assert (
+            utils.update_resource_id_in_url(old_id, new_id, old_url_str) == new_url_str
         )
-        self.assertEqual(
-            utils.update_resource_id_in_url(old_id, new_id, old_url_dict, 'href'),
-            new_url_dict,
+        assert (
+            utils.update_resource_id_in_url(old_id, new_id, old_url_dict, 'href')
+            == new_url_dict
         )

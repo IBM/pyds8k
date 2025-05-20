@@ -55,15 +55,15 @@ class TestHTTPClient(base.TestCaseWithConnect):
         url2 = '/new'
         _, url3 = url1.split('//')
         url4 = 'http://new_domain' + '/new'
-        self.assertEqual('/new', self.client._parse_url(url1))
-        self.assertEqual('/new', self.client._parse_url(url2))
-        self.assertEqual('/new', self.client._parse_url(url3))
-        with self.assertRaises(URLParseError):
+        assert self.client._parse_url(url1) == '/new'
+        assert self.client._parse_url(url2) == '/new'
+        assert self.client._parse_url(url3) == '/new'
+        with pytest.raises(URLParseError):
             self.client._parse_url(url4)
         new_client = HTTPClient(
             '9.115.247.115', 'admin', 'admin', service_type='ds8k', secure=True
         )
-        with self.assertRaises(URLParseError):
+        with pytest.raises(URLParseError):
             new_client._parse_url(url3)
 
     @httpretty.activate
@@ -85,7 +85,7 @@ class TestHTTPClient(base.TestCaseWithConnect):
             status=HTTPStatus.OK,
         )
         de = self.resource.one(DEFAULT, 'old').get(allow_redirects=False)
-        self.assertEqual(new_url, de.url)
+        assert new_url == de.url
 
     @pytest.mark.skip(reason="Not work in this way")
     @httpretty.activate

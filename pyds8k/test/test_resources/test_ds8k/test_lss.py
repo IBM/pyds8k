@@ -18,6 +18,7 @@ from functools import cmp_to_key
 from http import HTTPStatus
 
 import httpretty
+import pytest
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.messages import INVALID_TYPE
@@ -58,15 +59,15 @@ class TestLSS(TestDS8KWithConnect):
             },
         )
         for i in lss.related_resources_collection:
-            self.assertEqual('', lss.representation.get(i))
-            self.assertFalse(hasattr(lss, i))
+            assert lss.representation.get(i) == ''
+            assert not hasattr(lss, i)
 
         # loading related resources collection
         lss._start_updating()
         for item in ((DS8K_VOLUME, volumes),):
             setattr(lss, item[0], item[1])
             for j, value in enumerate(lss.representation[item[0]]):
-                self.assertEqual(value, getattr(item[1][j], item[1][j].id_field))
+                assert value == getattr(item[1][j], item[1][j].id_field)
         lss._stop_updating()
 
     @httpretty.activate
@@ -93,7 +94,7 @@ class TestLSS(TestDS8KWithConnect):
 
         for item in LSS.related_resources_collection:
             res_collection = getattr(lss, item)
-            self.assertNotEqual(0, len(res_collection))
+            assert len(res_collection) != 0
             res_collection.sort(
                 key=cmp_to_key(self._get_sort_func_by(res_collection[0].id_field))
             )
@@ -104,7 +105,7 @@ class TestLSS(TestDS8KWithConnect):
                 key=cmp_to_key(self._get_sort_func_by(res_collection[0].id_field))
             )
 
-            self.assertEqual(len(res_collection_data), len(res_collection))
+            assert len(res_collection_data) == len(res_collection)
             self._assert_equal_between_sorted_dict_and_resource_list(
                 res_collection_data, res_collection
             )
@@ -122,24 +123,20 @@ class TestLSS(TestDS8KWithConnect):
             },
         )
 
-        self.assertEqual('0000', lss.representation.get('volumes')[0])
-        self.assertEqual('0000', lss.volumes[0].id)
+        assert lss.representation.get('volumes')[0] == '0000'
+        assert lss.volumes[0].id == '0000'
 
     def test_invalid_lss_type(self):
-        with self.assertRaises(ValueError) as holder_exception:
+        with pytest.raises(
+            ValueError, match=INVALID_TYPE.format(', '.join(types.DS8K_LSS_TYPES))
+        ):
             LSS(self.client, lss_type="fake")
-        self.assertEqual(
-            INVALID_TYPE.format(', '.join(types.DS8K_LSS_TYPES)),
-            str(holder_exception.exception),
-        )
 
     def test_invalid_ckd_based_cu_type(self):
-        with self.assertRaises(ValueError) as holder_exception:
+        with pytest.raises(
+            ValueError, match=INVALID_TYPE.format(', '.join(types.DS8K_LCU_TYPES))
+        ):
             LSS(self.client, lcu_type="fake")
-        self.assertEqual(
-            INVALID_TYPE.format(', '.join(types.DS8K_LCU_TYPES)),
-            str(holder_exception.exception),
-        )
 
     @httpretty.activate
     def test_create_lss_ckd(self):
@@ -153,7 +150,7 @@ class TestLSS(TestDS8KWithConnect):
         }
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, full_url)
+            assert uri == full_url
 
             req = RequestParser(struct_request)
             assert {
@@ -175,5 +172,5 @@ class TestLSS(TestDS8KWithConnect):
             lcu_type=struct_request['ckd_base_cu_type'],
             ss_id=struct_request['sub_system_identifier'],
         )
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIsInstance(resp[0], LSS)
+        assert httpretty.last_request().method == httpretty.POST
+        assert isinstance(resp[0], LSS)

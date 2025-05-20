@@ -17,6 +17,7 @@
 from datetime import datetime, timezone
 
 import httpretty
+import pytest
 
 from pyds8k.exceptions import InvalidArgumentError
 from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
@@ -40,9 +41,9 @@ class TestHost(TestDS8KWithConnect):
         )
         self.system.get_events_by_filter(warning=True, error=True)
         req = httpretty.last_request()
-        self.assertIsNotNone(req.querystring)
-        self.assertIn('severity', req.querystring)
-        self.assertEqual('warning,error', req.querystring.get('severity')[0])
+        assert req.querystring is not None
+        assert 'severity' in req.querystring
+        assert req.querystring.get('severity')[0] == 'warning,error'
 
     @httpretty.activate
     def test_get_events_by_filter_set_date_error(self):
@@ -54,7 +55,7 @@ class TestHost(TestDS8KWithConnect):
             body=event_list_response,
             content_type='application/json',
         )
-        with self.assertRaises(InvalidArgumentError):
+        with pytest.raises(InvalidArgumentError):
             self.system.get_events_by_filter(before='test')
 
     @httpretty.activate
@@ -71,11 +72,11 @@ class TestHost(TestDS8KWithConnect):
         )
         self.system.get_events_by_filter(before=before, after=after)
         req = httpretty.last_request()
-        self.assertIsNotNone(req.querystring)
-        self.assertIn('before', req.querystring)
-        self.assertIn('after', req.querystring)
+        assert req.querystring is not None
+        assert 'before' in req.querystring
+        assert 'after' in req.querystring
 
         # httpretty unquote "+" and " " in a wrong way,
         # so I can not verify time zone here.
-        self.assertEqual('2015-04-01T00:00:00', req.querystring.get('before')[0][:-5])
-        self.assertEqual('2015-01-01T00:00:00', req.querystring.get('after')[0][:-5])
+        assert req.querystring.get('before')[0][:-5] == '2015-04-01T00:00:00'
+        assert req.querystring.get('after')[0][:-5] == '2015-01-01T00:00:00'

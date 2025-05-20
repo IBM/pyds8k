@@ -48,7 +48,7 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
         force = "True"
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
             req = RequestParser(
                 {
@@ -82,8 +82,8 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
             O=O, OU=OU, C=C, ST=ST, L=L, email=email, force=force
         )
 
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertIn('-----BEGIN CERTIFICATE REQUEST-----', resp1)
+        assert httpretty.last_request().method == httpretty.POST
+        assert '-----BEGIN CERTIFICATE REQUEST-----' in resp1
 
         # ???: Doesn't work because HmcCertificateCsr doesn't have a template?
         # # Way 2

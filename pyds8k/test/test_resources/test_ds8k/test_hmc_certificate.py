@@ -38,8 +38,8 @@ class TestHmcCertificate(TestDS8KWithConnect):
         url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}'
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
-            self.assertIn(upload_hmc_certificate_cert, request.body.decode('UTF-8'))
+            assert uri == f"{self.domain}{self.base_url}{url}"
+            assert upload_hmc_certificate_cert in request.body.decode('UTF-8')
             return (HTTPStatus.CREATED, headers, action_response_json)
 
         httpretty.register_uri(
@@ -51,9 +51,9 @@ class TestHmcCertificate(TestDS8KWithConnect):
         # Way 1
         resp1 = self.system.upload_hmc_signed_certificate(upload_hmc_certificate_cert)
 
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertEqual(resp1[0].status_code, HTTPStatus.CREATED)
-        self.assertEqual(resp1[1], action_response)
+        assert httpretty.last_request().method == httpretty.POST
+        assert resp1[0].status_code == HTTPStatus.CREATED
+        assert resp1[1] == action_response
 
         # ???: Doesn't work because HmcCertificate doesn't have a template?
         # # Way 2

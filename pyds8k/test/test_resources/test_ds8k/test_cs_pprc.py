@@ -31,18 +31,18 @@ class TestPPRC(TestDS8KWithConnect):
         targetsystem_id = pprc_info['target_system'][System.id_field]
         sourcesystem_id = pprc_info['source_system'][System.id_field]
         pprc = PPRC(self.client, info=pprc_info)
-        self.assertEqual(pprc.source_volume, sourcevolume_id)
-        self.assertEqual(pprc.representation['source_volume'], sourcevolume_id)
-        self.assertIsInstance(pprc._source_volume, Volume)
-        self.assertEqual(pprc._source_volume.id, sourcevolume_id)
-        self.assertEqual(pprc.target_volume, targetvolume_id)
-        self.assertEqual(pprc.representation['target_volume'], targetvolume_id)
-        self.assertIsInstance(pprc._target_volume, Volume)
-        self.assertEqual(pprc._target_volume.id, targetvolume_id)
-        self.assertEqual(pprc.target_system, targetsystem_id)
-        self.assertEqual(pprc.representation['target_system'], targetsystem_id)
-        self.assertIsInstance(pprc._target_system, System)
-        self.assertEqual(pprc._target_system.id, targetsystem_id)
-        self.assertEqual(pprc.representation['source_system'], sourcesystem_id)
-        self.assertIsInstance(pprc._target_system, System)
-        self.assertEqual(pprc._target_system.id, targetsystem_id)
+        assert pprc.source_volume == sourcevolume_id
+        assert pprc.representation['source_volume'] == sourcevolume_id
+        assert isinstance(pprc._source_volume, Volume)
+        assert pprc._source_volume.id == sourcevolume_id
+        assert pprc.target_volume == targetvolume_id
+        assert pprc.representation['target_volume'] == targetvolume_id
+        assert isinstance(pprc._target_volume, Volume)
+        assert pprc._target_volume.id == targetvolume_id
+        assert pprc.target_system == targetsystem_id
+        assert pprc.representation['target_system'] == targetsystem_id
+        assert isinstance(pprc._target_system, System)
+        assert pprc._target_system.id == targetsystem_id
+        assert pprc.representation['source_system'] == sourcesystem_id
+        assert isinstance(pprc._target_system, System)
+        assert pprc._target_system.id == targetsystem_id

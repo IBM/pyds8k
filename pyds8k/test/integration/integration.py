@@ -213,7 +213,7 @@ class TestSCClient(unittest.TestCase):
         with self.get_test_volume() as volume:
             res = self.client.rename_volume(volume.id, new_name)
             new_volume = self.client.get_volume(volume.id)[0]
-            self.assertEqual(new_volume.get('name'), new_name)
+            assert new_volume.get('name') == new_name
             logger.info(
                 f'Successfully renamed the volume {volume.id}, response is {res}'
             )
@@ -223,8 +223,8 @@ class TestSCClient(unittest.TestCase):
         with self.get_test_volume() as volume:
             res = self.client.extend_volume(volume.id, new_size)
             new_volume = self.client.get_volume(volume.id)[0]
-            self.assertEqual(
-                new_volume.get('cap'), str(convert_size_gib_to_bytes(int(new_size)))
+            assert new_volume.get('cap') == str(
+                convert_size_gib_to_bytes(int(new_size))
             )
             logger.info(
                 f'Successfully extended the volume {volume.id}, response is {res}'
@@ -239,7 +239,7 @@ class TestSCClient(unittest.TestCase):
                     new_pool_id = pool.get('id')
                     res = self.client.relocate_volume(volume.id, new_pool_id)
                     new_volume = self.client.get_volume(volume.id)[0]
-                    self.assertEqual(new_volume.get('pool'), new_pool_id)
+                    assert new_volume.get('pool') == new_pool_id
                     logger.info(
                         f'Successfully move volume {volume.id} from pool {old_pool_id} to pool {new_pool_id}, response is {res}'
                     )
