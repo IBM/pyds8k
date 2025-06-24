@@ -525,6 +525,9 @@ class Resource(UtilsMixin, BaseResource):
         except Exception:
             return False
 
+    def __hash__(self):
+        return hash(self.name)
+
     def is_loaded(self):
         return self._loaded
 

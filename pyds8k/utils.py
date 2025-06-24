@@ -17,8 +17,10 @@
 import configparser
 import time
 from importlib import import_module
+from logging import getLogger
 from pathlib import Path
 
+from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.messages import GET_CONFIG_SETTINGS_ERROR, GET_CONFIG_SETTINGS_IOERROR
 
 PATH = Path(__file__).parent.resolve()
@@ -36,10 +38,6 @@ DELETE = 'DELETE'
 
 
 def _get_logger():
-    from logging import getLogger
-
-    from pyds8k import PYDS8K_DEFAULT_LOGGER
-
     global logger
     if not logger:
         logger = getLogger(PYDS8K_DEFAULT_LOGGER)

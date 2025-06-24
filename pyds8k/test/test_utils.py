@@ -17,6 +17,7 @@
 import pytest
 
 from pyds8k import utils
+from pyds8k.dataParser.ds8k import RequestParser, ResponseParser
 
 from . import base
 
@@ -59,13 +60,9 @@ class TestUtils(base.TestCaseWithoutConnect):
         assert not utils.is_absolute_url(url8)
 
     def test_get_request_parser_class(self):
-        from pyds8k.dataParser.ds8k import RequestParser
-
         assert RequestParser == utils.get_request_parser_class('ds8k')
 
     def test_get_response_parser_class(self):
-        from pyds8k.dataParser.ds8k import ResponseParser
-
         assert ResponseParser == utils.get_response_parser_class('ds8k')
 
     # def test_get_default_service_type(self):
