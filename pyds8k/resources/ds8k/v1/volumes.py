@@ -95,12 +95,14 @@ class Volume(Base, metaclass=ResourceMeta):
         client,
         manager=None,
         url='',
-        info={},
+        info=None,
         resource_id=None,
         parent=None,
         loaded=False,
         volume_type=types.DS8K_VOLUME_TYPE_FB,
     ):
+        if info is None:
+            info = {}
         self.related_resource['_basevolume'] = (Volume, VolumeManager)
         super().__init__(
             client,

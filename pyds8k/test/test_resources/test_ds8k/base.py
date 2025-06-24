@@ -139,12 +139,12 @@ class TestUtils:
         )
         try:
             res = getattr(self.system, f'get_{route}')(route_id)
-        except AttributeError:
+        except AttributeError as exc:
             if route == types.DS8K_LSS:
                 res = self.system.get_lss_by_id(route_id)
             else:
                 msg = f'Failed calling get_{route}'
-                raise Exception(msg)
+                raise Exception(msg) from exc
         assert isinstance(res, res_class)
         sub_res_list = getattr(res, f'get_{sub_route}')()
         assert getattr(res, sub_route) is sub_res_list
@@ -172,16 +172,16 @@ class TestUtils:
     def _get_resource_id_from_resopnse(self, route, response, id_field='id'):
         try:
             return response.get('data').get(route)[0][id_field]
-        except Exception:
+        except Exception as exc:
             msg = f'Can not get the id of {route} from response.'
-            raise Exception(msg)
+            raise Exception(msg) from exc
 
     def _get_resource_ids_from_resopnse(self, route, response, id_field='id'):
         try:
             return [re[id_field] for re in response.get('data').get(route)]
-        except Exception:
+        except Exception as exc:
             msg = f'Can not get the id of {route} from response.'
-            raise Exception(msg)
+            raise Exception(msg) from exc
 
     def _get_class_by_name(self, name):
         prefix = f'{self.client.service_type}.{self.client.service_version}'

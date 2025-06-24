@@ -97,5 +97,5 @@ class Client:
             if not callable(method):
                 raise AttributeError(k)
             return method
-        except Exception:
-            raise AttributeError(k)
+        except Exception as exc:
+            raise AttributeError(k) from exc

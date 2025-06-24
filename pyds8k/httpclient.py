@@ -119,7 +119,7 @@ class HTTPClient:
         self.schema = self.schema or secure and "https" or "http"
         prefix_http = f"{self.schema}://"
 
-        list_uri[0] = list_uri[0].lstrip("//")
+        list_uri[0] = list_uri[0].removeprefix("//")
         if len(list_uri) > 1 and list_uri[1][0] != "/":
             # found embedded port
             self.port = int(list_uri[1].split('/')[0])
@@ -242,12 +242,12 @@ class HTTPClient:
                 continue
             except exceptions.BadRequest as e:
                 raise e
-            except requests.exceptions.ConnectionError as e:
+            except requests.exceptions.ConnectionError as exc:
                 logger.error(f"Error When Requesting Url: {absolute_url}")
-                raise exceptions.ConnectionError(CONNECTION_ERROR.format(e))
-            except Timeout as e:
-                logger.debug(e)
-                raise exceptions.Timeout(absolute_url)
+                raise exceptions.ConnectionError(CONNECTION_ERROR.format(exc)) from exc
+            except Timeout as exc:
+                logger.debug(exc)
+                raise exceptions.Timeout(absolute_url) from exc
 
     def get(self, url, **kwargs):
         # logger.info('getting {}'.format(url))

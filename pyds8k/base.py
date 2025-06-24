@@ -157,7 +157,7 @@ class Resource(UtilsMixin, BaseResource):
         client,
         manager=None,
         url='',
-        info={},
+        info=None,
         resource_id=None,
         parent=None,
         loaded=False,
@@ -177,6 +177,8 @@ class Resource(UtilsMixin, BaseResource):
         self.parent = parent
         self._custom_url = ''
         self._set_modified_info_dict()
+        if info is None:
+            info = {}
         if info:
             self._add_details(info)
         self._finish_init()
@@ -189,12 +191,14 @@ class Resource(UtilsMixin, BaseResource):
         url = self._set_url(route, rebuild_url=rebuild_url)
         return self._get_resource_by_route(route, self.client, url, self)
 
-    def toUrl(self, method, body={}):
+    def toUrl(self, method, body=None):
         """
         To send non-standard rest request, like /attach
         """
 
         self._set_custom_url(method)
+        if body is None:
+            body = {}
         if body:
             resp, res_body = self.post(body=body)
         else:
@@ -221,7 +225,9 @@ class Resource(UtilsMixin, BaseResource):
         }
         return self.create_from_template(custom_info)
 
-    def create_from_template(self, custom_info={}):
+    def create_from_template(self, custom_info=None):
+        if custom_info is None:
+            custom_info = {}
         _url = self._rm_id_in_url()
         _info = self._template.copy()
         if self.id_field in _info:
@@ -445,7 +451,9 @@ class Resource(UtilsMixin, BaseResource):
         resp, data = self.manager.delete()
         return resp, data
 
-    def update(self, info={}):
+    def update(self, info=None):
+        if info is None:
+            info = {}
         resp = None
         data = None
         if info:

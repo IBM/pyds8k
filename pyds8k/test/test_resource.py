@@ -229,7 +229,7 @@ class TestResource(base.TestCaseWithConnect):
         assert 'name' not in de0.representation
         # 'unknown' is not in _template
         with pytest.raises(AttributeError):
-            getattr(de0, 'uknown')
+            de0.uknown  # noqa: B018 Testing only that exception raised
 
         assert not de0.is_loaded()
         # loading details
@@ -364,7 +364,7 @@ class TestResource(base.TestCaseWithConnect):
         vol = self.resource.all(DEFAULT)
         assert vol.url == url
         with pytest.raises(AttributeError):
-            getattr(vol, 'id')
+            vol.id  # noqa: B018 Testing only that exception raised
         vol_list = vol.list()
         assert isinstance(vol_list, list)
         vol1 = vol_list[0]

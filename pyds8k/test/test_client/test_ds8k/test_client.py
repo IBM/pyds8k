@@ -61,4 +61,4 @@ class TestClient(TestCaseWithConnect):
         assert len(vol_list) == len(volume_list_response['data']['volumes'])
         with pytest.raises(AttributeError):
             # 'base_url' is an attr from System, not a method
-            self.rest_client.base_url
+            self.rest_client.base_url  # noqa: B018 Testing only that exception raised

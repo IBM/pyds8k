@@ -108,7 +108,9 @@ class TestClient(TestUtils, TestCaseWithConnect):
         )
 
     @httpretty.activate
-    def _test_resource_by_route(self, route, func, sub_resource=[]):
+    def _test_resource_by_route(self, route, func, sub_resource=None):
+        if sub_resource is None:
+            sub_resource = []
         base_route = route.split('.')[-1]
         route_id = self._set_resource_list(route)
         if sub_resource:

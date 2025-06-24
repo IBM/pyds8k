@@ -29,6 +29,6 @@ def update_resource_id_in_url(old_id, new_id, url, field=''):
         return url.replace(old_id, new_id, 1)
     try:
         url[field] = str(url[field]).replace(old_id, new_id, 1)
-    except Exception:
-        raise URLParseError
+    except Exception as exc:
+        raise URLParseError from exc
     return url

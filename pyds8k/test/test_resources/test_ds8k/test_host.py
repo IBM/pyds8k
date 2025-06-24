@@ -266,12 +266,12 @@ class TestHost(TestDS8KWithConnect):
     @pytest.mark.skip
     @httpretty.activate
     def test_update_host_add_volumes(self):
-        warnings.warn('test_update_host_add_volumes: not finished yet.')
+        warnings.warn('test_update_host_add_volumes: not finished yet.', stacklevel=2)
 
     @pytest.mark.skip
     @httpretty.activate
     def test_update_host_rm_volumes(self):
-        warnings.warn('test_update_host_rm_volumes: not finished yet.')
+        warnings.warn('test_update_host_rm_volumes: not finished yet.', stacklevel=2)
 
     @httpretty.activate
     def test_update_host_add_ioports(self):

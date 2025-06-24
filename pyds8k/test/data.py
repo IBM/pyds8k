@@ -22,33 +22,33 @@ from .mock import success_response_all, success_response_one
 def get_response_data_by_type(resource_type):
     try:
         return success_response_one[resource_type]
-    except KeyError:
+    except KeyError as exc:
         msg = f'Can not get response data by type: {resource_type}'
-        raise KeyError(msg)
+        raise KeyError(msg) from exc
 
 
 def get_response_json_by_type(resource_type):
     try:
         return json.dumps(success_response_one[resource_type])
-    except KeyError:
+    except KeyError as exc:
         msg = f'Can not get response json by type: {resource_type}'
-        raise KeyError(msg)
+        raise KeyError(msg) from exc
 
 
 def get_response_list_data_by_type(resource_type):
     try:
         return success_response_all[resource_type]
-    except KeyError:
+    except KeyError as exc:
         msg = f'Can not get response list data by type: {resource_type}'
-        raise KeyError(msg)
+        raise KeyError(msg) from exc
 
 
 def get_response_list_json_by_type(resource_type):
     try:
         return json.dumps(success_response_all[resource_type])
-    except KeyError:
+    except KeyError as exc:
         msg = f'Can not get response list json by type: {resource_type}'
-        raise KeyError(msg)
+        raise KeyError(msg) from exc
 
 
 def get_request_json_body(body):

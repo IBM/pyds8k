@@ -1355,20 +1355,22 @@ class RootFlashCopyMixin:
         """
         return self.get_cs_flashcopies(fcid)
 
-    def create_cs_flashcopy(self, volume_pairs, options=[]):
+    def create_cs_flashcopy(self, volume_pairs, options=None):
         """
         Create Copy Service FlashCopy
 
         Args:
             volume_pairs (list):
             [{"source_volume": 0000,"target_volume": 1100},..]
-            options (list): Options.
+            options (list): Options. Default is [].
 
         Returns:
             object:
             :py:class:`pyds8k.resources.ds8k.v1.cs.flashcopies.FlashCopy`.
 
         """
+        if options is None:
+            options = []
         for option in options:
             self._verify_type(option, types.DS8K_FC_OPTIONS)
         _, res = self.all(
@@ -1612,18 +1614,20 @@ class RootHMCMixin:
 
 
 class RootEventMixin:
-    def get_events(self, evt_id=None, evt_filter={}):
+    def get_events(self, evt_id=None, evt_filter=None):
         """
         Get Events.
 
         Args:
             evt_id (str): id of the event. Get all if None.
-            evt_filter (dict): predefined filters.
+            evt_filter (dict): predefined filters. Default is {}.
 
         Returns:
             list: A list of :py:class:`pyds8k.resources.ds8k.v1.events.Event`.
 
         """
+        if evt_filter is None:
+            evt_filter = {}
         if evt_id:
             return self.get_event(evt_id)
         return self.all(types.DS8K_EVENT, rebuild_url=True).list(params=evt_filter)
@@ -2010,7 +2014,7 @@ class VolmapMixin:
         Get the Mapping of the Volume by Volume id for the Caller Object.
 
         Args:
-            lunid (str): Require. id of the volume.
+            lunid (str): Required. id of the volume.
 
         Returns:
             object: :py:class:`pyds8k.resources.ds8k.v1.mappings.Volmap`.
@@ -2025,7 +2029,7 @@ class VolmapMixin:
         Delete the Mapping of the Volume by Volume id for the Caller Object.
 
         Args:
-            lunid (str): Require. id of the volume.
+            lunid (str): Required. id of the volume.
 
         Returns:
             tuple: tuple of DS8000 RESTAPI Server Response.
@@ -2036,13 +2040,13 @@ class VolmapMixin:
         _, res = self.one(types.DS8K_VOLMAP, lunid).delete()
         return res
 
-    def create_mappings(self, volumes=[], mappings=[]):
+    def create_mappings(self, volumes=None, mappings=None):
         """
         Create the Mapping of the Volume by Volume id for the Caller Object.
 
         Args:
-            volumes (list): Require. volume ids.
-            mappings (list): Required. mappings.
+            volumes (list): Required. volume ids. Default is [].
+            mappings (list): Required. mappings. Default is [].
 
         Returns:
             list: A list of
@@ -2051,6 +2055,10 @@ class VolmapMixin:
         """
         if not self.id:
             raise IDMissingError
+        if volumes is None:
+            volumes = []
+        if mappings is None:
+            mappings = []
         if volumes:
             _, res = self.all(types.DS8K_VOLMAP).posta({'volumes': volumes})
         else:

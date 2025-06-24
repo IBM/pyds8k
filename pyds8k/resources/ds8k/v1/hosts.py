@@ -58,7 +58,9 @@ class Host(
     # def __repr__(self):
     #    return "<Host: {0}>".format(self.id)
 
-    def update_host_add_ioports(self, port_ids=[]):
+    def update_host_add_ioports(self, port_ids=None):
+        if port_ids is None:
+            port_ids = []
         if not port_ids:
             return self.update_host_add_ioports_all(self.id)
         updated_port_ids = self._update_ioports_and_return_ids(port_ids)
@@ -68,7 +70,9 @@ class Host(
         )
         return res
 
-    def update_host_rm_ioports(self, port_ids=[]):
+    def update_host_rm_ioports(self, port_ids=None):
+        if port_ids is None:
+            port_ids = []
         if not port_ids:
             return self.update_host_rm_ioports_all(self.id)
         updated_port_ids = self._update_ioports_and_return_ids(port_ids, '-')

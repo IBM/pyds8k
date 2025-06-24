@@ -86,9 +86,9 @@ class Base(RootResourceMixin, Resource):
         if key in self.related_resources_collection:
             try:
                 return getattr(self, f'get_{key}')()
-            except Exception as e:
-                logger.debug(f"Can not get {key} from {self}, reason is: {type(e)}")
-                raise AttributeError(key)
+            except Exception as exc:
+                logger.debug(f"Can not get {key} from {self}, reason is: {type(exc)}")
+                raise AttributeError(key) from exc
         return super().__getattr__(key)
 
     def __repr__(self):
