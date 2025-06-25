@@ -89,13 +89,18 @@ class Client:
         self.resource = Resource(self.client, DefaultManager(self.client))
         self.system = System(self.client, SystemManager(self.client))
 
+    def _callable(self, k):
+        method = getattr(self.system, k)
+
+        if not callable(method):
+            raise TypeError(k)
+
+        return method
+
     def __getattr__(self, k):
         try:
             # if not self.system.is_loaded():
             #    self.system = self.system.get_system()
-            method = getattr(self.system, k)
-            if not callable(method):
-                raise AttributeError(k)
-            return method
+            return self._callable(k)
         except Exception as exc:
             raise AttributeError(k) from exc

@@ -767,7 +767,7 @@ class RootVolumeMixin:
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
         """
         if not isinstance(name_col, list):
-            raise ValueError(INVALID_TYPE.format('list'))
+            raise TypeError(INVALID_TYPE.format('list'))
         return self.create_volumes(
             name_col,
             cap,
@@ -810,7 +810,7 @@ class RootVolumeMixin:
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
         """
         if not isinstance(names, list):
-            raise ValueError(INVALID_TYPE.format('list'))
+            raise TypeError(INVALID_TYPE.format('list'))
         return self.create_volumes(
             names, cap, pool, stgtype=stgtype, captype=captype, lss=lss, tp=tp, ids=ids
         )

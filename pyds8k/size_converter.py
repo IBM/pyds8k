@@ -25,8 +25,8 @@ KB = 10**3  # Kilobyte = kB = 10^3 B = 1,000 bytes
 
 def validate_number(number):
     if not isinstance(number, (int, float)):
-        msg = "Expected types are (int, long, float)"
-        raise ValueError(msg)
+        msg = "Expected types are (int, float)"
+        raise TypeError(msg)
 
 
 # =============================================================================

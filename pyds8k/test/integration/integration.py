@@ -334,8 +334,6 @@ class TestSCClient(unittest.TestCase):
         volume = self._prepare_volume()
         try:
             yield volume
-        except Exception:
-            raise
         finally:
             self._destroy_volume(volume.id)
 
@@ -344,8 +342,6 @@ class TestSCClient(unittest.TestCase):
         host_name = self._prepare_host()
         try:
             yield host_name
-        except Exception:
-            raise
         finally:
             self._destroy_host(host_name)
 
@@ -354,7 +350,5 @@ class TestSCClient(unittest.TestCase):
         host_name = self._prepare_host_of_zlinux()
         try:
             yield host_name
-        except Exception:
-            raise
         finally:
             self._destroy_host(host_name)

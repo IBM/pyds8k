@@ -36,6 +36,14 @@ class InvalidArgumentError(Exception):
         return messages.INVALID_ARGUMENT.format(self.reason)
 
 
+class InvalidMethodForCreate(Exception):
+    def __init__(self, method):
+        self.method = method
+
+    def __str__(self):
+        return messages.INVALID_ARGUMINVALID_METHOD_FOR_CREATE.format(self.method)
+
+
 class OperationNotAllowed(Exception):
     """
     The operation performed on the resource is not allowed.
@@ -94,6 +102,15 @@ class URLParseError(Exception):
 
     def __str__(self):
         return messages.CAN_NOT_GET_URL
+
+
+class RepresentationNotFoundError(Exception):
+    """
+    Can not find the representation
+    """
+
+    def __str__(self):
+        return messages.REPRESENTATION_NOT_FOUND
 
 
 class RepresentationParseError(Exception):

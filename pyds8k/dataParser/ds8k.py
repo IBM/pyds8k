@@ -18,7 +18,12 @@ from logging import getLogger
 
 from pyds8k import PYDS8K_DEFAULT_LOGGER, messages
 from pyds8k.dataParser.base import BaseRequestParser, BaseResponseParser
-from pyds8k.exceptions import IDMissingError, RepresentationParseError, URLParseError
+from pyds8k.exceptions import (
+    IDMissingError,
+    RepresentationNotFoundError,
+    RepresentationParseError,
+    URLParseError,
+)
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
@@ -82,7 +87,7 @@ class ResponseParser(BaseResponseParser):
         elif self.representation:
             rep = self.representation
         else:
-            raise Exception(messages.REPRESENTATION_NOT_FOUND)
+            raise RepresentationNotFoundError
         return self.__class__.get_link_from_representation(rep)
 
     def get_representations(self):

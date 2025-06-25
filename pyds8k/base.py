@@ -24,6 +24,7 @@ from pathlib import Path
 from pyds8k import PYDS8K_DEFAULT_LOGGER
 from pyds8k.exceptions import (
     FieldReadOnly,
+    InvalidMethodForCreate,
     ResponseBodyMissingError,
     URLNotSpecifiedError,
     URLParseError,
@@ -473,8 +474,7 @@ class Resource(UtilsMixin, BaseResource):
                 resp, data = self.put()
             else:
                 if self.create_method.lower() not in ('posta', 'put'):
-                    msg = "You should use POSTA or PUT method to create new resources"
-                    raise Exception(msg)
+                    raise InvalidMethodForCreate(self.create_method.lower())
                 resp, data = getattr(self, self.create_method.lower())()
                 if self.create_method.lower() == 'posta' and isinstance(
                     data[0], Resource
@@ -761,7 +761,7 @@ class Manager(UtilsMixin, BaseManager):
         data = self._get_data(body, method=POSTA, response=resp)
         if not isinstance(data, list):
             msg = "The parsed posta response data should be a list."
-            raise Exception(msg)
+            raise TypeError(msg)
         res_list = []
         for s_data in data:
             res_data, res_url = s_data

@@ -82,6 +82,7 @@ extend-select = [
     "RUF",
     "SIM",
     "TID",
+    "TRY",
     "UP",
 ]
 
@@ -111,6 +112,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
     "N818", # Allow custom exceptions that omit the Error suffix
 ]
 "pyds8k/httpclient.py" = ["PLR0912", "PLR0915"]
+"pyds8k/test/test_client/test_ds8k/test_sc_client.py" = ["TRY002"]
+"pyds8k/test/test_resources/test_ds8k/base.py" = ["TRY002"]
 "pyds8k/test/test_resources/test_ds8k/test_resource_group.py" = ["PLR0915"]
 
 

@@ -231,23 +231,24 @@ class HTTPClient:
 
                 if resp.status_code >= HTTPStatus.BAD_REQUEST:
                     raise exceptions.raise_error(resp, body, self.service_type)
-                return resp, body
 
-            except exceptions.Unauthorized as e:
+            except exceptions.Unauthorized:
                 if attempts > 0:
-                    raise e
+                    raise
                 logger.debug(REAUTH_SERVER)
                 attempts += 1
                 self.authenticate.authenticate(self)
                 continue
-            except exceptions.BadRequest as e:
-                raise e
+            except exceptions.BadRequest:
+                raise
             except requests.exceptions.ConnectionError as exc:
-                logger.error(f"Error When Requesting Url: {absolute_url}")
+                logger.exception(f"Error When Requesting Url: {absolute_url}")
                 raise exceptions.ConnectionError(CONNECTION_ERROR.format(exc)) from exc
             except Timeout as exc:
                 logger.debug(exc)
                 raise exceptions.Timeout(absolute_url) from exc
+            else:
+                return resp, body
 
     def get(self, url, **kwargs):
         # logger.info('getting {}'.format(url))
