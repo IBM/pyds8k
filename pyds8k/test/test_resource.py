@@ -74,7 +74,7 @@ class TestResource(base.TestCaseWithConnect):
         assert vol3.url == url1
 
     @httpretty.activate
-    def test_toUrl(self):
+    def test_toUrl(self):  # noqa: N802
         domain = self.client.domain
         url = '/default/a/default/b/default/c'
         method = 'attach'

@@ -72,7 +72,7 @@ class UtilsMixin:
     def _get_id(self):
         return self.id if hasattr(self, 'id') else id(self)
 
-    def remove_None_fields_from_dict(self, input_dict):
+    def remove_None_fields_from_dict(self, input_dict):  # noqa: N802
         return {key: value for key, value in input_dict.items() if value is not None}
 
 
@@ -191,7 +191,7 @@ class Resource(UtilsMixin, BaseResource):
         url = self._set_url(route, rebuild_url=rebuild_url)
         return self._get_resource_by_route(route, self.client, url, self)
 
-    def toUrl(self, method, body=None):
+    def toUrl(self, method, body=None):  # noqa: N802
         """
         To send non-standard rest request, like /attach
         """

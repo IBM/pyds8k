@@ -493,7 +493,7 @@ class RootVolumeMixin:
         captype=types.DS8K_CAPTYPE_GIB,
         lss='',
         tp='',
-        id='',
+        id='',  # noqa: A002
     ):
         """
         Create One Volume
@@ -589,7 +589,11 @@ class RootVolumeMixin:
         return res
 
     def create_alias_volumes(
-        self, id, ckd_base_ids, quantity='', alias_create_order='decrement'
+        self,
+        id,  # noqa: A002
+        ckd_base_ids,
+        quantity='',
+        alias_create_order='decrement',
     ):
         """
         Create ckd alias volumes for a list of base ckd volumes
@@ -620,7 +624,7 @@ class RootVolumeMixin:
         )
         return res
 
-    def create_volume_ckd(self, name, cap, pool, captype='', lss='', tp='', id=''):
+    def create_volume_ckd(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002
         """
         Create One CKD Volume
 
@@ -651,7 +655,7 @@ class RootVolumeMixin:
             id=id,
         )
 
-    def create_volume_fb(self, name, cap, pool, captype='', lss='', tp='', id=''):
+    def create_volume_fb(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002
         """
         Create One FB Volume
 
@@ -1481,11 +1485,11 @@ class RootHMCMixin:
 
     def create_hmc_csr(
         self,
-        O=None,
-        OU=None,
-        C=None,
-        ST=None,  # noqa: E741
-        L=None,
+        O=None,  # noqa: E741, N803
+        OU=None,  # noqa: N803
+        C=None,  # noqa: N803
+        ST=None,  # noqa: E741, N803
+        L=None,  # noqa: N803
         days=365,
         email=None,
         force=True,
@@ -1540,11 +1544,11 @@ class RootHMCMixin:
 
     def create_hmc_selfsigned_certificate(
         self,
-        O=None,
-        OU=None,  # noqa: E741
-        C=None,
-        ST=None,
-        L=None,
+        O=None,  # noqa: E741, N803
+        OU=None,  # noqa: E741, N803
+        C=None,  # noqa: N803
+        ST=None,  # noqa: N803
+        L=None,  # noqa: N803
         days=365,
         email=None,
         restart=False,

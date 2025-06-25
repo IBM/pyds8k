@@ -38,10 +38,10 @@ def get_mocks(path):
     Returns:
         set: A set containing mock names.
     """
-    _PATH = Path(path).parent.absolute()
+    _path = Path(path).parent.absolute()
     return {
         resource.stem
-        for resource in _PATH.iterdir()
+        for resource in _path.iterdir()
         if resource.is_file() and not resource.stem.startswith('__init__')
     }
 
@@ -55,9 +55,9 @@ def get_dir_mocks(path):
     Returns:
         list: A list of directory names.
     """
-    _PATH = Path(path).parent.absolute()
+    _path = Path(path).parent.absolute()
     return [
         resource.name
-        for resource in _PATH.iterdir()
+        for resource in _path.iterdir()
         if resource.is_dir() and resource.name != '__pycache__'
     ]

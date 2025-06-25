@@ -277,11 +277,11 @@ class TestHostPort(TestDS8KWithConnect):
         self._test_related_resource_field(DS8K_HOST_PORT)
 
     def test_occupied_ioports(self):
-        OCCUPIED_IOPORTS = 'login_ports'
+        occupied_ioports = 'login_ports'
         info = get_response_data_by_type(DS8K_HOST_PORT)['data'][DS8K_HOST_PORT][0]
         host_port = HostPort(self.client, HostPortManager(self.client), info=info)
-        ioport_ids = [port.get(IOPort.id_field) for port in info[OCCUPIED_IOPORTS]]
-        # self.assertCountEqual(ioport_ids, host_port.representation.get(OCCUPIED_IOPORTS))
-        assert ioport_ids == host_port.representation.get(OCCUPIED_IOPORTS)
-        assert isinstance(getattr(host_port, OCCUPIED_IOPORTS)[0], IOPort)
-        assert getattr(host_port, OCCUPIED_IOPORTS)[0].id in ioport_ids
+        ioport_ids = [port.get(IOPort.id_field) for port in info[occupied_ioports]]
+        # self.assertCountEqual(ioport_ids, host_port.representation.get(occupied_ioports))
+        assert ioport_ids == host_port.representation.get(occupied_ioports)
+        assert isinstance(getattr(host_port, occupied_ioports)[0], IOPort)
+        assert getattr(host_port, occupied_ioports)[0].id in ioport_ids

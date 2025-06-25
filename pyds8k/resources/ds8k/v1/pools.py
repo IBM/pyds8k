@@ -63,7 +63,7 @@ class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
         self._stop_updating()
         return tserep
 
-    def get_TSE_rep(self):
+    def get_TSE_rep(self):  # noqa: N802
         return self.get_tserep()[0]
 
     def get_eserep(self):
@@ -75,7 +75,7 @@ class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
         self._stop_updating()
         return eserep
 
-    def get_ESE_rep(self):
+    def get_ESE_rep(self):  # noqa: N802
         return self.get_eserep()[0]
 
     def delete_tserep(self):

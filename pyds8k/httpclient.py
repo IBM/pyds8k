@@ -265,13 +265,13 @@ class HTTPClient:
     def delete(self, url, **kwargs):
         return self.request(url, 'DELETE', **kwargs)
 
-    def set_defaultQuerystrings(self, key, value):
+    def set_defaultQuerystrings(self, key, value):  # noqa: N802
         self.defaultQuerystrings[key] = value
 
-    def set_defaultHeaders(self, key, value):
+    def set_defaultHeaders(self, key, value):  # noqa: N802
         self.defaultHeaders[key] = value
 
-    def set_defaultHttpFields(self):
+    def set_defaultHttpFields(self):  # noqa: N802
         pass
 
     def _get_uri_from_location(self, resp):

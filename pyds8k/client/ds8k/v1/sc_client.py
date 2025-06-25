@@ -149,7 +149,7 @@ class SCClient:
         mappings = self.client.get_mappings_by_host(host_name)
         return [mapping.id for mapping in mappings]
 
-    def create_volumes(self, pool_id, capacity_in_GiB, sam, volume_names_list):
+    def create_volumes(self, pool_id, capacity_in_GiB, sam, volume_names_list):  # noqa: N803
         return self.client.create_volumes(
             name_col=volume_names_list, cap=capacity_in_GiB, pool=pool_id, tp=sam
         )
@@ -157,7 +157,7 @@ class SCClient:
     def rename_volume(self, volume_id, new_name):
         return self.client.update_volume_rename(volume_id=volume_id, new_name=new_name)
 
-    def extend_volume(self, volume_id, new_size_in_GiB):
+    def extend_volume(self, volume_id, new_size_in_GiB):  # noqa: N803
         return self.client.update_volume_extend(
             volume_id=volume_id, new_size=new_size_in_GiB, captype='gib'
         )

@@ -69,6 +69,7 @@ extend-select = [
     "EXE",
     "FURB",
     "I",
+    "N",
     "PERF",
     "PGH",
     "PIE",
@@ -95,13 +96,17 @@ unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
-"pyds8k/example.py" = ["T201"] # allow print
+"pyds8k/example.py" = [
+    "T201", # allow print
+]
+"pyds8k/exceptions.py" = [
+    "N818", # Allow custom exceptions that omit the Error suffix
+]
 "pyds8k/utils.py" = [
     "PLW0603", # FIXME: Using the global statement to update logger is discouraged
 ]
-"pyds8k/resources/ds8k/v1/common/mixins.py" = [
-    "A002", # Ignore id is shadowing a Python builtin
-    "E741", # Allow ambigous variable name 'O'
+"pyds8k/client/exceptions.py" = [
+    "N818", # Allow custom exceptions that omit the Error suffix
 ]
 "pyds8k/httpclient.py" = ["PLR0912", "PLR0915"]
 "pyds8k/test/test_resources/test_ds8k/test_resource_group.py" = ["PLR0915"]

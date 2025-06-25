@@ -58,8 +58,8 @@ class HostPort(Base, metaclass=ResourceMeta):
         self._stop_updating()
 
     def _set_ioports(self):
-        OCCUPIED_IOPORTS = 'login_ports'
-        port_list = self.representation.get(OCCUPIED_IOPORTS, [])
+        occupied_ioports = 'login_ports'
+        port_list = self.representation.get(occupied_ioports, [])
         port_obj_list = []
         for port in port_list:
             port_obj = IOPort(
@@ -69,8 +69,8 @@ class HostPort(Base, metaclass=ResourceMeta):
                 loaded=False,
             )
             port_obj_list.append(port_obj)
-        self.representation[OCCUPIED_IOPORTS] = [p.id for p in port_obj_list]
-        setattr(self, OCCUPIED_IOPORTS, port_obj_list)
+        self.representation[occupied_ioports] = [p.id for p in port_obj_list]
+        setattr(self, occupied_ioports, port_obj_list)
 
     # def __repr__(self):
     #    return "<HostPort: {0}>".format(self.id)

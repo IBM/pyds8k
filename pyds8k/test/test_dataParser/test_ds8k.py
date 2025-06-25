@@ -37,7 +37,7 @@ volume_list_response = get_response_list_data_by_type(DS8K_VOLUME)
 
 
 class TestDataParser(base.TestCaseWithoutConnect):
-    def test_responseParser(self):
+    def test_responseParser(self):  # noqa: N802
         re = ResponseParser(volume_a_response, 'volumes')
         assert re.response_key == 'data'
         assert re.url_field == 'link'
@@ -60,7 +60,7 @@ class TestDataParser(base.TestCaseWithoutConnect):
         assert re2.get_error_msg() == token_response_error['server']['message']
         assert re2.get_status() == token_response_error['server']['status']
 
-    def test_requestParser(self):
+    def test_requestParser(self):  # noqa: N802
         re = RequestParser(default_request['request']['params'])
         assert re.request_key == 'request'
         assert re.get_request_data() == default_request

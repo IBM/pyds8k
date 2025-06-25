@@ -92,8 +92,8 @@ class ResponseParser(BaseResponseParser):
         return parsed
 
     def get_posta_response_data(self):
-        MULTIFLAG = "responses"
-        data = self.raw_data.get(MULTIFLAG, self.raw_data)
+        multi_flag = "responses"
+        data = self.raw_data.get(multi_flag, self.raw_data)
         if not isinstance(data, list):
             data = [
                 data,
@@ -150,7 +150,7 @@ class ResponseParser(BaseResponseParser):
         return cls._get_url(url_objects)
 
     @classmethod
-    def get_resource_id_from_url(self, url, resource_type):
+    def get_resource_id_from_url(cls, url, resource_type):
         url = url.removesuffix('/')
         url_frag = url.split('/')
         if len(url_frag) > 1 and url_frag[-2] == resource_type:

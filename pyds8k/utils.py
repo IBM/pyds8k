@@ -139,13 +139,13 @@ def set_runtime_service_type(service_type):
 
 def get_request_parser_class(service_type):
     prefix = service_type
-    Parser = import_module(f'{__package__}.dataParser.{prefix}')
+    Parser = import_module(f'{__package__}.dataParser.{prefix}')  # noqa: N806
     return Parser.RequestParser
 
 
 def get_response_parser_class(service_type):
     prefix = service_type
-    Parser = import_module(f'{__package__}.dataParser.{prefix}')
+    Parser = import_module(f'{__package__}.dataParser.{prefix}')  # noqa: N806
     return Parser.ResponseParser
 
 

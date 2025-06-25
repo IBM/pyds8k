@@ -274,7 +274,7 @@ def raise_error(response, body, service_type=''):
     Return an instance of an ClientException or subclass
     based on an requests response.
     """
-    ResponseParser = get_response_parser_class(service_type)
+    ResponseParser = get_response_parser_class(service_type)  # noqa: N806
     cls = _error_dict.get(str(response.status_code), ClientException)
     if body:
         res_p = ResponseParser(body)

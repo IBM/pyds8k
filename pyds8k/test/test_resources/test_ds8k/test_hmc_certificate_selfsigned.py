@@ -40,11 +40,11 @@ class TestHmcCertificateSelfsigned(TestDS8KWithConnect):
     def test_create_hmc_selfsigned_certificate(self):
         url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}/{DS8K_HMC_CERTIFICATE_SELFSIGNED}'
 
-        O = "IBM"  # noqa: E741
-        OU = "DS8000"
-        C = "US"
-        ST = "NY"
-        L = "Armok"
+        O = "IBM"  # noqa: E741, N806
+        OU = "DS8000"  # noqa: N806
+        C = "US"  # noqa: N806
+        ST = "NY"  # noqa: N806
+        L = "Armok"  # noqa: N806
         email = "ansible@fake_server.com"
         days = 1
 
