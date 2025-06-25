@@ -1488,7 +1488,7 @@ class RootHMCMixin:
         O=None,  # noqa: E741, N803
         OU=None,  # noqa: N803
         C=None,  # noqa: N803
-        ST=None,  # noqa: E741, N803
+        ST=None,  # noqa: N803
         L=None,  # noqa: N803
         days=365,
         email=None,
@@ -1545,7 +1545,7 @@ class RootHMCMixin:
     def create_hmc_selfsigned_certificate(
         self,
         O=None,  # noqa: E741, N803
-        OU=None,  # noqa: E741, N803
+        OU=None,  # noqa: N803
         C=None,  # noqa: N803
         ST=None,  # noqa: N803
         L=None,  # noqa: N803

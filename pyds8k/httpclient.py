@@ -116,7 +116,7 @@ class HTTPClient:
                 list_uri = list_uri[1:]
 
         # if no schema provide, default secure as True set schema to https
-        self.schema = self.schema or secure and "https" or "http"
+        self.schema = self.schema or (secure and "https") or "http"
         prefix_http = f"{self.schema}://"
 
         list_uri[0] = list_uri[0].removeprefix("//")

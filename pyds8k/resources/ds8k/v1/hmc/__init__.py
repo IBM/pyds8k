@@ -17,4 +17,4 @@
 from . import certificate, restart
 from .certificate import csr, selfsigned
 
-__all__ = ('restart', 'certificate', 'csr', 'selfsigned')
+__all__ = ('certificate', 'csr', 'restart', 'selfsigned')

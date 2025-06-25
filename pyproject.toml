@@ -79,6 +79,7 @@ extend-select = [
     "PYI",
     "RET",
     "RSE",
+    "RUF",
     "SIM",
     "TID",
     "UP",
@@ -86,6 +87,7 @@ extend-select = [
 
 ignore = [
     "PLR0913", # Too many arguments in function definition
+    "RUF012",  # FIXME: Mutable class attributes should be annotated with `typing.ClassVar` 
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
