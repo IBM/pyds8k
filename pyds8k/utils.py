@@ -61,7 +61,7 @@ def get_config_settings(category="settings"):
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
-    except Exception as e:
+    except configparser.Error as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
     return result_dict
 
@@ -79,7 +79,7 @@ def get_config_all():
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
-    except Exception as e:
+    except configparser.Error as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
     return result_dict
 
@@ -95,7 +95,7 @@ def get_config_all_items():
         _get_logger().debug(
             GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
-    except Exception as e:
+    except configparser.Error as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
     return result_dict
 

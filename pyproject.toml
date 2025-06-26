@@ -63,6 +63,7 @@ target-version = "py39"
 extend-select = [
     "A",
     "B",
+    "BLE",
     "C4",
     "DTZ",
     "EM",

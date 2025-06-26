@@ -349,7 +349,12 @@ class Resource(UtilsMixin, BaseResource):
                     loaded=False,
                 ),
             )
-        except Exception:
+        except (KeyError, TypeError, ValueError):
+            logger.debug(messages.SET_RELATED_RESOURCE_FAILED.format(res_key, self))
+            self.representation[res_key] = res_info
+            setattr(self, res_key, res_info)
+            setattr(self, '_' + res_key, None)
+        except Exception:  # noqa: BLE001 # ???: Unsure if other exceptions can occur
             logger.debug(messages.SET_RELATED_RESOURCE_FAILED.format(res_key, self))
             self.representation[res_key] = res_info
             setattr(self, res_key, res_info)
@@ -530,7 +535,7 @@ class Resource(UtilsMixin, BaseResource):
             return self.id == other.id
         try:
             return self._info == other._info and self.url == other.url
-        except Exception:
+        except Exception:  # noqa: BLE001 # ???: Unsure what exceptions can occur
             return False
 
     def __hash__(self):
@@ -622,20 +627,28 @@ class Manager(UtilsMixin, BaseManager):
         if response_body:
             try:
                 data = self._get_status_body(response_body)
-            except Exception:
+            except AttributeError:
                 logger.debug(
                     messages.CAN_NOT_GET_STATUS_BODY.format(
                         method, self.resource_class.__name__
                     )
                 )
                 data = response_body
+            except Exception:  # noqa: BLE001 # ???: Unsure if other exceptions can occur
+                logger.debug(
+                    messages.CAN_NOT_GET_STATUS_BODY.format(
+                        method, self.resource_class.__name__
+                    )
+                )
+                data = response_body
+
         elif response.status_code in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
             data = messages.DEFAULT_SUCCESS_BODY_DICT
         else:
             res_id = ''
             try:
                 res_id = self.managed_object.id
-            except Exception:
+            except Exception:  # noqa: BLE001 # ???: Unsure what exceptions can occur
                 res_id = ''
             data = json.loads(
                 messages.DEFAULT_FAIL_BODY_JSON.format(
