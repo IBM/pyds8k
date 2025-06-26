@@ -174,7 +174,7 @@ class HTTPClient:
             f"\nRESP: [{resp.status_code}] {resp.headers}\nRESP BODY: {resp.text}\n"
         )
 
-    def request(self, url, method, **kwargs):
+    def request(self, url, method, **kwargs):  # noqa: C901
         log_required = True
         headers = kwargs.get('headers', {}).copy()
         with_http_headers = kwargs.get('with_http_headers', {})
@@ -201,13 +201,7 @@ class HTTPClient:
                 log_required = False
             absolute_url = url if is_absolute_url(url) else self.service_address + url
             if log_required:
-                self.log_req(
-                    (
-                        absolute_url,
-                        method,
-                    ),
-                    kwargs,
-                )
+                self.log_req((absolute_url, method), kwargs)
             try:
                 resp = self.session.request(
                     method, absolute_url, verify=self.verify, cert=self.cert, **kwargs
