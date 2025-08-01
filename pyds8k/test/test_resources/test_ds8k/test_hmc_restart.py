@@ -14,10 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_RESTART
@@ -31,29 +31,22 @@ class TestHmcRestart(TestDS8KWithConnect):
     def setUp(self):
         super().setUp()
 
-    @httpretty.activate
+    @responses.activate
     def test_hmc_restart(self):
         url = f'/{DS8K_HMC}/{DS8K_HMC_RESTART}'
+        uri = f'{self.domain}{self.base_url}{url}'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser({})
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (HTTPStatus.CREATED, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        req = RequestParser({})
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
         )
         # Way 1
         resp1 = self.system.restart_hmc()
 
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert resp1[0].status_code == HTTPStatus.CREATED
         assert resp1[1] == action_response['server']

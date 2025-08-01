@@ -16,10 +16,11 @@
 
 import json
 import time
+from functools import partial
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
 
 from pyds8k.base import DefaultManager, Resource
 from pyds8k.exceptions import URLParseError
@@ -54,7 +55,7 @@ class TestHTTPClient(base.TestCaseWithConnect):
         url1 = self.domain + '/new'
         url2 = '/new'
         _, url3 = url1.split('//')
-        url4 = 'http://new_domain' + '/new'
+        url4 = 'https://new_domain' + '/new'
         assert self.client._parse_url(url1) == '/new'
         assert self.client._parse_url(url2) == '/new'
         assert self.client._parse_url(url3) == '/new'
@@ -66,19 +67,17 @@ class TestHTTPClient(base.TestCaseWithConnect):
         with pytest.raises(URLParseError):
             new_client._parse_url(url3)
 
-    @httpretty.activate
+    @responses.activate
     def test_redirect(self):
         url = '/default/old'
         new_url = '/default/a'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             content_type='application/json',
             adding_headers={'Location': new_url},
             status=HTTPStatus.MOVED_PERMANENTLY,
         )
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + new_url,
             body=default_a_response_json,
             content_type='application/json',
@@ -88,20 +87,28 @@ class TestHTTPClient(base.TestCaseWithConnect):
         assert new_url == de.url
 
     @pytest.mark.skip(reason="Not work in this way")
-    @httpretty.activate
+    @responses.activate
     def test_timeout(self):
         url = '/default/a'
         new_client = HTTPClient(
             'localhost', 'admin', 'admin', service_type='ds8k', timeout=0.01
         )
+        uri = f'{new_client.domain}{self.base_url}{url}'
+        headers = {}
 
-        def _verify_request(request, uri, headers):
+        def _verify_request(request, _uri=None, _headers=None):
+            assert _uri == uri
             time.sleep(10)
-            return (HTTPStatus.OK, headers, default_a_response_json)
+            return (HTTPStatus.OK, _headers, default_a_response_json)
 
-        httpretty.register_uri(
-            httpretty.GET,
-            new_client.domain + self.base_url + url,
+        responses.add_callback(
+            responses.GET,
+            uri,
+            callback=partial(_verify_request, _uri=uri, _headers=headers),
+            content_type='application/json',
+        )
+        responses.get(
+            uri,
             body=_verify_request,
             content_type='application/json',
         )

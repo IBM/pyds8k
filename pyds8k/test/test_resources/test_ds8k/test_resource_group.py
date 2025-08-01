@@ -14,10 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_RESOURCE_GROUP
@@ -46,38 +46,38 @@ class TestResourceGroup(TestDS8KWithConnect):
             DS8K_RESOURCE_GROUP, self.resource_group_id, rebuild_url=True
         )
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_resource_group(self):
         url = f'/resource_groups/{self.resource_group_id}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
         # Way 1
         _ = self.system.delete_resource_group(self.resource_group_id)
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
         # self.assertEqual(resp1, action_response['server'])
 
         # Way 2
         resource_group = self.system.get_resource_group(self.resource_group_id)
         assert isinstance(resource_group, ResourceGroup)
         resp2, _ = resource_group.delete()
-        assert resp2.status_code == HTTPStatus.NO_CONTENT
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert resp2.status_code == HTTPStatus.OK
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_update_resource_group(self):
         url = f'/resource_groups/{self.resource_group_id}'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         new_name = 'new_name'
         new_label = 'new_label'
         new_cs_global = 'SECRET'
@@ -85,34 +85,29 @@ class TestResourceGroup(TestDS8KWithConnect):
         new_gm_masters = ['00', '01']
         new_gm_sessions = ['FE', 'FD']
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser(
-                {
-                    'name': new_name,
-                    'label': new_label,
-                    'cs_global': new_cs_global,
-                    'pass_global': new_pass_global,
-                    'gm_masters': new_gm_masters,
-                    'gm_sessions': new_gm_sessions,
-                },
-            )
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.GET,
-            self.domain + self.base_url + url,
+        responses.get(
+            uri,
             body=response_a_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+
+        resq = RequestParser(
+            {
+                'name': new_name,
+                'label': new_label,
+                'cs_global': new_cs_global,
+                'pass_global': new_pass_global,
+                'gm_masters': new_gm_masters,
+                'gm_sessions': new_gm_sessions,
+            },
+        )
+        responses.put(
+            uri,
+            status=HTTPStatus.OK.value,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
 
         # Way 1
@@ -125,7 +120,7 @@ class TestResourceGroup(TestDS8KWithConnect):
             gm_masters=new_gm_masters,
             gm_sessions=new_gm_sessions,
         )
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert res == action_response['server']
 
         resource_group = self.system.get_resource_group(self.resource_group_id)
@@ -137,7 +132,7 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp2, data2 = resource_group.update()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data2 == action_response['server']
         assert resp2.status_code == HTTPStatus.OK
 
@@ -149,7 +144,7 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp3, data3 = resource_group.save()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data3 == action_response['server']
         assert resp3.status_code == HTTPStatus.OK
 
@@ -161,7 +156,7 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp4, data4 = resource_group.patch()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data4 == action_response['server']
         assert resp4.status_code == HTTPStatus.OK
 
@@ -173,44 +168,38 @@ class TestResourceGroup(TestDS8KWithConnect):
         resource_group.gm_masters = new_gm_masters
         resource_group.gm_sessions = new_gm_sessions
         resp5, data5 = resource_group.put()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data5 == action_response['server']
         assert resp5.status_code == HTTPStatus.OK
 
-    @httpretty.activate
+    @responses.activate
     def test_create_resource_group(self):
         url = '/resource_groups'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         label = 'group1'
         name = 'group1'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser(
-                {
-                    'label': label,
-                    'name': name,
-                }
-            )
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (HTTPStatus.CREATED, headers, create_resource_group_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                'label': label,
+                'name': name,
+            }
         )
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_resource_group_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
+        )
+
         # Way 1
         resp1 = self.system.create_resource_group(
             label=label,
             name=name,
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], ResourceGroup)
 
         # Way 2
@@ -220,7 +209,7 @@ class TestResourceGroup(TestDS8KWithConnect):
             name=name,
         )
         resp2, data2 = resource_group2.posta()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data2[0], ResourceGroup)
         assert resp2.status_code == HTTPStatus.CREATED
 
@@ -231,7 +220,7 @@ class TestResourceGroup(TestDS8KWithConnect):
             name=name,
         )
         resp3, data3 = resource_group3.save()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data3[0], ResourceGroup)
         assert resp3.status_code == HTTPStatus.CREATED
 

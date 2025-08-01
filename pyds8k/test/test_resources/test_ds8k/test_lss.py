@@ -17,8 +17,9 @@ import json
 from functools import cmp_to_key
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.messages import INVALID_TYPE
@@ -70,25 +71,23 @@ class TestLSS(TestDS8KWithConnect):
                 assert value == getattr(item[1][j], item[1][j].id_field)
         lss._stop_updating()
 
-    @httpretty.activate
+    @responses.activate
     def test_lazy_loading_related_resources_collection(self):
         lss_id = '00'
         url = f'/lss/{lss_id}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=get_response_json_by_type(DS8K_LSS),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         for item in LSS.related_resources_collection:
             sub_route_url = f'{url}/{item}'
-            httpretty.register_uri(
-                httpretty.GET,
+            responses.get(
                 self.domain + self.base_url + sub_route_url,
                 body=get_response_list_json_by_type(item),
                 content_type='application/json',
-                status=HTTPStatus.OK,
+                status=HTTPStatus.OK.value,
             )
         lss = self.system.get_lss_by_id(lss_id)
 
@@ -138,10 +137,11 @@ class TestLSS(TestDS8KWithConnect):
         ):
             LSS(self.client, lcu_type="fake")
 
-    @httpretty.activate
+    @responses.activate
     def test_create_lss_ckd(self):
         url = '/lss'
-        full_url = self.domain + self.base_url + url
+        uri = f'{self.domain}{self.base_url}{url}'
+
         struct_request = {
             'id': 'FE',
             'type': 'ckd',
@@ -149,21 +149,13 @@ class TestLSS(TestDS8KWithConnect):
             'ckd_base_cu_type': types.DS8K_LCU_TYPE_3990_6,
         }
 
-        def _verify_request(request, uri, headers):
-            assert uri == full_url
-
-            req = RequestParser(struct_request)
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return 201, headers, json.dumps(create_lss_response)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            full_url,
-            body=_verify_request,
+        req = RequestParser(struct_request)
+        responses.post(
+            uri,
+            status=HTTPStatus.OK,
+            body=json.dumps(create_lss_response),
             content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
         )
 
         resp = self.system.create_lss_ckd(
@@ -172,5 +164,5 @@ class TestLSS(TestDS8KWithConnect):
             lcu_type=struct_request['ckd_base_cu_type'],
             ss_id=struct_request['sub_system_identifier'],
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp[0], LSS)

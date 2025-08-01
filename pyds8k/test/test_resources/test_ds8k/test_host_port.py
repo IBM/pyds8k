@@ -14,11 +14,11 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 
@@ -53,97 +53,91 @@ class TestHostPort(TestDS8KWithConnect):
             DS8K_HOST_PORT, response_a, HostPort.id_field
         )
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_host_port(self):
         url = f'/host_ports/{self.wwpn}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
         # Way 1
         _ = self.system.delete_host_port(self.wwpn)
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
         # self.assertEqual(resp1, action_response['server'])
 
         # Way 2
         host_port = self.system.get_host_port(self.wwpn)
         assert isinstance(host_port, HostPort)
         resp2, _ = host_port.delete()
-        assert resp2.status_code == HTTPStatus.NO_CONTENT
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert resp2.status_code == HTTPStatus.OK.value
+        assert responses.calls[-1].request.method == responses.DELETE
         # self.assertEqual(resp2.text, action_response['server'])
         # self.assertEqual(data2, action_response['server'])
         # warnings.warn("TestHostPort.test_delete_host_port: do not know why \
 
-    # requests can not get DELETE response's body. Maybe httpretty can \
+    # requests can not get DELETE response's body. Maybe responses can \
     # not set DELETE response's body correctly")
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_host_port_without_resp_body(self):
         url = f'/host_ports/{self.wwpn}'
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.NO_CONTENT.value,
         )
         resp1 = self.system.delete_host_port(self.wwpn)
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
         assert resp1 == DEFAULT_SUCCESS_BODY_DICT
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_host_port_failed(self):
         url = f'/host_ports/{self.wwpn}'
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             body=action_response_failed_json,
             content_type='application/json',
-            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR.value,
         )
         with pytest.raises(InternalServerError) as cm:
             self.system.delete_host_port(self.wwpn)
         assert action_response_failed['server'] == cm.value.error_data
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_update_host_port(self):
         url = f'/host_ports/{self.wwpn}'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         new_host_name = 'new_host'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'host': new_host_name})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.GET,
-            self.domain + self.base_url + url,
+        responses.get(
+            uri,
             body=response_a_json,
             content_type='application/json',
+            status=HTTPStatus.OK.value,
+        )
+
+        resq = RequestParser({'host': new_host_name})
+        responses.put(
+            uri,
             status=HTTPStatus.OK,
-        )
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
+
         # Way 1
         resp1 = self.system.update_host_port_change_host(self.wwpn, new_host_name)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert resp1 == action_response['server']
 
         host_port = self.system.get_host_port(self.wwpn)
@@ -151,42 +145,41 @@ class TestHostPort(TestDS8KWithConnect):
         # Way 2
         host_port.host = new_host_name
         resp2, data2 = host_port.update()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data2 == action_response['server']
         assert resp2.status_code == HTTPStatus.OK
 
         # Way 3 in DS8K, save works the same as update
         host_port.host = new_host_name
         resp3, data3 = host_port.save()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data3 == action_response['server']
         assert resp3.status_code == HTTPStatus.OK
 
         # Way 4
         host_port.host = new_host_name
         resp4, data4 = host_port.patch()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data4 == action_response['server']
         assert resp4.status_code == HTTPStatus.OK
 
         # Way 5 in DS8K, put works the same as patch
         host_port.host = new_host_name
         resp5, data5 = host_port.put()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert data5 == action_response['server']
         assert resp5.status_code == HTTPStatus.OK
 
-    @httpretty.activate
+    @responses.activate
     def test_update_host_port_failed(self):
         url = f'/host_ports/{self.wwpn}'
         new_host_name = 'new_host'
 
-        httpretty.register_uri(
-            httpretty.PUT,
+        responses.put(
             self.domain + self.base_url + url,
             body=action_response_failed_json,
             content_type='application/json',
-            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR.value,
         )
         with pytest.raises(InternalServerError) as cm:
             self.system.update_host_port_change_host(self.wwpn, new_host_name)
@@ -211,37 +204,32 @@ class TestHostPort(TestDS8KWithConnect):
         assert self.host_port.host == 'new_host'
         assert self.host_port.representation['host'] == 'new_host'
 
-    @httpretty.activate
+    @responses.activate
     def test_create_host_port(self):
         url = '/host_ports'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         host_name = 'host1'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser({'wwpn': self.wwpn, 'host': host_name})
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (HTTPStatus.OK, headers, create_host_port_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        req = RequestParser({'wwpn': self.wwpn, 'host': host_name})
+        responses.post(
+            uri,
+            status=HTTPStatus.OK,
+            body=create_host_port_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
         )
+
         # Way 1
         resp1 = self.system.create_host_port(self.wwpn, host_name)
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], HostPort)
 
         # Way 2
         host_port = self.system.all(DS8K_HOST_PORT, rebuild_url=True)
         new_host_port2 = host_port.create(wwpn=self.wwpn, host=host_name)
         resp2, data2 = new_host_port2.posta()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data2[0], HostPort)
         assert resp2.status_code == HTTPStatus.OK
 
@@ -249,7 +237,7 @@ class TestHostPort(TestDS8KWithConnect):
         host_port = self.system.all(DS8K_HOST_PORT, rebuild_url=True)
         new_host_port3 = host_port.create(wwpn=self.wwpn, host=host_name)
         resp3, data3 = new_host_port3.save()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data3[0], HostPort)
         assert resp3.status_code == HTTPStatus.OK
 
@@ -257,17 +245,16 @@ class TestHostPort(TestDS8KWithConnect):
         # Don't init a resource instance by yourself when create new.
         # use .create() instead.
 
-    @httpretty.activate
+    @responses.activate
     def test_create_host_port_failed(self):
         url = '/host_ports'
         host_name = 'host1'
 
-        httpretty.register_uri(
-            httpretty.POST,
+        responses.post(
             self.domain + self.base_url + url,
             body=action_response_failed_json,
             content_type='application/json',
-            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR.value,
         )
         with pytest.raises(InternalServerError) as cm:
             self.system.create_host_port(self.wwpn, host_name)

@@ -16,8 +16,8 @@
 
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
 
 from pyds8k.exceptions import OperationNotAllowed
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM
@@ -38,30 +38,28 @@ class TestSystem(TestDS8KWithConnect):
         super().setUp()
         self.system = System(self.client, SystemManager(self.client))
 
-    @httpretty.activate
+    @responses.activate
     def test_get_system(self):
         url = '/systems'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=system_list_response_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         sys = self.system.get_system()
         assert isinstance(sys, System)
         sys_data = system_list_response['data']['systems'][0]
         self._assert_equal_between_dict_and_resource(sys_data, sys)
 
-    @httpretty.activate
+    @responses.activate
     def test_not_allowed_operations(self):
         url = '/systems'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=system_list_response_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         sys = self.system.get_system()
         with pytest.raises(OperationNotAllowed):

@@ -14,11 +14,11 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.exceptions import InternalServerError
@@ -73,143 +73,130 @@ class TestVolmap(TestDS8KWithConnect):
             DS8K_HOST, DS8K_VOLMAP, self._get_sort_func_by(Volmap.id_field)
         )
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_mapping(self):
         url = f'/hosts/{self.host_id}/mappings/{self.lunid}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=mapping_response_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
         # Way 1
         _ = self.host.delete_mapping(self.lunid)
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
         # self.assertEqual(resp1, action_response['server'])
 
         # Way 2
         mapping = self.host.get_mapping(self.lunid)
         assert isinstance(mapping, Volmap)
         resp2, _ = mapping.delete()
-        assert resp2.status_code == HTTPStatus.NO_CONTENT
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert resp2.status_code == HTTPStatus.OK.value
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_mapping_failed(self):
         url = f'/hosts/{self.host_id}/mappings/{self.lunid}'
-        httpretty.register_uri(
-            httpretty.DELETE,
-            self.domain + self.base_url + url,
+        uri = f'{self.domain}{self.base_url}{url}'
+
+        responses.delete(
+            uri,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR.value,  # ???: Why is .value required here?
             body=action_response_failed_json,
             content_type='application/json',
-            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
         with pytest.raises(InternalServerError) as cm:
             self.host.delete_mapping(self.lunid)
         assert action_response_failed['server'] == cm.value.error_data
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_create_mappings_with_volume_id(self):
         url = f'/hosts/{self.host_id}/mappings'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         volumes = [f'000{i}' for i in range(10)]
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'volumes': volumes})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, create_mappings_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'volumes': volumes})
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_mappings_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
         # Way 1
         resp1 = self.host.create_mappings(volumes=volumes)
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volmap)
 
-    @httpretty.activate
+    @responses.activate
     def test_create_mappings_with_mappings(self):
         url = f'/hosts/{self.host_id}/mappings'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         mappings = [{f'0{i}': f'000{i}'} for i in range(10)]
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'mappings': mappings})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, create_mappings_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'mappings': mappings})
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_mappings_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
         # Way 1
         resp1 = self.host.create_mappings(mappings=mappings)
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volmap)
 
-    @httpretty.activate
+    @responses.activate
     def test_create_mapping_with_volume_and_lunid(self):
         url = f'/hosts/{self.host_id}/mappings'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         lunid = '00'
         volume_id = '0000'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'lunid': lunid, 'volume': volume_id})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, create_mapping_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'lunid': lunid, 'volume': volume_id})
+        responses.post(
+            uri,
+            status=HTTPStatus.OK,
+            body=create_mapping_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
         mapping = self.host.all(DS8K_VOLMAP)
         new_mapping = mapping.create(lunid=lunid, volume=volume_id)
         resp, data = new_mapping.save()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data[0], Volmap)
         assert resp.status_code == HTTPStatus.OK
 
-        @httpretty.activate
+        @responses.activate
         def test_create_mapping_with_volume(self):
             url = f'/hosts/{self.host_id}/mappings'
+            uri = f'{self.domain}{self.base_url}{url}'
+
             volume_id = '0000'
 
-            def _verify_request(request, uri, headers):
-                assert uri == f"{self.domain}{self.base_url}{url}"
-
-                resq = RequestParser({'lunid': '', 'volume': volume_id})
-                assert json.loads(request.body) == resq.get_request_data()
-                return (HTTPStatus.OK, headers, create_mapping_response_json)
-
-            httpretty.register_uri(
-                httpretty.POST,
-                self.domain + self.base_url + url,
-                body=_verify_request,
+            resq = RequestParser({'lunid': '', 'volume': volume_id})
+            responses.post(
+                uri,
+                status=HTTPStatus.OK,
+                body=create_mapping_response_json,
                 content_type='application/json',
+                match=[matchers.json_params_matcher(resq.get_request_data())],
             )
             mapping = self.host.all(DS8K_VOLMAP)
             new_mapping = mapping.create(lunid='', volume=volume_id)
             resp, data = new_mapping.save()
-            assert httpretty.last_request().method == httpretty.POST
+            assert responses.calls[-1].request.method == responses.POST
             assert isinstance(data[0], Volmap)
             assert resp.status_code == HTTPStatus.OK

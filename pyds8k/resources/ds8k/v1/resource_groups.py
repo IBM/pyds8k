@@ -63,13 +63,7 @@ class ResourceGroupManager(BaseManager, metaclass=ManagerMeta):
         return self._put(url=url, body=body)
 
     def patch(self, url='', body=None):
-        # patch doesn't remove keys with empty values, override
-        if body:
-            body = self.remove_empty_key_values_from_dict(body)
         return self._patch(url=url, body=body)
 
     def delete(self, url=''):
         return self._delete(url=url)
-
-    def remove_empty_key_values_from_dict(self, input_dict):
-        return {k: v for k, v in input_dict.items() if v}

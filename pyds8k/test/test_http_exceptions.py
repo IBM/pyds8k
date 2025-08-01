@@ -17,8 +17,8 @@
 import json
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
 
 from pyds8k import exceptions
 
@@ -58,56 +58,56 @@ class TestHTTPException(base.TestCaseWithConnect):
     def setUp(self):
         super().setUp()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_400(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.BAD_REQUEST,
+            status=HTTPStatus.BAD_REQUEST.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.BadRequest):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_401(self):
         domain = self.client.domain
         url = '/default/a'
-        httpretty.register_uri(
-            httpretty.POST,
-            domain + self.base_url + '/tokens',
+        uri_base = f'{domain}{self.base_url}'
+        uri = f'{uri_base}{url}'
+
+        responses.post(
+            f'{uri_base}/tokens',
             body=json.dumps(response_token),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
-            responses=[
-                httpretty.Response(
-                    body=json.dumps(response_401),
-                    content_type='application/json',
-                    status=HTTPStatus.UNAUTHORIZED,
-                ),
-                httpretty.Response(
-                    body=json.dumps(default_a_response),
-                    content_type='application/json',
-                    status=HTTPStatus.OK,
-                ),
-                httpretty.Response(
-                    body=json.dumps(response_401),
-                    content_type='application/json',
-                    status=HTTPStatus.UNAUTHORIZED,
-                ),
-            ],
+        responses.get(
+            uri,
+            body=json.dumps(response_401),
+            content_type='application/json',
+            status=HTTPStatus.UNAUTHORIZED.value,
         )
+        responses.get(
+            uri,
+            body=json.dumps(default_a_response),
+            content_type='application/json',
+            status=HTTPStatus.OK.value,
+        )
+        responses.get(
+            uri,
+            body=json.dumps(response_401),
+            content_type='application/json',
+            status=HTTPStatus.UNAUTHORIZED.value,
+        )
+
         vol = self.resource.one(DEFAULT, 'a')
         vol.get()
         assert vol.url == default_a_response['data']['default'][0]['link']['href']
@@ -115,173 +115,173 @@ class TestHTTPException(base.TestCaseWithConnect):
         with pytest.raises(exceptions.Unauthorized):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_auth_fail(self):
         domain = self.client.domain
         url = '/default/a'
-        httpretty.register_uri(
-            httpretty.POST,
-            domain + self.base_url + '/tokens',
+        uri_base = f'{domain}{self.base_url}'
+        uri = f'{uri_base}{url}'
+
+        responses.post(
+            f'{uri_base}/tokens',
             body=json.dumps(response_token_error),
             content_type='application/json',
-            status=HTTPStatus.UNAUTHORIZED,
+            status=HTTPStatus.UNAUTHORIZED.value,
         )
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
-            responses=[
-                httpretty.Response(
-                    body=json.dumps(response_401),
-                    content_type='application/json',
-                    status=HTTPStatus.UNAUTHORIZED,
-                ),
-                httpretty.Response(
-                    body=json.dumps(default_a_response),
-                    content_type='application/json',
-                    status=HTTPStatus.OK,
-                ),
-                httpretty.Response(
-                    body=json.dumps(response_401),
-                    content_type='application/json',
-                    status=HTTPStatus.UNAUTHORIZED,
-                ),
-            ],
+        responses.get(
+            uri,
+            body=json.dumps(response_401),
+            content_type='application/json',
+            status=HTTPStatus.UNAUTHORIZED.value,
         )
+        responses.get(
+            uri,
+            body=json.dumps(default_a_response),
+            content_type='application/json',
+            status=HTTPStatus.OK.value,
+        )
+        responses.get(
+            uri,
+            body=json.dumps(response_401),
+            content_type='application/json',
+            status=HTTPStatus.UNAUTHORIZED.value,
+        )
+        responses.get(uri)
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.Unauthorized):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_403(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.FORBIDDEN,
+            status=HTTPStatus.FORBIDDEN.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.Forbidden):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_404(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.NOT_FOUND,
+            status=HTTPStatus.NOT_FOUND.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.NotFound):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_405(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.METHOD_NOT_ALLOWED,
+            status=HTTPStatus.METHOD_NOT_ALLOWED.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.MethodNotAllowed):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_409(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.CONFLICT,
+            status=HTTPStatus.CONFLICT.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.Conflict):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_415(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+            status=HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.UnsupportedMediaType):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_500(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.InternalServerError):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_503(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.SERVICE_UNAVAILABLE,
+            status=HTTPStatus.SERVICE_UNAVAILABLE.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')
         with pytest.raises(exceptions.ServiceUnavailable):
             vol.get()
 
-    @httpretty.activate
+    @responses.activate
     def test_response_status_504(self):
         domain = self.client.domain
         url = '/default/a'
+        uri = f'{domain}{self.base_url}{url}'
 
-        httpretty.register_uri(
-            httpretty.GET,
-            domain + self.base_url + url,
+        responses.get(
+            uri,
             body=json.dumps({'server': {'message': 'error', 'details': 'error'}}),
             content_type='application/json',
-            status=HTTPStatus.GATEWAY_TIMEOUT,
+            status=HTTPStatus.GATEWAY_TIMEOUT.value,
         )
 
         vol = self.resource.one(DEFAULT, 'a')

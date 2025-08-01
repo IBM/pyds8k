@@ -14,8 +14,8 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import pytest
+import responses
 
 from pyds8k.client.ds8k.v1.client import Client
 from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM, DS8K_VOLUME
@@ -34,22 +34,20 @@ volume_list_response = get_response_list_data_by_type(DS8K_VOLUME)
 class TestClient(TestCaseWithConnect):
     def setUp(self):
         super().setUp()
-        self.rest_client = Client('http://localhost:8088/api/', 'admin', 'admin')
+        self.rest_client = Client('https://localhost:8088/api/', 'admin', 'admin')
 
-    @httpretty.activate
+    @responses.activate
     def test_get_array_method(self):
         domain = self.client.domain
         vol_url = '/volumes'
         sys_url = '/systems'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + vol_url,
             body=volume_list_response_json,
             content_type='application/json',
         )
 
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + sys_url,
             body=system_list_response_json,
             content_type='application/json',
