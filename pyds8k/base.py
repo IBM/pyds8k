@@ -14,20 +14,30 @@
 # limitations under the License.
 ##############################################################################
 
+import contextlib
 import json
-import os
 import sys
-from . import messages
-from pyds8k.utils import get_response_parser_class, \
-    get_request_parser_class
-from pyds8k.utils import is_absolute_url
-from pyds8k.utils import HTTP200, HTTP204, POSTA, POST
-from pyds8k.exceptions import URLNotSpecifiedError, \
-    FieldReadOnly, \
-    URLParseError, \
-    ResponseBodyMissingError
-from pyds8k import PYDS8K_DEFAULT_LOGGER
+from http import HTTPStatus
 from logging import getLogger
+from pathlib import Path
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.exceptions import (
+    FieldReadOnly,
+    InvalidMethodForCreate,
+    ResponseBodyMissingError,
+    URLNotSpecifiedError,
+    URLParseError,
+)
+from pyds8k.utils import (
+    POST,
+    POSTA,
+    get_request_parser_class,
+    get_response_parser_class,
+    is_absolute_url,
+)
+
+from . import messages
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
@@ -35,7 +45,7 @@ RESOURCES = {}
 MANAGERS = {}
 
 
-class URLBuilderMixin(object):
+class URLBuilderMixin:
     def one(self, route, resource_id):
         pass
 
@@ -43,7 +53,7 @@ class URLBuilderMixin(object):
         pass
 
 
-class UtilsMixin(object):
+class UtilsMixin:
     def _update_list_field(self, field_name, value_list, operator='+'):
         if not isinstance(value_list, list):
             value_list = [value_list]
@@ -51,45 +61,32 @@ class UtilsMixin(object):
         if operator == '+':
             for item in value_list:
                 if item in field:
-                    raise KeyError(
-                        messages.ITEM_IN_LIST.format(field_name, item)
-                        )
+                    raise KeyError(messages.ITEM_IN_LIST.format(field_name, item))
                 field.append(item)
         if operator == '-':
             for item in value_list:
                 if item not in field:
-                    raise KeyError(
-                        messages.ITEM_NOT_IN_LIST.format(field_name, item)
-                        )
+                    raise KeyError(messages.ITEM_NOT_IN_LIST.format(field_name, item))
                 field.pop(field.index(item))
         return field
 
     def _get_id(self):
         return self.id if hasattr(self, 'id') else id(self)
 
-    def remove_None_fields_from_dict(self, input_dict):
-        new_dict = {}
-        for (key, value) in input_dict.items():
-            if value is not None:
-                new_dict[key] = value
-        return new_dict
+    def remove_None_fields_from_dict(self, input_dict):  # noqa: N802
+        return {key: value for key, value in input_dict.items() if value is not None}
 
 
 # all the resources are under folder "resources",
 # the route prefix of a resource resources/a/b/c.py is a.b
 def get_resource_route_prefix_by_class(cls):
-    path = os.path.abspath(
-        os.path.dirname(sys.modules[cls.__module__].__file__)
-    )
-    route = path.replace(os.sep, ".")
-    return route.rsplit(".resources.", 2)[1]
+    path = Path(sys.modules[cls.__module__].__file__).parent.resolve()
+    return '.'.join(path.parts[path.parts.index("resources") + 1 :])
 
 
 class ResourceMeta(type):
-
     def __new__(mcs, name, bases, dct):
-
-        new_class = super(ResourceMeta, mcs).__new__(mcs, name, bases, dct)
+        new_class = super().__new__(mcs, name, bases, dct)
         if "resource_type" in dct:
             prefix = get_resource_route_prefix_by_class(new_class)
             route = "{}.{}".format(prefix, dct["resource_type"])
@@ -98,10 +95,8 @@ class ResourceMeta(type):
 
 
 class ManagerMeta(type):
-
     def __new__(mcs, name, bases, dct):
-
-        new_class = super(ManagerMeta, mcs).__new__(mcs, name, bases, dct)
+        new_class = super().__new__(mcs, name, bases, dct)
         if "resource_type" in dct:
             prefix = get_resource_route_prefix_by_class(new_class)
             route = "{}.{}".format(prefix, dct["resource_type"])
@@ -113,9 +108,7 @@ def get_resource_class_by_route(route):
     try:
         return RESOURCES[route]
     except KeyError:
-        logger.debug('Failed to get resource by name: {}, '
-                     'return default one.'.format(route)
-                     )
+        logger.debug(f'Failed to get resource by name: {route}, return default one.')
         return Resource
 
 
@@ -123,19 +116,15 @@ def get_manager_class_by_route(route):
     try:
         return MANAGERS[route]
     except KeyError:
-        logger.debug('Failed to get manager by name: {}, '
-                     'return default one.'.format(route)
-                     )
+        logger.debug(f'Failed to get manager by name: {route}, return default one.')
         return DefaultManager
 
 
 def get_resource_and_manager_class_by_route(route):
-    return get_resource_class_by_route(route), \
-           get_manager_class_by_route(route)
+    return get_resource_class_by_route(route), get_manager_class_by_route(route)
 
 
-class BaseResource(object):
-
+class BaseResource:
     pass
 
 
@@ -164,8 +153,16 @@ class Resource(UtilsMixin, BaseResource):
     related_resource = {}
     alias = {}
 
-    def __init__(self, client, manager=None, url='', info={},
-                 resource_id=None, parent=None, loaded=False):
+    def __init__(
+        self,
+        client,
+        manager=None,
+        url='',
+        info=None,
+        resource_id=None,
+        parent=None,
+        loaded=False,
+    ):
         self.set_loaded(loaded)
         self._start_init()
         self._init_updating()
@@ -181,27 +178,28 @@ class Resource(UtilsMixin, BaseResource):
         self.parent = parent
         self._custom_url = ''
         self._set_modified_info_dict()
+        if info is None:
+            info = {}
         if info:
             self._add_details(info)
         self._finish_init()
 
     def one(self, route, resource_id, rebuild_url=False):
         url = self._set_url(route, resource_id, rebuild_url=rebuild_url)
-        return self._get_resource_by_route(
-            route, self.client,
-            url, self, resource_id
-        )
+        return self._get_resource_by_route(route, self.client, url, self, resource_id)
 
     def all(self, route, rebuild_url=False):
         url = self._set_url(route, rebuild_url=rebuild_url)
         return self._get_resource_by_route(route, self.client, url, self)
 
-    def toUrl(self, method, body={}):
+    def toUrl(self, method, body=None):  # noqa: N802
         """
         To send non-standard rest request, like /attach
         """
 
         self._set_custom_url(method)
+        if body is None:
+            body = {}
         if body:
             resp, res_body = self.post(body=body)
         else:
@@ -223,13 +221,14 @@ class Resource(UtilsMixin, BaseResource):
         return result
 
     def create(self, **kwargs):
-        custom_info = {}
-        for (k, v) in kwargs.items():
-            if k in list(self._template.keys()):
-                custom_info[k] = v
+        custom_info = {
+            k: v for k, v in kwargs.items() if k in list(self._template.keys())
+        }
         return self.create_from_template(custom_info)
 
-    def create_from_template(self, custom_info={}):
+    def create_from_template(self, custom_info=None):
+        if custom_info is None:
+            custom_info = {}
         _url = self._rm_id_in_url()
         _info = self._template.copy()
         if self.id_field in _info:
@@ -237,31 +236,31 @@ class Resource(UtilsMixin, BaseResource):
         _info.update(custom_info)
         data = self.remove_None_fields_from_dict(_info)
 
-        res = self.__class__(client=self.client,
-                             manager=self.manager.__class__(self.client),
-                             url=_url,
-                             info=data,
-                             parent=self.parent,
-                             # Set loaded=True to avoid lazy-loading
-                             loaded=True)
+        res = self.__class__(
+            client=self.client,
+            manager=self.manager.__class__(self.client),
+            url=_url,
+            info=data,
+            parent=self.parent,
+            # Set loaded=True to avoid lazy-loading
+            loaded=True,
+        )
         for key, value in data.items():
             if value:
                 res._set_modified_info_dict(key, value)
         res._is_new = True
         return res
 
-    def _get_resource_by_route(self, route, client, url,
-                               parent=None, resource_id=None):
-        prefix = '{}.{}'.format(client.service_type, client.service_version)
-        r, m = get_resource_and_manager_class_by_route(
-            "{}.{}".format(prefix, str(route).lower())
+    def _get_resource_by_route(self, route, client, url, parent=None, resource_id=None):
+        prefix = f'{client.service_type}.{client.service_version}'
+        r, m = get_resource_and_manager_class_by_route(f"{prefix}.{str(route).lower()}")
+        return r(
+            client=client,
+            manager=m(client=client),
+            url=url,
+            parent=parent,
+            resource_id=resource_id,
         )
-        return r(client=client,
-                 manager=m(client=client),
-                 url=url,
-                 parent=parent,
-                 resource_id=resource_id,
-                 )
 
     def _update_alias(self, res):
         for key, alias in self.alias.items():
@@ -269,27 +268,27 @@ class Resource(UtilsMixin, BaseResource):
                 res[alias] = res.pop(key)
         return res
 
-    def _set_url(self, route, resource_id='',  rebuild_url=False):
+    def _set_url(self, route, resource_id='', rebuild_url=False):
         url = self.url if not rebuild_url else ''
         # when route contains prefix, like cs.pprcs
         #       cs.pprcs => cs/pprcs
         route = route.replace('.', '/')
         if resource_id:
-            url += '/{}/{}'.format(route, resource_id)
+            url += f'/{route}/{resource_id}'
         else:
-            url += '/{}'.format(route)
+            url += f'/{route}'
         return url
 
     def _add_id_to_url(self, resource_id):
-        if not self.url.endswith('/{}'.format(resource_id)):
-            self.url += '/{}'.format(resource_id)
+        if not self.url.endswith(f'/{resource_id}'):
+            self.url += f'/{resource_id}'
 
     def _rm_id_in_url(self, resource_id=''):
         if not hasattr(self, 'id'):
             return self.url
         res_id = resource_id or self.id
-        if self.url.endswith('/{}'.format(res_id)):
-            return self.url[:len(self.url) - len(self.id) - 1]
+        if self.url.endswith(f'/{res_id}'):
+            return self.url[: len(self.url) - len(self.id) - 1]
         return self.url
 
     def _add_base_to_url(self, url):
@@ -310,19 +309,16 @@ class Resource(UtilsMixin, BaseResource):
     def _add_details(self, info, force=False):
         self._start_updating()
         info = self._update_alias(info)
-        try:
-            # set id field first.
+        with contextlib.suppress(KeyError):
             self._id = info[self.id_field]
-        except KeyError:
-            pass
 
         self_url = self.ResponseParser.get_link_from_representation(info)
         if self_url:
             self.url = self_url
-        for (k, v) in info.items():
+        for k, v in info.items():
             if not force and k in list(self._modified_info_dict.keys()):
                 continue
-            if not k == self.id_field:
+            if k != self.id_field:
                 setattr(self, k, v)
             self.representation[k] = v
 
@@ -342,19 +338,24 @@ class Resource(UtilsMixin, BaseResource):
             res_id = res_info[res_class.id_field]
             self.representation[res_key] = res_id
             setattr(self, res_key, res_id)
-            setattr(self,
-                    '_' + res_key,
-                    res_class(self.client,
-                              manager=res_manager(self.client),
-                              resource_id=res_id,
-                              info=res_info,
-                              loaded=False,
-                              )
-                    )
-        except Exception:
-            logger.debug(
-                messages.SET_RELATED_RESOURCE_FAILED.format(res_key, self)
-                )
+            setattr(
+                self,
+                '_' + res_key,
+                res_class(
+                    self.client,
+                    manager=res_manager(self.client),
+                    resource_id=res_id,
+                    info=res_info,
+                    loaded=False,
+                ),
+            )
+        except (KeyError, TypeError, ValueError):
+            logger.debug(messages.SET_RELATED_RESOURCE_FAILED.format(res_key, self))
+            self.representation[res_key] = res_info
+            setattr(self, res_key, res_info)
+            setattr(self, '_' + res_key, None)
+        except Exception:  # noqa: BLE001 # ???: Unsure if other exceptions can occur
+            logger.debug(messages.SET_RELATED_RESOURCE_FAILED.format(res_key, self))
             self.representation[res_key] = res_info
             setattr(self, res_key, res_info)
             setattr(self, '_' + res_key, None)
@@ -362,23 +363,22 @@ class Resource(UtilsMixin, BaseResource):
     def _get_url(self, urls):
         if isinstance(urls, str):
             return urls
-        elif isinstance(urls, dict):
+        if isinstance(urls, dict):
             urls = [urls]
         elif isinstance(urls, list):
             pass
         else:
-            raise URLParseError()
+            raise URLParseError
         for url in urls:
             if url.get('rel') == 'self':
                 return url.get('href', '')
         return ''
 
     def __getattr__(self, k):
-        if k == 'id' or k == self.id_field:
+        if k in ('id', self.id_field):
             if '_id' not in self.__dict__:
                 raise AttributeError(k)
-            else:
-                return self._id
+            return self._id
         # If we can get the attr from a resource collection
         # we don't need to get the resource details.
         # So we don't load the details until an attr which is
@@ -389,41 +389,43 @@ class Resource(UtilsMixin, BaseResource):
                 return getattr(self, k)
 
             raise AttributeError(k)
-        else:
-            return self.__dict__[k]
+        return self.__dict__[k]
 
     def __setattr__(self, key, value):
         if key == '_id':
             self._add_id_to_url(value)
         if key.startswith('_'):
-            super(Resource, self).__setattr__(key, value)
-            return
+            super().__setattr__(key, value)
+            return None
         if self._is_init():
-            return super(Resource, self).__setattr__(key, value)
-        if key == 'id' or key == self.id_field:
+            return super().__setattr__(key, value)
+        if key in ('id', self.id_field):
             raise FieldReadOnly(key)
-        if not self.is_updating() and (key in self._template or key in self.representation):  # noqa
+        if not self.is_updating() and (
+            key in self._template or key in self.representation
+        ):
             self.representation[key] = value
             self._set_modified_info_dict(key, value)
-        super(Resource, self).__setattr__(key, value)
+        super().__setattr__(key, value)
+
+        return None
 
     def __repr__(self):
-        reprkeys = \
-            sorted(k for k in self.__dict__ if not str(k).startswith('_') and
-                   k not in ('manager', 'client')
-                   )
-        info = ", ".join("{0}={1}".format(k, getattr(self, k))
-                         for k in reprkeys)
-        return "<{0} {1}>".format(self.__class__.__name__, info)
+        reprkeys = sorted(
+            k
+            for k in self.__dict__
+            if not str(k).startswith('_') and k not in ('manager', 'client')
+        )
+        info = ", ".join(f"{k}={getattr(self, k)}" for k in reprkeys)
+        return f"<{self.__class__.__name__} {info}>"
 
     def get(self, resource_id='', force=False, **kwargs):
         self.set_loaded(True)
         if resource_id:
             return self.manager.get(resource_id, **kwargs)
-        else:
-            _, info = self.manager.get(**kwargs)
-            self._add_details(info, force)
-            return self
+        _, info = self.manager.get(**kwargs)
+        self._add_details(info, force)
+        return self
 
     def get_response(self):
         return self.manager.get()
@@ -455,15 +457,16 @@ class Resource(UtilsMixin, BaseResource):
         resp, data = self.manager.delete()
         return resp, data
 
-    def update(self, info={}):
+    def update(self, info=None):
+        if info is None:
+            info = {}
         resp = None
         data = None
         if info:
             resp, data = self.manager.patch(body=info)
             self._del_modified_info_dict_keys(info)
         else:
-            resp, data = self.manager.patch(body=self._get_modified_info_dict()
-                                            )
+            resp, data = self.manager.patch(body=self._get_modified_info_dict())
             self._set_modified_info_dict()
         return resp, data
 
@@ -476,20 +479,19 @@ class Resource(UtilsMixin, BaseResource):
                 resp, data = self.put()
             else:
                 if self.create_method.lower() not in ('posta', 'put'):
-                    raise Exception(
-                        "You should use POSTA or PUT method to create new resources"  # noqa
-                    )
+                    raise InvalidMethodForCreate(self.create_method.lower())
                 resp, data = getattr(self, self.create_method.lower())()
-                if self.create_method.lower() == 'posta':
-                    if isinstance(data[0], Resource):
-                        # re-init the res object according to the returned data
-                        self.__init__(
-                            client=self.client,
-                            manager=self.manager,
-                            url=data[0].url,
-                            resource_id=data[0].id,
-                            info=data[0].representation
-                        )
+                if self.create_method.lower() == 'posta' and isinstance(
+                    data[0], Resource
+                ):
+                    # re-init the res object according to the returned data
+                    self.__init__(
+                        client=self.client,
+                        manager=self.manager,
+                        url=data[0].url,
+                        resource_id=data[0].id,
+                        info=data[0].representation,
+                    )
                 self._is_new = False
         else:
             resp, data = self.posta()
@@ -500,7 +502,7 @@ class Resource(UtilsMixin, BaseResource):
                     manager=self.manager,
                     url=data[0].url,
                     resource_id=data[0].id,
-                    info=data[0].representation
+                    info=data[0].representation,
                 )
 
         # self.set_loaded(False)   # Set to false in order to use lazy loading.
@@ -533,8 +535,11 @@ class Resource(UtilsMixin, BaseResource):
             return self.id == other.id
         try:
             return self._info == other._info and self.url == other.url
-        except Exception:
+        except Exception:  # noqa: BLE001 # ???: Unsure what exceptions can occur
             return False
+
+    def __hash__(self):
+        return hash(self.name)
 
     def is_loaded(self):
         return self._loaded
@@ -570,8 +575,7 @@ class Resource(UtilsMixin, BaseResource):
     @classmethod
     def set_base_url(cls, base):
         url = base
-        if url.endswith('/'):
-            url = url[:-1]
+        url = url.removesuffix('/')
         if not url.startswith('/'):
             url = '/' + url
         cls.base_url = url
@@ -584,8 +588,7 @@ class Resource(UtilsMixin, BaseResource):
         pass
 
 
-class BaseManager(object):
-
+class BaseManager:
     pass
 
 
@@ -598,6 +601,7 @@ class Manager(UtilsMixin, BaseManager):
     :param managed_object: The related resource object
     :param url: A resource or a resource collection's url
     """
+
     resource_class = Resource
     response_key = 'data'
     resource_type = ''
@@ -612,42 +616,48 @@ class Manager(UtilsMixin, BaseManager):
     def _get_data(self, response_body, method='', response=None):
         if not method:  # get or list
             if not response_body:
-                raise ResponseBodyMissingError()
+                raise ResponseBodyMissingError
             res_p = self.ResponseParser(response_body, self.resource_type)
             return res_p.get_representations()
-        elif method == POSTA:
+        if method == POSTA:
             if not response_body:
-                raise ResponseBodyMissingError()
+                raise ResponseBodyMissingError
             res_p = self.ResponseParser(response_body, self.resource_type)
             return res_p.get_posta_response_data()
-        else:
-            if response_body:
-                try:
-                    data = self._get_status_body(response_body)
-                except Exception:
-                    logger.debug(
-                        messages.CAN_NOT_GET_STATUS_BODY.format(
-                            method,
-                            self.resource_class.__name__
-                            )
-                        )
-                    data = response_body
-            elif response.status_code in (HTTP200, HTTP204):
-                data = messages.DEFAULT_SUCCESS_BODY_DICT
-            else:
-                res_id = ''
-                try:
-                    res_id = self.managed_object.id
-                except Exception:
-                    res_id = ''
-                data = json.loads(
-                    messages.DEFAULT_FAIL_BODY_JSON.format(
-                        action=method,
-                        res_class=self.resource_class.__name__,
-                        res_id=res_id
-                        )
+        if response_body:
+            try:
+                data = self._get_status_body(response_body)
+            except AttributeError:
+                logger.debug(
+                    messages.CAN_NOT_GET_STATUS_BODY.format(
+                        method, self.resource_class.__name__
                     )
-            return data
+                )
+                data = response_body
+            except Exception:  # noqa: BLE001 # ???: Unsure if other exceptions can occur
+                logger.debug(
+                    messages.CAN_NOT_GET_STATUS_BODY.format(
+                        method, self.resource_class.__name__
+                    )
+                )
+                data = response_body
+
+        elif response.status_code in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
+            data = messages.DEFAULT_SUCCESS_BODY_DICT
+        else:
+            res_id = ''
+            try:
+                res_id = self.managed_object.id
+            except Exception:  # noqa: BLE001 # ???: Unsure what exceptions can occur
+                res_id = ''
+            data = json.loads(
+                messages.DEFAULT_FAIL_BODY_JSON.format(
+                    action=method,
+                    res_class=self.resource_class.__name__,
+                    res_id=res_id,
+                )
+            )
+        return data
 
     def _get_status_body(self, response_body):
         res_p = self.ResponseParser(response_body, self.resource_type)
@@ -663,7 +673,7 @@ class Manager(UtilsMixin, BaseManager):
             resource_id = self.ResponseParser.get_resource_id_from_url(
                 url=resource_uri,
                 resource_type=self.resource_type,
-                )
+            )
         else:
             resource_id = None
         return self.resource_class(
@@ -671,7 +681,7 @@ class Manager(UtilsMixin, BaseManager):
             manager=self.__class__(self.client),
             url=resource_uri,
             resource_id=resource_id,
-            info=data
+            info=data,
         )
 
     def _get(self, resource_id='', url='', obj_class=None, **kwargs):
@@ -685,7 +695,7 @@ class Manager(UtilsMixin, BaseManager):
                     self.url += '/' + resource_id
                     new = True
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             new = True
@@ -694,15 +704,16 @@ class Manager(UtilsMixin, BaseManager):
 
         if not new:
             return resp, data
-        else:
-            if obj_class is None:
-                obj_class = self.resource_class
-            return obj_class(client=self.client,
-                             manager=self.__class__(self.client),
-                             url=self.url,
-                             info=data,
-                             parent=parent,
-                             loaded=True)
+        if obj_class is None:
+            obj_class = self.resource_class
+        return obj_class(
+            client=self.client,
+            manager=self.__class__(self.client),
+            url=self.url,
+            info=data,
+            parent=parent,
+            loaded=True,
+        )
 
     # if url and obj_class is not none, list the sub collection
     # of current resource.
@@ -713,7 +724,7 @@ class Manager(UtilsMixin, BaseManager):
                 self.url = self.managed_object.url
                 parent = self.managed_object.parent
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
         if body:
@@ -724,21 +735,25 @@ class Manager(UtilsMixin, BaseManager):
             obj_class = self.resource_class
         data = self._get_data(body)
 
-        return [obj_class(client=self.client,
-                          manager=self.__class__(self.client),
-                          url=self.url,
-                          parent=parent,
-                          info=res) for res in data if res]
+        return [
+            obj_class(
+                client=self.client,
+                manager=self.__class__(self.client),
+                url=self.url,
+                parent=parent,
+                info=res,
+            )
+            for res in data
+            if res
+        ]
 
     def _post(self, body, url=None):
         if not url:
             if self.managed_object is not None:
                 url = self.managed_object.url
             else:
-                raise URLNotSpecifiedError()
-        resp, res_body = self.client.post(url,
-                                          body=self._get_request_data(body)
-                                          )
+                raise URLNotSpecifiedError
+        resp, res_body = self.client.post(url, body=self._get_request_data(body))
         data = self._get_data(res_body, method=POST, response=resp)
 
         return resp, data
@@ -750,17 +765,16 @@ class Manager(UtilsMixin, BaseManager):
                 self.url = self.managed_object.url
                 post_body = body or self.managed_object.representation
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             post_body = body or self.managed_object.representation
         post_body = self.remove_None_fields_from_dict(post_body)
-        resp, body = self.client.post(self.url,
-                                      body=self._get_request_data(post_body)
-                                      )
+        resp, body = self.client.post(self.url, body=self._get_request_data(post_body))
         data = self._get_data(body, method=POSTA, response=resp)
         if not isinstance(data, list):
-            raise Exception("The parsed posta response data should be a list.")
+            msg = "The parsed posta response data should be a list."
+            raise TypeError(msg)
         res_list = []
         for s_data in data:
             res_data, res_url = s_data
@@ -768,9 +782,7 @@ class Manager(UtilsMixin, BaseManager):
                 res = res_data.get(self.ResponseParser.error_status_key)
             else:
                 res = self._return_new_resource_by_response_data(
-                    resp,
-                    res_data.get(self.ResponseParser.resource_data_key),
-                    res_url
+                    resp, res_data.get(self.ResponseParser.resource_data_key), res_url
                 )
             res_list.append(res)
         return resp, res_list
@@ -782,13 +794,11 @@ class Manager(UtilsMixin, BaseManager):
                 self.url = self.managed_object.url
                 put_body = body or self.managed_object.representation
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             put_body = body
-        resp, body = self.client.put(self.url,
-                                     body=self._get_request_data(put_body)
-                                     )
+        resp, body = self.client.put(self.url, body=self._get_request_data(put_body))
         data = self._get_data(body, method='PUT', response=resp)
         return resp, data
 
@@ -797,16 +807,17 @@ class Manager(UtilsMixin, BaseManager):
         if not url:
             if self.managed_object is not None:
                 self.url = self.managed_object.url
-                patch_body = body if body else \
-                    self.managed_object._get_modified_info_dict()
+                patch_body = (
+                    body if body else self.managed_object._get_modified_info_dict()
+                )
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
             patch_body = body
-        resp, body = self.client.patch(self.url,
-                                       body=self._get_request_data(patch_body)
-                                       )
+        resp, body = self.client.patch(
+            self.url, body=self._get_request_data(patch_body)
+        )
         data = self._get_data(body, method='PATCH', response=resp)
         return resp, data
 
@@ -815,7 +826,7 @@ class Manager(UtilsMixin, BaseManager):
             if self.managed_object is not None:
                 self.url = self.managed_object.url
             else:
-                raise URLNotSpecifiedError()
+                raise URLNotSpecifiedError
         else:
             self.url = url
         resp, body = self.client.delete(self.url)
@@ -827,12 +838,14 @@ class DefaultManager(Manager):
     """
     Default resource manager.
     """
+
     resource_class = Resource
     resource_type = 'default'
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
-        return self._get(resource_id=resource_id, url=url,
-                         obj_class=obj_class, **kwargs)
+        return self._get(
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
+        )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
         return self._list(url=url, obj_class=obj_class, body=body, **kwargs)

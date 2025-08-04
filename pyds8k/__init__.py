@@ -20,6 +20,7 @@ IBM DS8K CLI Client Module
 :module: pyds8k
 
 """
+
 PYDS8K_DEFAULT_LOGGER = "pyds8k"
 
 version_tuple = (1, 6, 0)

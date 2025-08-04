@@ -19,18 +19,12 @@ ALL = {
         'default': [
             {
                 'id': 'a',
-                'link': {
-                    'rel': 'self',
-                    'href': '/default/a'
-                },
+                'link': {'rel': 'self', 'href': '/default/a'},
             },
             {
                 'id': 'b',
-                'link': {
-                    'rel': 'self',
-                    'href': '/default/b'
-                },
-            }
+                'link': {'rel': 'self', 'href': '/default/b'},
+            },
         ]
     }
 }
@@ -38,13 +32,11 @@ ALL = {
 ONE = {
     'data': {
         'default': [
-            {'name': 'name_a',
-             'id': 'a',
-             'link': {
-                 'rel': 'self',
-                 'href': '/default/a'
-             },
-             }
+            {
+                'name': 'name_a',
+                'id': 'a',
+                'link': {'rel': 'self', 'href': '/default/a'},
+            }
         ]
     }
 }

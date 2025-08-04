@@ -14,59 +14,66 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
+
 import httpretty
-from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.systems import System, \
-    SystemManager
-from pyds8k.test.data import get_response_list_json_by_type, \
-    get_response_list_data_by_type
+import pytest
+
 from pyds8k.exceptions import OperationNotAllowed
+from pyds8k.resources.ds8k.v1.common.types import DS8K_SYSTEM
+from pyds8k.resources.ds8k.v1.systems import System, SystemManager
+from pyds8k.test.data import (
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
+from .base import TestDS8KWithConnect
 
 system_list_response = get_response_list_data_by_type(DS8K_SYSTEM)
 system_list_response_json = get_response_list_json_by_type(DS8K_SYSTEM)
 
 
 class TestSystem(TestDS8KWithConnect):
-
     def setUp(self):
-        super(TestSystem, self).setUp()
+        super().setUp()
         self.system = System(self.client, SystemManager(self.client))
 
     @httpretty.activate
     def test_get_system(self):
         url = '/systems'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=system_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=system_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         sys = self.system.get_system()
-        self.assertIsInstance(sys, System)
+        assert isinstance(sys, System)
         sys_data = system_list_response['data']['systems'][0]
         self._assert_equal_between_dict_and_resource(sys_data, sys)
 
     @httpretty.activate
     def test_not_allowed_operations(self):
         url = '/systems'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=system_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=system_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         sys = self.system.get_system()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.put()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.patch()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.posta()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.delete()
-        with self.assertRaises(OperationNotAllowed):
+        with pytest.raises(OperationNotAllowed):
             sys.update()
-        with self.assertRaises(OperationNotAllowed) as cm:
+        with pytest.raises(OperationNotAllowed) as cm:
             sys.save()
-        self.assertEqual(System.__name__, cm.exception.resource_name)
+        assert System.__name__ == cm.value.resource_name

@@ -14,67 +14,45 @@
 # limitations under the License.
 ##############################################################################
 
-ALL = {"server":
-       {
-           "status": "ok",
-           "code": "",
-           "message": "Operation done successfully."
-       },
-       "counts":
-       {
-           "data_counts": 2,
-           "total_counts": 2
-       },
-       "data":
-       {
-           "nodes":
-           [
-               {
-                   "id": "00",
-                   "link":
-                   {
-                       "rel": "self",
-                       "href": "https://localhost:8088/api/v1/nodes/00"
-                   },
-                   "state": "online"
-               },
-               {
-                   "id": "01",
-                   "link":
-                   {
-                       "rel": "self",
-                       "href": "https://localhost:8088/api/v1/nodes/01"
-                   },
-                   "state": "online"
-               }
-           ]
-       }}
+ALL = {
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 2, "total_counts": 2},
+    "data": {
+        "nodes": [
+            {
+                "id": "00",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/nodes/00",
+                },
+                "state": "online",
+            },
+            {
+                "id": "01",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/nodes/01",
+                },
+                "state": "online",
+            },
+        ]
+    },
+}
 
 
-ONE = {"server":
-       {
-           "status": "ok",
-           "code": "",
-           "message": "Operation done successfully."
-       },
-       "counts":
-       {
-           "data_counts": 1,
-           "total_counts": 1
-       },
-       "data":
-       {
-           "nodes":
-           [
-               {
-                   "id": "00",
-                   "link":
-                   {
-                       "rel": "self",
-                       "href": "https://localhost:8088/api/v1/nodes/00"
-                   },
-                   "state": "online"
-               }
-           ]
-        }
-       }
+ONE = {
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 1, "total_counts": 1},
+    "data": {
+        "nodes": [
+            {
+                "id": "00",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/nodes/00",
+                },
+                "state": "online",
+            }
+        ]
+    },
+}

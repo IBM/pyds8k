@@ -17,6 +17,7 @@
 """
 Resource Group interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
 
 from .common.base import Base, BaseManager
@@ -43,24 +44,17 @@ class ResourceGroupManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Resource Group resources.
     """
+
     resource_class = ResourceGroup
     resource_type = DS8K_RESOURCE_GROUP
 
     def get(self, resource_id='', url='', obj_class=None, **kwargs):
         return self._get(
-            resource_id=resource_id,
-            url=url,
-            obj_class=obj_class,
-            **kwargs
+            resource_id=resource_id, url=url, obj_class=obj_class, **kwargs
         )
 
     def list(self, url='', obj_class=None, body=None, **kwargs):
-        return self._list(
-            url=url,
-            obj_class=obj_class,
-            body=body,
-            **kwargs
-        )
+        return self._list(url=url, obj_class=obj_class, body=body, **kwargs)
 
     def posta(self, url='', body=None):
         return self._posta(url=url, body=body)

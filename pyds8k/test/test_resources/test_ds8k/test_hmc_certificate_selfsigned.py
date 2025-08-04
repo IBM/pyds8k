@@ -14,13 +14,18 @@
 # limitations under the License.
 ##############################################################################
 
-import httpretty
 import json
+from http import HTTPStatus
+
+import httpretty
 
 from pyds8k.dataParser.ds8k import RequestParser
-from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, \
-    DS8K_HMC_CERTIFICATE, \
-    DS8K_HMC_CERTIFICATE_SELFSIGNED
+from pyds8k.resources.ds8k.v1.common.types import (
+    DS8K_HMC,
+    DS8K_HMC_CERTIFICATE,
+    DS8K_HMC_CERTIFICATE_SELFSIGNED,
+)
+
 # from pyds8k.resources.ds8k.v1.hmc.certificate.selfsigned \
 #      import HmcCertificateSelfSigned
 from pyds8k.test.data import action_response, action_response_json
@@ -28,56 +33,52 @@ from pyds8k.test.test_resources.test_ds8k.base import TestDS8KWithConnect
 
 
 class TestHmcCertificateSelfsigned(TestDS8KWithConnect):
-
     def setUp(self):
-        super(TestHmcCertificateSelfsigned, self).setUp()
+        super().setUp()
 
     @httpretty.activate
     def test_create_hmc_selfsigned_certificate(self):
-        url = '/{}/{}/{}'.format(DS8K_HMC,
-                                 DS8K_HMC_CERTIFICATE,
-                                 DS8K_HMC_CERTIFICATE_SELFSIGNED
-                                 )
+        url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}/{DS8K_HMC_CERTIFICATE_SELFSIGNED}'
 
-        O = "IBM"  # noqa: E741
-        OU = "DS8000"
-        C = "US"
-        ST = "NY"
-        L = "Armok"
+        O = "IBM"  # noqa: E741, N806
+        OU = "DS8000"  # noqa: N806
+        C = "US"  # noqa: N806
+        ST = "NY"  # noqa: N806
+        L = "Armok"  # noqa: N806
         email = "ansible@fake_server.com"
         days = 1
 
         def _verify_request(request, uri, headers):
-            self.assertEqual(uri, self.domain + self.base_url + url)
+            assert uri == f"{self.domain}{self.base_url}{url}"
 
-            req = RequestParser({'O': O,
-                                 'OU': OU,
-                                 'C': C,
-                                 'ST': ST,
-                                 'L': L,
-                                 'email': email,
-                                 'days': days
-                                 })
+            req = RequestParser(
+                {
+                    'O': O,
+                    'OU': OU,
+                    'C': C,
+                    'ST': ST,
+                    'L': L,
+                    'email': email,
+                    'days': days,
+                }
+            )
             assert {
-                    **json.loads(request.body).get('request').get('params'),
-                    **req.get_request_data().get('request').get('params')
-                   } == json.loads(request.body).get('request').get('params')
-            return (201, headers, action_response_json)
+                **json.loads(request.body).get('request').get('params'),
+                **req.get_request_data().get('request').get('params'),
+            } == json.loads(request.body).get('request').get('params')
+            return (HTTPStatus.CREATED, headers, action_response_json)
 
-        httpretty.register_uri(httpretty.POST,
-                               self.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.POST,
+            self.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
         # Way 1
-        resp1 = self.system.create_hmc_selfsigned_certificate(O=O,
-                                                              OU=OU,
-                                                              C=C,
-                                                              ST=ST,
-                                                              L=L,
-                                                              email=email,
-                                                              days=days)
+        resp1 = self.system.create_hmc_selfsigned_certificate(
+            O=O, OU=OU, C=C, ST=ST, L=L, email=email, days=days
+        )
 
-        self.assertEqual(httpretty.POST, httpretty.last_request().method)
-        self.assertEqual(resp1[0].status_code, 201)
-        self.assertEqual(resp1[1], action_response['server'])
+        assert httpretty.last_request().method == httpretty.POST
+        assert resp1[0].status_code == HTTPStatus.CREATED
+        assert resp1[1] == action_response['server']

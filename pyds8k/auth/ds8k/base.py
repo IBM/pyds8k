@@ -20,8 +20,7 @@ AUTH_URL = '/tokens'
 DEFAULT_BASE_URL = ''
 
 
-class Auth(object):
-
+class Auth:
     base_url = DEFAULT_BASE_URL
     auth_url = AUTH_URL
 
@@ -29,7 +28,7 @@ class Auth(object):
         pass
 
     @classmethod
-    def authenticate(self, client):
+    def authenticate(cls, client):
         """
         The main authenticate method. Mandatory
         """
@@ -40,21 +39,19 @@ class Auth(object):
         if client.hostname:
             params['hmc1'] = client.hostname
         req_p = RequestParser(params)
-        _, body = client.post(self.get_auth_url(),
-                              body=req_p.get_request_data()
-                              )
+        _, body = client.post(cls.get_auth_url(), body=req_p.get_request_data())
         token = _get_data(body).get('token', '')
         if token:
             client.set_defaultHeaders('X-Auth-Token', token)
             # client.set_defaultQuerystrings('token', token)
 
     @classmethod
-    def get_auth_url(self):
+    def get_auth_url(cls):
         """
         Return the auth url. Mandatory
         """
 
-        return self.base_url + self.auth_url
+        return cls.base_url + cls.auth_url
 
 
 def _get_data(response_body):

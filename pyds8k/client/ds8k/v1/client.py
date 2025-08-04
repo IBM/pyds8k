@@ -14,17 +14,17 @@
 # limitations under the License.
 ##############################################################################
 from logging import getLogger
+
 from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.base import DefaultManager, Resource
 from pyds8k.httpclient import HTTPClient
-from pyds8k.base import Resource, DefaultManager
-from pyds8k.resources.ds8k.v1.systems import System, \
-    SystemManager
+from pyds8k.resources.ds8k.v1.systems import System, SystemManager
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 DEFAULT_PORT = 8452
 
 
-class Client(object):
+class Client:
     """
     Top-level object to access all the DS8K resources.
 
@@ -59,37 +59,48 @@ class Client(object):
         object: DS8000 REST-API Client
     """
 
-    def __init__(self, service_address, user, password,
-                 port=DEFAULT_PORT,
-                 hostname='',
-                 service_type='ds8k',
-                 service_version='v1',
-                 timeout=None,
-                 verify=True
-                 ):
+    def __init__(
+        self,
+        service_address,
+        user,
+        password,
+        port=DEFAULT_PORT,
+        hostname='',
+        service_type='ds8k',
+        service_version='v1',
+        timeout=None,
+        verify=True,
+    ):
         logger.info('================== logger is enabled ==================')
 
-        client = HTTPClient(service_address, user, password,
-                            port=port,
-                            hostname=hostname,
-                            service_type=service_type,
-                            service_version=service_version,
-                            timeout=timeout,
-                            verify=verify
-                            )
+        client = HTTPClient(
+            service_address,
+            user,
+            password,
+            port=port,
+            hostname=hostname,
+            service_type=service_type,
+            service_version=service_version,
+            timeout=timeout,
+            verify=verify,
+        )
 
         self.client = client
         self.resource = Resource(self.client, DefaultManager(self.client))
         self.system = System(self.client, SystemManager(self.client))
 
+    def _callable(self, k):
+        method = getattr(self.system, k)
+
+        if not callable(method):
+            raise TypeError(k)
+
+        return method
+
     def __getattr__(self, k):
         try:
             # if not self.system.is_loaded():
             #    self.system = self.system.get_system()
-            method = getattr(self.system, k)
-            if not callable(method):
-                raise AttributeError(k)
-            else:
-                return method
-        except Exception:
-            raise AttributeError(k)
+            return self._callable(k)
+        except Exception as exc:
+            raise AttributeError(k) from exc

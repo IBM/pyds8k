@@ -15,16 +15,17 @@
 ##############################################################################
 
 from datetime import datetime
-from . import types
-from pyds8k.messages import INVALID_TYPE
-from pyds8k.exceptions import IDMissingError, \
-    InvalidArgumentError
+
 from pyds8k.dateutil import LocalTimezone
+from pyds8k.exceptions import IDMissingError, InvalidArgumentError
+from pyds8k.messages import INVALID_TYPE
+
+from . import types
 
 FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 
 
-class RootBaseMixin(object):
+class RootBaseMixin:
     pass
 
 
@@ -36,7 +37,7 @@ class RootBaseMixin(object):
 #       lss and pprc do not have singular form.
 
 
-class RootSystemMixin(object):
+class RootSystemMixin:
     def get_systems(self):
         """
         Get DS8000 System Object
@@ -49,7 +50,7 @@ class RootSystemMixin(object):
         return self.all(types.DS8K_SYSTEM, rebuild_url=True).list()
 
 
-class RootNodeMixin(object):
+class RootNodeMixin:
     def get_nodes(self, node_id=None):
         """
         Get nodes
@@ -79,7 +80,7 @@ class RootNodeMixin(object):
         return self.one(types.DS8K_NODE, node_id, rebuild_url=True).get()
 
 
-class RootMarrayMixin(object):
+class RootMarrayMixin:
     def get_marrays(self, marray_id=None):
         """
         Get managed arrays
@@ -110,7 +111,7 @@ class RootMarrayMixin(object):
         return self.one(types.DS8K_MARRAY, marray_id, rebuild_url=True).get()
 
 
-class RootUserMixin(object):
+class RootUserMixin:
     def get_users(self, user_name=None):
         """
         Get users.
@@ -140,7 +141,7 @@ class RootUserMixin(object):
         return self.one(types.DS8K_USER, user_name, rebuild_url=True).get()
 
 
-class RootIOEnclosureMixin(object):
+class RootIOEnclosureMixin:
     def get_io_enclosures(self, enclosure_id=None):
         """
         Get IO Enclosures.
@@ -169,12 +170,10 @@ class RootIOEnclosureMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.io_enclosures.IOEnclosure`.
 
         """
-        return self.one(types.DS8K_IOENCLOSURE,
-                        enclosure_id,
-                        rebuild_url=True).get()
+        return self.one(types.DS8K_IOENCLOSURE, enclosure_id, rebuild_url=True).get()
 
 
-class RootEncryptionGroupMixin(object):
+class RootEncryptionGroupMixin:
     def get_encryption_groups(self, group_id=None):
         """
         Get Encryption Groups.
@@ -203,12 +202,10 @@ class RootEncryptionGroupMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.encryption_groups.EncryptionGroup`.
 
         """
-        return self.one(types.DS8K_ENCRYPTION_GROUP,
-                        group_id,
-                        rebuild_url=True).get()
+        return self.one(types.DS8K_ENCRYPTION_GROUP, group_id, rebuild_url=True).get()
 
 
-class RootPoolMixin(object):
+class RootPoolMixin:
     def get_pools(self, pool_id=None):
         """
         Get Extent Pools
@@ -238,65 +235,65 @@ class RootPoolMixin(object):
         return self.one(types.DS8K_POOL, pool_id, rebuild_url=True).get()
 
     def get_tserep_by_pool(self, pool_id):
-        return self.one(types.DS8K_POOL,
-                        pool_id,
-                        rebuild_url=True
-                        ).all(types.DS8K_TSEREP).get()
+        return (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_TSEREP)
+            .get()
+        )
 
     def get_eserep_by_pool(self, pool_id):
-        return self.one(types.DS8K_POOL,
-                        pool_id,
-                        rebuild_url=True
-                        ).all(types.DS8K_ESEREP).get()
+        return (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_ESEREP)
+            .get()
+        )
 
     def delete_tserep_by_pool(self, pool_id):
-        _, res = self.one(types.DS8K_POOL,
-                          pool_id,
-                          rebuild_url=True
-                          ).all(types.DS8K_TSEREP).delete()
+        _, res = (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_TSEREP)
+            .delete()
+        )
         return res
 
     def delete_eserep_by_pool(self, pool_id):
-        _, res = self.one(types.DS8K_POOL,
-                          pool_id,
-                          rebuild_url=True
-                          ).all(types.DS8K_ESEREP).delete()
+        _, res = (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_ESEREP)
+            .delete()
+        )
         return res
 
     def update_tserep_cap_by_pool(self, pool_id, cap, captype=''):
-        _, res = self.one(types.DS8K_POOL,
-                          pool_id,
-                          rebuild_url=True
-                          ).all(
-            types.DS8K_TSEREP
-        ).update({'cap': cap, 'captype': captype})
+        _, res = (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_TSEREP)
+            .update({'cap': cap, 'captype': captype})
+        )
         return res
 
     def update_eserep_cap_by_pool(self, pool_id, cap, captype=''):
-        _, res = self.one(types.DS8K_POOL,
-                          pool_id,
-                          rebuild_url=True
-                          ).all(
-            types.DS8K_ESEREP
-        ).update({'cap': cap, 'captype': captype})
+        _, res = (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_ESEREP)
+            .update({'cap': cap, 'captype': captype})
+        )
         return res
 
     def update_tserep_threshold_by_pool(self, pool_id, threshold):
-        _, res = self.one(types.DS8K_POOL,
-                          pool_id,
-                          rebuild_url=True
-                          ).all(
-            types.DS8K_TSEREP
-        ).update({'threshold': threshold})
+        _, res = (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_TSEREP)
+            .update({'threshold': threshold})
+        )
         return res
 
     def update_eserep_threshold_by_pool(self, pool_id, threshold):
-        _, res = self.one(types.DS8K_POOL,
-                          pool_id,
-                          rebuild_url=True
-                          ).all(
-            types.DS8K_ESEREP
-        ).update({'threshold': threshold})
+        _, res = (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_ESEREP)
+            .update({'threshold': threshold})
+        )
         return res
 
     def get_volumes_by_pool(self, pool_id):
@@ -311,13 +308,14 @@ class RootPoolMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
 
         """
-        return self.one(types.DS8K_POOL,
-                        pool_id,
-                        rebuild_url=True
-                        ).all(types.DS8K_VOLUME).list()
+        return (
+            self.one(types.DS8K_POOL, pool_id, rebuild_url=True)
+            .all(types.DS8K_VOLUME)
+            .list()
+        )
 
 
-class RootResourceGroupMixin(object):
+class RootResourceGroupMixin:
     def get_resource_groups(self, resource_group_id=None):
         """
         Get Resource Groups
@@ -347,9 +345,9 @@ class RootResourceGroupMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
 
         """
-        return self.one(types.DS8K_RESOURCE_GROUP,
-                        resource_group_id,
-                        rebuild_url=True).get()
+        return self.one(
+            types.DS8K_RESOURCE_GROUP, resource_group_id, rebuild_url=True
+        ).get()
 
     def delete_resource_group(self, resource_group_id):
         """
@@ -362,15 +360,16 @@ class RootResourceGroupMixin(object):
             tuple: tuple of DS8000 Server Response.
 
         """
-        return self.one(types.DS8K_RESOURCE_GROUP,
-                        resource_group_id,
-                        rebuild_url=True).delete()
+        return self.one(
+            types.DS8K_RESOURCE_GROUP, resource_group_id, rebuild_url=True
+        ).delete()
 
     def create_resource_group(
-            self,
-            label,
-            name='',
-            resource_group_id='',):
+        self,
+        label,
+        name='',
+        resource_group_id='',
+    ):
         """
         Create one Resource Group
 
@@ -385,24 +384,25 @@ class RootResourceGroupMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.resource_groups.ResourceGroup`.
 
         """
-        _, res = self.all(types.DS8K_RESOURCE_GROUP,
-                          rebuild_url=True
-                          ).posta({'label': label,
-                                   'id': resource_group_id,
-                                   'name': name,
-                                   }
-                                  )
+        _, res = self.all(types.DS8K_RESOURCE_GROUP, rebuild_url=True).posta(
+            {
+                'label': label,
+                'id': resource_group_id,
+                'name': name,
+            }
+        )
         return res
 
     def update_resource_group(
-            self,
-            resource_group_id,
-            label='',
-            name='',
-            cs_global='',
-            pass_global='',
-            gm_masters='',
-            gm_sessions=''):
+        self,
+        resource_group_id,
+        label='',
+        name='',
+        cs_global='',
+        pass_global='',
+        gm_masters='',
+        gm_sessions='',
+    ):
         """
         Update one Resource Group
 
@@ -425,21 +425,22 @@ class RootResourceGroupMixin(object):
             tuple: tuple of DS8000 Server Response.
 
         """
-        _, res = self.one(types.DS8K_RESOURCE_GROUP,
-                          resource_group_id,
-                          rebuild_url=True).update({
-                                'label': label,
-                                'name': name,
-                                'cs_global': cs_global,
-                                'pass_global': pass_global,
-                                'gm_masters': gm_masters,
-                                'gm_sessions': gm_sessions,
-                                }
-                            )
+        _, res = self.one(
+            types.DS8K_RESOURCE_GROUP, resource_group_id, rebuild_url=True
+        ).update(
+            {
+                'label': label,
+                'name': name,
+                'cs_global': cs_global,
+                'pass_global': pass_global,
+                'gm_masters': gm_masters,
+                'gm_sessions': gm_sessions,
+            }
+        )
         return res
 
 
-class RootVolumeMixin(object):
+class RootVolumeMixin:
     def get_volumes(self, volume_id=None):
         """
         Get Volumes
@@ -480,21 +481,20 @@ class RootVolumeMixin(object):
             tuple: tuple of DS8000 Server Response.
 
         """
-        _, res = self.one(types.DS8K_VOLUME,
-                          volume_id,
-                          rebuild_url=True).delete()
+        _, res = self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True).delete()
         return res
 
     def create_volume(
-            self,
-            name,
-            cap,
-            pool,
-            stgtype=types.DS8K_VOLUME_TYPE_FB,
-            captype=types.DS8K_CAPTYPE_GIB,
-            lss='',
-            tp='',
-            id=''):
+        self,
+        name,
+        cap,
+        pool,
+        stgtype=types.DS8K_VOLUME_TYPE_FB,
+        captype=types.DS8K_CAPTYPE_GIB,
+        lss='',
+        tp='',
+        id='',  # noqa: A002
+    ):
         """
         Create One Volume
 
@@ -518,32 +518,32 @@ class RootVolumeMixin(object):
         self._verify_type(captype, types.DS8K_CAPTYPES)
         self._verify_type(stgtype, types.DS8K_VOLUME_TYPES)
         self._verify_type(tp, types.DS8K_TPS)
-        _, res = self.all(types.DS8K_VOLUME,
-                          rebuild_url=True
-                          ).posta({'name': name,
-                                   'cap': cap,
-                                   'captype': captype,
-                                   'stgtype': stgtype,
-                                   'pool': pool,
-                                   'lss': lss,
-                                   'tp': tp,
-                                   'id': id
-                                   }
-                                  )
+        _, res = self.all(types.DS8K_VOLUME, rebuild_url=True).posta(
+            {
+                'name': name,
+                'cap': cap,
+                'captype': captype,
+                'stgtype': stgtype,
+                'pool': pool,
+                'lss': lss,
+                'tp': tp,
+                'id': id,
+            }
+        )
         return res
 
     def create_volumes(
-            self,
-            name_col,
-            cap,
-            pool,
-            name='',
-            quantity='',
-            stgtype=types.DS8K_VOLUME_TYPE_FB,
-            captype=types.DS8K_CAPTYPE_GIB,
-            lss='',
-            tp='',
-            ids=None
+        self,
+        name_col,
+        cap,
+        pool,
+        name='',
+        quantity='',
+        stgtype=types.DS8K_VOLUME_TYPE_FB,
+        captype=types.DS8K_CAPTYPE_GIB,
+        lss='',
+        tp='',
+        ids=None,
     ):
         """
         Create a group of volumes with different names
@@ -572,28 +572,28 @@ class RootVolumeMixin(object):
         self._verify_type(captype, types.DS8K_CAPTYPES)
         self._verify_type(stgtype, types.DS8K_VOLUME_TYPES)
         self._verify_type(tp, types.DS8K_TPS)
-        _, res = self.all(types.DS8K_VOLUME,
-                          rebuild_url=True
-                          ).posta({'name': name,
-                                   'namecol': name_col if name_col else None,
-                                   'quantity': quantity,
-                                   'cap': cap,
-                                   'captype': captype,
-                                   'stgtype': stgtype,
-                                   'pool': pool,
-                                   'lss': lss,
-                                   'tp': tp,
-                                   'ids': ids
-                                   }
-                                  )
+        _, res = self.all(types.DS8K_VOLUME, rebuild_url=True).posta(
+            {
+                'name': name,
+                'namecol': name_col if name_col else None,
+                'quantity': quantity,
+                'cap': cap,
+                'captype': captype,
+                'stgtype': stgtype,
+                'pool': pool,
+                'lss': lss,
+                'tp': tp,
+                'ids': ids,
+            }
+        )
         return res
 
     def create_alias_volumes(
-            self,
-            id,
-            ckd_base_ids,
-            quantity='',
-            alias_create_order='decrement'
+        self,
+        id,  # noqa: A002
+        ckd_base_ids,
+        quantity='',
+        alias_create_order='decrement',
     ):
         """
         Create ckd alias volumes for a list of base ckd volumes
@@ -613,20 +613,18 @@ class RootVolumeMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
 
         """
-        _, res = self.all(types.DS8K_VOLUME,
-                          rebuild_url=True
-                          ).posta({'id': id,
-                                   'quantity': quantity,
-                                   'alias': 'true',
-                                   'alias_create_order': alias_create_order,
-                                   'ckd_base_ids': ckd_base_ids
-                                   }
-                                  )
+        _, res = self.all(types.DS8K_VOLUME, rebuild_url=True).posta(
+            {
+                'id': id,
+                'quantity': quantity,
+                'alias': 'true',
+                'alias_create_order': alias_create_order,
+                'ckd_base_ids': ckd_base_ids,
+            }
+        )
         return res
 
-    def create_volume_ckd(self, name, cap, pool,
-                          captype='', lss='', tp='', id=''
-                          ):
+    def create_volume_ckd(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002
         """
         Create One CKD Volume
 
@@ -647,17 +645,17 @@ class RootVolumeMixin(object):
 
         """
         return self.create_volume(
-            name, cap, pool,
+            name,
+            cap,
+            pool,
             stgtype=types.DS8K_VOLUME_TYPE_CKD,
             captype=captype,
             lss=lss,
             tp=tp,
-            id=id
+            id=id,
         )
 
-    def create_volume_fb(self, name, cap, pool,
-                         captype='', lss='', tp='', id=''
-                         ):
+    def create_volume_fb(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002
         """
         Create One FB Volume
 
@@ -679,25 +677,27 @@ class RootVolumeMixin(object):
 
         """
         return self.create_volume(
-            name, cap, pool,
+            name,
+            cap,
+            pool,
             stgtype=types.DS8K_VOLUME_TYPE_FB,
             captype=captype,
             lss=lss,
             tp=tp,
-            id=id
+            id=id,
         )
 
     def create_volumes_with_same_prefix(
-            self,
-            name,
-            cap,
-            pool,
-            quantity='',
-            stgtype=types.DS8K_VOLUME_TYPE_FB,
-            captype=types.DS8K_CAPTYPE_GIB,
-            lss='',
-            tp='',
-            ids=None
+        self,
+        name,
+        cap,
+        pool,
+        quantity='',
+        stgtype=types.DS8K_VOLUME_TYPE_FB,
+        captype=types.DS8K_CAPTYPE_GIB,
+        lss='',
+        tp='',
+        ids=None,
     ):
         """
         Create a volume with a name or a group of
@@ -724,26 +724,28 @@ class RootVolumeMixin(object):
 
         """
         return self.create_volumes(
-            None, cap, pool,
+            None,
+            cap,
+            pool,
             name=name,
             quantity=quantity,
             stgtype=stgtype,
             captype=captype,
             lss=lss,
             tp=tp,
-            ids=ids
+            ids=ids,
         )
 
     def create_volumes_without_same_prefix(
-            self,
-            name_col,
-            cap,
-            pool,
-            stgtype=types.DS8K_VOLUME_TYPE_FB,
-            captype=types.DS8K_CAPTYPE_GIB,
-            lss='',
-            tp='',
-            ids=None
+        self,
+        name_col,
+        cap,
+        pool,
+        stgtype=types.DS8K_VOLUME_TYPE_FB,
+        captype=types.DS8K_CAPTYPE_GIB,
+        lss='',
+        tp='',
+        ids=None,
     ):
         """
         Create a group of volumes with specified names
@@ -765,28 +767,28 @@ class RootVolumeMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
         """
         if not isinstance(name_col, list):
-            raise ValueError(
-                INVALID_TYPE.format('list')
-            )
+            raise TypeError(INVALID_TYPE.format('list'))
         return self.create_volumes(
-            name_col, cap, pool,
+            name_col,
+            cap,
+            pool,
             stgtype=stgtype,
             captype=captype,
             lss=lss,
             tp=tp,
-            ids=ids
+            ids=ids,
         )
 
     def create_volumes_with_names(
-            self,
-            names,
-            cap,
-            pool,
-            stgtype=types.DS8K_VOLUME_TYPE_FB,
-            captype=types.DS8K_CAPTYPE_GIB,
-            lss='',
-            tp='',
-            ids=None
+        self,
+        names,
+        cap,
+        pool,
+        stgtype=types.DS8K_VOLUME_TYPE_FB,
+        captype=types.DS8K_CAPTYPE_GIB,
+        lss='',
+        tp='',
+        ids=None,
     ):
         """
         Create a group of volumes with specified names
@@ -808,16 +810,9 @@ class RootVolumeMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
         """
         if not isinstance(names, list):
-            raise ValueError(
-                INVALID_TYPE.format('list')
-            )
+            raise TypeError(INVALID_TYPE.format('list'))
         return self.create_volumes(
-            names, cap, pool,
-            stgtype=stgtype,
-            captype=captype,
-            lss=lss,
-            tp=tp,
-            ids=ids
+            names, cap, pool, stgtype=stgtype, captype=captype, lss=lss, tp=tp, ids=ids
         )
 
     def update_volume_rename(self, volume_id, new_name):
@@ -832,9 +827,9 @@ class RootVolumeMixin(object):
             object: :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
 
         """
-        _, res = self.one(types.DS8K_VOLUME,
-                          volume_id,
-                          rebuild_url=True).update({'name': new_name})
+        _, res = self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True).update(
+            {'name': new_name}
+        )
         return res
 
     def update_volume_extend(self, volume_id, new_size, captype=''):
@@ -849,9 +844,7 @@ class RootVolumeMixin(object):
             object: :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
 
         """
-        _, res = self.one(types.DS8K_VOLUME,
-                          volume_id,
-                          rebuild_url=True).update(
+        _, res = self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True).update(
             {'cap': new_size, 'captype': captype}
         )
         return res
@@ -867,9 +860,9 @@ class RootVolumeMixin(object):
             object: :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
 
         """
-        _, res = self.one(types.DS8K_VOLUME,
-                          volume_id,
-                          rebuild_url=True).update({'pool': new_pool})
+        _, res = self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True).update(
+            {'pool': new_pool}
+        )
         return res
 
     # def update_volume_map(self, volume_id, host):
@@ -879,7 +872,7 @@ class RootVolumeMixin(object):
     #    return res
 
 
-class RootIOPortMixin(object):
+class RootIOPortMixin:
     def get_ioports(self, port_id=None):
         """
         Get IO Ports
@@ -910,7 +903,7 @@ class RootIOPortMixin(object):
         return self.one(types.DS8K_IOPORT, port_id, rebuild_url=True).get()
 
 
-class RootHostPortMixin(object):
+class RootHostPortMixin:
     def get_host_ports(self, port_id=None):
         """
         Get Host Ports.
@@ -950,10 +943,7 @@ class RootHostPortMixin(object):
             tuple: A tuple of HTTP Response and DS8000 server message.
 
         """
-        _, res = self.one(types.DS8K_HOST_PORT,
-                          port_id,
-                          rebuild_url=True
-                          ).delete()
+        _, res = self.one(types.DS8K_HOST_PORT, port_id, rebuild_url=True).delete()
         return res
 
     def create_host_port(self, port_id, host_name):
@@ -969,9 +959,9 @@ class RootHostPortMixin(object):
 
         """
         # .create().save() is not a good way for DS8K.
-        _, res = self.all(types.DS8K_HOST_PORT,
-                          rebuild_url=True
-                          ).posta({'wwpn': port_id, 'host': host_name})
+        _, res = self.all(types.DS8K_HOST_PORT, rebuild_url=True).posta(
+            {'wwpn': port_id, 'host': host_name}
+        )
         return res
 
     def update_host_port_change_host(self, port_id, host_name):
@@ -986,14 +976,13 @@ class RootHostPortMixin(object):
             object: :py:class:`pyds8k.resources.ds8k.v1.host_ports.HostPort`.
 
         """
-        _, res = self.one(types.DS8K_HOST_PORT,
-                          port_id,
-                          rebuild_url=True
-                          ).update({'host': host_name})
+        _, res = self.one(types.DS8K_HOST_PORT, port_id, rebuild_url=True).update(
+            {'host': host_name}
+        )
         return res
 
 
-class RootHostMixin(object):
+class RootHostMixin:
     def get_hosts(self, host_name=None):
         """
         Get Hosts.
@@ -1033,10 +1022,11 @@ class RootHostMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.ioports.IOPort`.
 
         """
-        return self.one(types.DS8K_HOST,
-                        host_name,
-                        rebuild_url=True
-                        ).all(types.DS8K_IOPORT).list()
+        return (
+            self.one(types.DS8K_HOST, host_name, rebuild_url=True)
+            .all(types.DS8K_IOPORT)
+            .list()
+        )
 
     def get_host_ports_by_host(self, host_name):
         """
@@ -1050,10 +1040,11 @@ class RootHostMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.host_ports.HostPort`.
 
         """
-        return self.one(types.DS8K_HOST,
-                        host_name,
-                        rebuild_url=True
-                        ).all(types.DS8K_HOST_PORT).list()
+        return (
+            self.one(types.DS8K_HOST, host_name, rebuild_url=True)
+            .all(types.DS8K_HOST_PORT)
+            .list()
+        )
 
     def get_mappings_by_host(self, host_name):
         """
@@ -1067,10 +1058,11 @@ class RootHostMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.mappings.Volmap`.
 
         """
-        return self.one(types.DS8K_HOST,
-                        host_name,
-                        rebuild_url=True
-                        ).all(types.DS8K_VOLMAP).list()
+        return (
+            self.one(types.DS8K_HOST, host_name, rebuild_url=True)
+            .all(types.DS8K_VOLMAP)
+            .list()
+        )
 
     def get_mapping_by_host(self, host_name, lunid):
         """
@@ -1085,10 +1077,11 @@ class RootHostMixin(object):
             object: :py:class:`pyds8k.resources.ds8k.v1.mappings.Volmap`.
 
         """
-        return self.one(types.DS8K_HOST,
-                        host_name,
-                        rebuild_url=True
-                        ).one(types.DS8K_VOLMAP, lunid).get()
+        return (
+            self.one(types.DS8K_HOST, host_name, rebuild_url=True)
+            .one(types.DS8K_VOLMAP, lunid)
+            .get()
+        )
 
     def get_volumes_by_host(self, host_name):
         """
@@ -1119,10 +1112,7 @@ class RootHostMixin(object):
             tuple: tuple of DS8000 Server Response.
 
         """
-        _, res = self.one(types.DS8K_HOST,
-                          host_name,
-                          rebuild_url=True
-                          ).delete()
+        _, res = self.one(types.DS8K_HOST, host_name, rebuild_url=True).delete()
         return res
 
     def create_host(self, host_name, hosttype):
@@ -1138,45 +1128,50 @@ class RootHostMixin(object):
 
         """
         # .create().save() is not a good way for DS8K.
-        _, res = self.all(types.DS8K_HOST,
-                          rebuild_url=True
-                          ).posta({'name': host_name, 'hosttype': hosttype})
+        _, res = self.all(types.DS8K_HOST, rebuild_url=True).posta(
+            {'name': host_name, 'hosttype': hosttype}
+        )
         return res
 
     def update_host_add_ioports_all(self, host_name):
-        _, res = self.one(types.DS8K_HOST,
-                          host_name,
-                          rebuild_url=True
-                          ).update({'ioports': 'all'})
+        _, res = self.one(types.DS8K_HOST, host_name, rebuild_url=True).update(
+            {'ioports': 'all'}
+        )
         return res
 
     def update_host_rm_ioports_all(self, host_name):
-        _, res = self.one(types.DS8K_HOST,
-                          host_name,
-                          rebuild_url=True
-                          ).update({'ioports': []})
+        _, res = self.one(types.DS8K_HOST, host_name, rebuild_url=True).update(
+            {'ioports': []}
+        )
         return res
 
     def map_volume_to_host(self, host_name, volume_id, lunid=''):
-        post_data = {'mappings': [{lunid: volume_id}, ]} \
-            if lunid else {'volumes': [volume_id]}
-        _, res = self.one(types.DS8K_HOST,
-                          host_name,
-                          rebuild_url=True
-                          ).all(types.DS8K_VOLMAP).posta(
-            post_data
+        post_data = (
+            {
+                'mappings': [
+                    {lunid: volume_id},
+                ]
+            }
+            if lunid
+            else {'volumes': [volume_id]}
+        )
+        _, res = (
+            self.one(types.DS8K_HOST, host_name, rebuild_url=True)
+            .all(types.DS8K_VOLMAP)
+            .posta(post_data)
         )
         return res
 
     def unmap_volume_from_host(self, host_name, lunid):
-        _, res = self.one(types.DS8K_HOST,
-                          host_name,
-                          rebuild_url=True
-                          ).one(types.DS8K_VOLMAP, lunid).delete()
+        _, res = (
+            self.one(types.DS8K_HOST, host_name, rebuild_url=True)
+            .one(types.DS8K_VOLMAP, lunid)
+            .delete()
+        )
         return res
 
 
-class RootLSSMixin(object):
+class RootLSSMixin:
     def get_lss(self, lss_id=None, lss_type=''):
         """
         Get LSS
@@ -1193,12 +1188,8 @@ class RootLSSMixin(object):
             return self.get_lss_by_id(lss_id)
         if not lss_type:
             return self.all(types.DS8K_LSS, rebuild_url=True).list()
-        elif str(lss_type) not in types.DS8K_VOLUME_TYPES:
-            raise ValueError(
-                INVALID_TYPE.format(
-                    ', '.join(types.DS8K_VOLUME_TYPES)
-                )
-            )
+        if str(lss_type) not in types.DS8K_VOLUME_TYPES:
+            raise ValueError(INVALID_TYPE.format(', '.join(types.DS8K_VOLUME_TYPES)))
         return self.all(types.DS8K_LSS, rebuild_url=True).list(
             params={'type': lss_type}
         )
@@ -1228,17 +1219,19 @@ class RootLSSMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.volumes.Volume`.
 
         """
-        return self.one(types.DS8K_LSS,
-                        lss_id,
-                        rebuild_url=True
-                        ).all(types.DS8K_VOLUME).list()
+        return (
+            self.one(types.DS8K_LSS, lss_id, rebuild_url=True)
+            .all(types.DS8K_VOLUME)
+            .list()
+        )
 
     def create_lss_ckd(
-            self,
-            lss_id=None,
-            lss_type=types.DS8K_VOLUME_TYPE_CKD,
-            lcu_type=types.DS8K_LCU_TYPE_3990_6,
-            ss_id=None):
+        self,
+        lss_id=None,
+        lss_type=types.DS8K_VOLUME_TYPE_CKD,
+        lcu_type=types.DS8K_LCU_TYPE_3990_6,
+        ss_id=None,
+    ):
         """
         Create CKD LSS
 
@@ -1254,15 +1247,12 @@ class RootLSSMixin(object):
         """
         self._verify_type(lss_type, types.DS8K_LSS_TYPES)
         self._verify_type(lcu_type, types.DS8K_LCU_TYPES)
-        _, res = self.all(
-            types.DS8K_LSS,
-            rebuild_url=True
-        ).posta(
+        _, res = self.all(types.DS8K_LSS, rebuild_url=True).posta(
             {
                 'id': lss_id,
                 'type': lss_type,
                 'sub_system_identifier': ss_id,
-                'ckd_base_cu_type': lcu_type
+                'ckd_base_cu_type': lcu_type,
             }
         )
         return res
@@ -1281,7 +1271,7 @@ class RootLSSMixin(object):
         return self.one(types.DS8K_LSS, lss_id, rebuild_url=True).delete()
 
 
-class RootFlashCopyMixin(object):
+class RootFlashCopyMixin:
     def get_flashcopies(self, volume_id=None):
         """
         Get Flash Copies. Deprecated after R8.
@@ -1328,9 +1318,11 @@ class RootFlashCopyMixin(object):
             :py:class:`pyds8k.resources.ds8k.v1.flashcopy.FlashCopy`.
 
         """
-        return self.one(types.DS8K_VOLUME,
-                        volume_id,
-                        rebuild_url=True).all(types.DS8K_FLASHCOPY).list()
+        return (
+            self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True)
+            .all(types.DS8K_FLASHCOPY)
+            .list()
+        )
 
     def get_cs_flashcopies(self, fcid=None):
         """
@@ -1344,12 +1336,15 @@ class RootFlashCopyMixin(object):
 
         """
         if fcid:
-            return self.one('{}.{}'.format(
-                types.DS8K_COPY_SERVICE_PREFIX,
-                types.DS8K_CS_FLASHCOPY), fcid, rebuild_url=True).get()
-        return self.all('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPY), rebuild_url=True).list()
+            return self.one(
+                f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
+                fcid,
+                rebuild_url=True,
+            ).get()
+        return self.all(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
+            rebuild_url=True,
+        ).list()
 
     def get_cs_flashcopy(self, fcid=None):
         """
@@ -1364,28 +1359,28 @@ class RootFlashCopyMixin(object):
         """
         return self.get_cs_flashcopies(fcid)
 
-    def create_cs_flashcopy(self, volume_pairs, options=[]):
+    def create_cs_flashcopy(self, volume_pairs, options=None):
         """
         Create Copy Service FlashCopy
 
         Args:
             volume_pairs (list):
             [{"source_volume": 0000,"target_volume": 1100},..]
-            options (list): Options.
+            options (list): Options. Default is [].
 
         Returns:
             object:
             :py:class:`pyds8k.resources.ds8k.v1.cs.flashcopies.FlashCopy`.
 
         """
+        if options is None:
+            options = []
         for option in options:
             self._verify_type(option, types.DS8K_FC_OPTIONS)
-        _, res = self.all('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPY),
-            rebuild_url=True).posta({"volume_pairs": volume_pairs,
-                                     "options": options
-                                     })
+        _, res = self.all(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
+            rebuild_url=True,
+        ).posta({"volume_pairs": volume_pairs, "options": options})
         return res
 
     def delete_cs_flashcopy(self, flashcopy_id):
@@ -1399,15 +1394,15 @@ class RootFlashCopyMixin(object):
             tuple: A tuple of DS8000 RESTAPI server response.
 
         """
-        _, res = self.one('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPY),
+        _, res = self.one(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
             flashcopy_id,
-            rebuild_url=True).delete()
+            rebuild_url=True,
+        ).delete()
         return res
 
 
-class RootPPRCMixin(object):
+class RootPPRCMixin:
     def get_pprc(self, pprc_id=None):
         """
         Get PPRC.
@@ -1434,9 +1429,11 @@ class RootPPRCMixin(object):
             list: A list of :py:class:`pyds8k.resources.ds8k.v1.pprc.PPRC`.
 
         """
-        return self.one(types.DS8K_VOLUME,
-                        volume_id,
-                        rebuild_url=True).all(types.DS8K_PPRC).list()
+        return (
+            self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True)
+            .all(types.DS8K_PPRC)
+            .list()
+        )
 
     def get_cs_pprcs(self, pprc_id=None):
         """
@@ -1451,9 +1448,10 @@ class RootPPRCMixin(object):
         """
         if pprc_id:
             return self.get_cs_pprc(pprc_id)
-        return self.all('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_PPRC), rebuild_url=True).list()
+        return self.all(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
+            rebuild_url=True,
+        ).list()
 
     def get_cs_pprc(self, pprc_id):
         """
@@ -1466,12 +1464,14 @@ class RootPPRCMixin(object):
             object: :py:class:`pyds8k.resources.ds8k.v1.cs.pprcs.PPRC`.
 
         """
-        return self.one('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_PPRC), pprc_id, rebuild_url=True).get()
+        return self.one(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
+            pprc_id,
+            rebuild_url=True,
+        ).get()
 
 
-class RootHMCMixin(object):
+class RootHMCMixin:
     def restart_hmc(self):
         """
         Restart the Hardware Management Console.
@@ -1479,11 +1479,21 @@ class RootHMCMixin(object):
         Returns:
             tuple: tuple of HTTP Response and DS8000 server message.
         """
-        return self.all('{}.{}'.format(types.DS8K_HMC, types.DS8K_HMC_RESTART),
-                        rebuild_url=True).post(body=None)
+        return self.all(
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_RESTART}', rebuild_url=True
+        ).post(body=None)
 
-    def create_hmc_csr(self, O=None, OU=None, C=None, ST=None,  # noqa: E741
-                       L=None, days=365, email=None, force=True):
+    def create_hmc_csr(
+        self,
+        O=None,  # noqa: E741, N803
+        OU=None,  # noqa: N803
+        C=None,  # noqa: N803
+        ST=None,  # noqa: N803
+        L=None,  # noqa: N803
+        days=365,
+        email=None,
+        force=True,
+    ):
         """
         Create a Certificate Signing Request
             for the Hardware Management Console
@@ -1511,27 +1521,38 @@ class RootHMCMixin(object):
             str: The PEM formatted CSR.
         """
 
-        res, _ = self.all('{}.{}.{}'.format(types.DS8K_HMC,
-                                            types.DS8K_HMC_CERTIFICATE,
-                                            types.DS8K_HMC_CERTIFICATE_CSR),
-                          rebuild_url=True).post({"O": O,
-                                                  "OU": OU,
-                                                  "C": C,
-                                                  "ST": ST,
-                                                  "L": L,
-                                                  "days": days,
-                                                  "email": email,
-                                                  "force": str(force)
-                                                  })
+        res, _ = self.all(
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE_CSR}',
+            rebuild_url=True,
+        ).post(
+            {
+                "O": O,
+                "OU": OU,
+                "C": C,
+                "ST": ST,
+                "L": L,
+                "days": days,
+                "email": email,
+                "force": str(force),
+            }
+        )
 
         # CAVEAT: The certificate is directly returned in the response body.
         # Code expects all responses to be json, thus None is returned as the
         # body result. Get it directly from the response.
         return res.text
 
-    def create_hmc_selfsigned_certificate(self, O=None, OU=None,  # noqa: E741
-                                          C=None, ST=None, L=None, days=365,
-                                          email=None, restart=False):
+    def create_hmc_selfsigned_certificate(
+        self,
+        O=None,  # noqa: E741, N803
+        OU=None,  # noqa: N803
+        C=None,  # noqa: N803
+        ST=None,  # noqa: N803
+        L=None,  # noqa: N803
+        days=365,
+        email=None,
+        restart=False,
+    ):
         """
         Create a Self-signed Certificate for the Hardware Management Console
 
@@ -1558,18 +1579,20 @@ class RootHMCMixin(object):
         """
 
         return self.all(
-            '{}.{}.{}'.format(types.DS8K_HMC,
-                              types.DS8K_HMC_CERTIFICATE,
-                              types.DS8K_HMC_CERTIFICATE_SELFSIGNED),
-            rebuild_url=True).post({"O": O,
-                                    "OU": OU,
-                                    "C": C,
-                                    "ST": ST,
-                                    "L": L,
-                                    "days": days,
-                                    "email": email,
-                                    "restart": str(restart)
-                                    })
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE_SELFSIGNED}',
+            rebuild_url=True,
+        ).post(
+            {
+                "O": O,
+                "OU": OU,
+                "C": C,
+                "ST": ST,
+                "L": L,
+                "days": days,
+                "email": email,
+                "restart": str(restart),
+            }
+        )
 
     def upload_hmc_signed_certificate(self, certificate):
         """
@@ -1588,30 +1611,30 @@ class RootHMCMixin(object):
         # not ds8k.v1.hmc.certificate because the design uses meta classes to
         # build the urls. It didn't expect calls to object in /object/objects?
         # Force to match object.object.
-        return self.all('{}.{}.{}'.format(types.DS8K_HMC,
-                                          types.DS8K_HMC_CERTIFICATE,
-                                          types.DS8K_HMC_CERTIFICATE),
-                        rebuild_url=True).post(body=certificate)
+        return self.all(
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE}',
+            rebuild_url=True,
+        ).post(body=certificate)
 
 
-class RootEventMixin(object):
-    def get_events(self, evt_id=None, evt_filter={}):
+class RootEventMixin:
+    def get_events(self, evt_id=None, evt_filter=None):
         """
         Get Events.
 
         Args:
             evt_id (str): id of the event. Get all if None.
-            evt_filter (dict): predefined filters.
+            evt_filter (dict): predefined filters. Default is {}.
 
         Returns:
             list: A list of :py:class:`pyds8k.resources.ds8k.v1.events.Event`.
 
         """
+        if evt_filter is None:
+            evt_filter = {}
         if evt_id:
             return self.get_event(evt_id)
-        return self.all(types.DS8K_EVENT,
-                        rebuild_url=True
-                        ).list(params=evt_filter)
+        return self.all(types.DS8K_EVENT, rebuild_url=True).list(params=evt_filter)
 
     def get_event(self, evt_id):
         """
@@ -1626,13 +1649,14 @@ class RootEventMixin(object):
         """
         return self.one(types.DS8K_EVENT, evt_id, rebuild_url=True).get()
 
-    def get_events_by_filter(self,
-                             warning=None,
-                             error=None,
-                             info=None,
-                             before=None,
-                             after=None,
-                             ):
+    def get_events_by_filter(
+        self,
+        warning=None,
+        error=None,
+        info=None,
+        before=None,
+        after=None,
+    ):
         """
         Get Events by filters.
 
@@ -1648,59 +1672,62 @@ class RootEventMixin(object):
 
         """
         severity = []
-        for k, v in {'warning': warning,
-                     'error': error,
-                     'info': info,
-                     }.items():
+        for k, v in {
+            'warning': warning,
+            'error': error,
+            'info': info,
+        }.items():
             if v:
                 severity.append(k)
 
         evt_filter = {}
         if severity:
             evt_filter['severity'] = ','.join(severity)
-        for k, v in {'before': before,
-                     'after': after,
-                     }.items():
+        for k, v in {
+            'before': before,
+            'after': after,
+        }.items():
             if v:
                 if not isinstance(v, datetime):
-                    raise InvalidArgumentError(
-                        'before/after must be an datetime instance.'
-                    )
-                dttz = datetime(year=v.year,
-                                month=v.month,
-                                day=v.day,
-                                hour=v.hour,
-                                minute=v.minute,
-                                second=v.second,
-                                tzinfo=LocalTimezone(),
-                                )
+                    msg = 'before/after must be an datetime instance.'
+                    raise InvalidArgumentError(msg)
+                dttz = datetime(
+                    year=v.year,
+                    month=v.month,
+                    day=v.day,
+                    hour=v.hour,
+                    minute=v.minute,
+                    second=v.second,
+                    tzinfo=LocalTimezone(),
+                )
                 evt_filter[k] = dttz.strftime(FORMAT)
         return self.get_events(evt_filter=evt_filter)
 
 
-class RootResourceMixin(RootSystemMixin,
-                        RootHMCMixin,
-                        RootFlashCopyMixin,
-                        RootPPRCMixin,
-                        RootNodeMixin,
-                        RootMarrayMixin,
-                        RootUserMixin,
-                        RootIOEnclosureMixin,
-                        RootEncryptionGroupMixin,
-                        RootEventMixin,
-                        RootPoolMixin,
-                        RootResourceGroupMixin,
-                        RootVolumeMixin,
-                        RootLSSMixin,
-                        RootIOPortMixin,
-                        RootHostPortMixin,
-                        RootHostMixin,
-                        RootBaseMixin
-                        ):
+class RootResourceMixin(
+    RootSystemMixin,
+    RootHMCMixin,
+    RootFlashCopyMixin,
+    RootPPRCMixin,
+    RootNodeMixin,
+    RootMarrayMixin,
+    RootUserMixin,
+    RootIOEnclosureMixin,
+    RootEncryptionGroupMixin,
+    RootEventMixin,
+    RootPoolMixin,
+    RootResourceGroupMixin,
+    RootVolumeMixin,
+    RootLSSMixin,
+    RootIOPortMixin,
+    RootHostPortMixin,
+    RootHostMixin,
+    RootBaseMixin,
+):
     pass
 
 
-class VolumeMixin(object):
+class VolumeMixin:
     def get_volumes(self, volume_id=None):
         """
         Get Volumes for the Caller Object.
@@ -1716,7 +1743,7 @@ class VolumeMixin(object):
         if volume_id:
             return self.get_volume(volume_id)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         volumes = self.all(types.DS8K_VOLUME).list()
         self._start_updating()
         setattr(self, types.DS8K_VOLUME, volumes)
@@ -1736,11 +1763,11 @@ class VolumeMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_VOLUME, volume_id).get()
 
 
-class FCPortMixin(object):
+class FCPortMixin:
     def get_ioports(self, port_id=None):
         """
         Get IO Ports for the Caller Object.
@@ -1756,7 +1783,7 @@ class FCPortMixin(object):
         if port_id:
             return self.get_ioport(port_id)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         ioports = self.all(types.DS8K_IOPORT).list()
         self._start_updating()
         setattr(self, types.DS8K_IOPORT, ioports)
@@ -1775,11 +1802,11 @@ class FCPortMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_IOPORT, port_id).get()
 
 
-class HostPortMixin(object):
+class HostPortMixin:
     def get_host_ports(self, port_id=None):
         """
         Get Host Ports for the Caller Object.
@@ -1795,7 +1822,7 @@ class HostPortMixin(object):
         if port_id:
             return self.get_host_port(port_id)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         host_ports = self.all(types.DS8K_HOST_PORT).list()
         self._start_updating()
         setattr(self, types.DS8K_HOST_PORT, host_ports)
@@ -1814,11 +1841,11 @@ class HostPortMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_HOST_PORT, port_id).get()
 
 
-class FlashCopyMixin(object):
+class FlashCopyMixin:
     def get_flashcopies(self, fcid=None):
         """
         Get Flash Copies for the Caller Object.
@@ -1832,7 +1859,7 @@ class FlashCopyMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if fcid:
             return self.one(types.DS8K_FLASHCOPY, fcid).get()
         flashcopies = self.all(types.DS8K_FLASHCOPY).list()
@@ -1867,14 +1894,15 @@ class FlashCopyMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if fcid:
-            return self.one('{}.{}'.format(
-                types.DS8K_COPY_SERVICE_PREFIX,
-                types.DS8K_CS_FLASHCOPY), fcid).get()
-        flashcopies = self.all('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_FLASHCOPY)).list()
+            return self.one(
+                f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}',
+                fcid,
+            ).get()
+        flashcopies = self.all(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_FLASHCOPY}'
+        ).list()
         self._start_updating()
         setattr(self, types.DS8K_CS_FLASHCOPY, flashcopies)
         self._stop_updating()
@@ -1895,7 +1923,7 @@ class FlashCopyMixin(object):
         return self.get_cs_flashcopies(fcid)
 
 
-class PPRCMixin(object):
+class PPRCMixin:
     def get_pprc(self, pprc_id=None):
         """
         Get PPRC for the Caller Object.
@@ -1908,7 +1936,7 @@ class PPRCMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         if pprc_id:
             return self.one(types.DS8K_PPRC, pprc_id).get()
         pprc = self.all(types.DS8K_PPRC).list()
@@ -1932,13 +1960,15 @@ class PPRCMixin(object):
             raise IDMissingError
         if pprc_id:
             return self.get_cs_pprc(pprc_id)
-        pprcs = self.all('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_PPRC)).list()
+        pprcs = self.all(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}'
+        ).list()
         self._start_updating()
-        setattr(self, '{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_PPRC), pprcs)
+        setattr(
+            self,
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}',
+            pprcs,
+        )
         self._stop_updating()
         return pprcs
 
@@ -1955,12 +1985,12 @@ class PPRCMixin(object):
         """
         if not self.id:
             raise IDMissingError
-        return self.one('{}.{}'.format(
-            types.DS8K_COPY_SERVICE_PREFIX,
-            types.DS8K_CS_PPRC), pprc_id).get()
+        return self.one(
+            f'{types.DS8K_COPY_SERVICE_PREFIX}.{types.DS8K_CS_PPRC}', pprc_id
+        ).get()
 
 
-class VolmapMixin(object):
+class VolmapMixin:
     def get_mappings(self, lunid=None):
         """
         Get Mappings of the Volume by Volume id for the Caller Object.
@@ -1976,7 +2006,7 @@ class VolmapMixin(object):
         if lunid:
             return self.get_mapping(lunid)
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         mappings = self.all(types.DS8K_VOLMAP).list()
         self._start_updating()
         setattr(self, types.DS8K_VOLMAP, mappings)
@@ -1988,14 +2018,14 @@ class VolmapMixin(object):
         Get the Mapping of the Volume by Volume id for the Caller Object.
 
         Args:
-            lunid (str): Require. id of the volume.
+            lunid (str): Required. id of the volume.
 
         Returns:
             object: :py:class:`pyds8k.resources.ds8k.v1.mappings.Volmap`.
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.one(types.DS8K_VOLMAP, lunid).get()
 
     def delete_mapping(self, lunid):
@@ -2003,24 +2033,24 @@ class VolmapMixin(object):
         Delete the Mapping of the Volume by Volume id for the Caller Object.
 
         Args:
-            lunid (str): Require. id of the volume.
+            lunid (str): Required. id of the volume.
 
         Returns:
             tuple: tuple of DS8000 RESTAPI Server Response.
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         _, res = self.one(types.DS8K_VOLMAP, lunid).delete()
         return res
 
-    def create_mappings(self, volumes=[], mappings=[]):
+    def create_mappings(self, volumes=None, mappings=None):
         """
         Create the Mapping of the Volume by Volume id for the Caller Object.
 
         Args:
-            volumes (list): Require. volume ids.
-            mappings (list): Required. mappings.
+            volumes (list): Required. volume ids. Default is [].
+            mappings (list): Required. mappings. Default is [].
 
         Returns:
             list: A list of
@@ -2028,7 +2058,11 @@ class VolmapMixin(object):
 
         """
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
+        if volumes is None:
+            volumes = []
+        if mappings is None:
+            mappings = []
         if volumes:
             _, res = self.all(types.DS8K_VOLMAP).posta({'volumes': volumes})
         else:

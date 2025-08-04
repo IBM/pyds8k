@@ -17,36 +17,39 @@
 """
 PPRC interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
+
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_PPRC
-from .volumes import Volume, VolumeManager
 from .systems import System, SystemManager
+from .volumes import Volume, VolumeManager
 
 
 class PPRC(Base, metaclass=ResourceMeta):
     resource_type = DS8K_PPRC
     # id_field = 'id'
-    _template = {'id': '',
-                 'type': '',
-                 'state': '',
-                 'targetsystem': '',
-                 'sourcevolume': '',
-                 'targetvolume': '',
-                 }
+    _template = {
+        'id': '',
+        'type': '',
+        'state': '',
+        'targetsystem': '',
+        'sourcevolume': '',
+        'targetvolume': '',
+    }
 
-    related_resource = {'_sourcevolume': (Volume, VolumeManager),
-                        '_targetvolume': (Volume, VolumeManager),
-                        '_targetsystem': (System, SystemManager),
-                        }
+    related_resource = {
+        '_sourcevolume': (Volume, VolumeManager),
+        '_targetvolume': (Volume, VolumeManager),
+        '_targetsystem': (System, SystemManager),
+    }
 
     def _add_details(self, info, force=False):
-        super(PPRC, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
         self._id = self.representation['id'] = '{}:{}'.format(
-            info['sourcevolume']['id'],
-            info['targetvolume']['id']
+            info['sourcevolume']['id'], info['targetvolume']['id']
         )
 
     # def __repr__(self):
@@ -57,5 +60,6 @@ class PPRCManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage PPRC resources.
     """
+
     resource_class = PPRC
     resource_type = DS8K_PPRC

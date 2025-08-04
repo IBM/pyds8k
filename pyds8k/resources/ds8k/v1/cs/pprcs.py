@@ -17,30 +17,33 @@
 """
 advanced PPRC interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
-from ..common.base import Base, ReadOnlyManager
-from ..common.types import DS8K_CS_PPRC
-from ..volumes import Volume, VolumeManager
-from ..systems import System, SystemManager
+from pyds8k.resources.ds8k.v1.common.base import Base, ReadOnlyManager
+from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_PPRC
+from pyds8k.resources.ds8k.v1.systems import System, SystemManager
+from pyds8k.resources.ds8k.v1.volumes import Volume, VolumeManager
 
 
 class PPRC(Base, metaclass=ResourceMeta):
     resource_type = DS8K_CS_PPRC
 
-    _template = {'id': '',
-                 'type': '',
-                 'state': '',
-                 'source_system': '',
-                 'target_system': '',
-                 'source_volume': '',
-                 'target_volume': '',
-                 }
+    _template = {
+        'id': '',
+        'type': '',
+        'state': '',
+        'source_system': '',
+        'target_system': '',
+        'source_volume': '',
+        'target_volume': '',
+    }
 
-    related_resource = {'_source_volume': (Volume, VolumeManager),
-                        '_source_system': (System, SystemManager),
-                        '_target_volume': (Volume, VolumeManager),
-                        '_target_system': (System, SystemManager),
-                        }
+    related_resource = {
+        '_source_volume': (Volume, VolumeManager),
+        '_source_system': (System, SystemManager),
+        '_target_volume': (Volume, VolumeManager),
+        '_target_system': (System, SystemManager),
+    }
 
     def _update_volume_info(self, info):
         # Handle for bug in DS8000 RESTful API /api/v1/cs/pprcs:
@@ -55,12 +58,13 @@ class PPRC(Base, metaclass=ResourceMeta):
         self._start_updating()
         self._update_volume_info(info)
         self._stop_updating()
-        super(PPRC, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
 
 
 class PPRCManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage advanced PPRC resources.
     """
+
     resource_class = PPRC
     resource_type = DS8K_CS_PPRC

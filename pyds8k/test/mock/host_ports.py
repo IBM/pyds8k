@@ -15,102 +15,98 @@
 ##############################################################################
 
 ALL = {
-  "server": {
-    "status": "ok",
-    "code": "CMUC00183I",
-    "message": "Operation done successfully."
-  },
-  "counts": {
-    "data_counts": 2,
-    "total_counts": 2
-  },
-  "data": {
-    "host_ports": [
-      {
-        "wwpn": "210000E08B10A95C",
-        "link": {
-          "rel": "self",
-          "href": "https://localhost:8088/api/v1/host_ports/210000E08B10A95C"
-        },
-        "state": "logged in",
-        "hosttype": "VMware",
-        "addrdiscovery": "lunpolling",
-        "lbs": "512",
-        "host": {
-                 'name': 'host1',
-                 'link': {
-                          'rel': 'self',
-                          'href': 'https://localhost:8088/api/v1/hosts/host1'
-                          },
-                 },
-        "ioport": {
-                 'id': 'I0200',
-                 'link': {
-                          'rel': 'self',
-                          'href': 'https://localhost:8088/api/v1/ioports/I0200'
-                          },
-                 },
-      },
-      {
-        "wwpn": "210000E08B13D0BF",
-        "link": {
-          "rel": "self",
-          "href": "https://localhost:8088/api/v1/host_ports/210000E08B13D0BF"
-        },
-        "state": "logged out",
-        "hosttype": "VMware",
-        "addrdiscovery": "lunpolling",
-        "lbs": "512",
-        "host": {
-                 'name': 'host1',
-                 'link': {
-                          'rel': 'self',
-                          'href': 'https://localhost:8088/api/v1/hosts/host1'
-                          },
-                 },
-        "ioport": "",
-      }
-    ]
-  }
+    "server": {
+        "status": "ok",
+        "code": "CMUC00183I",
+        "message": "Operation done successfully.",
+    },
+    "counts": {"data_counts": 2, "total_counts": 2},
+    "data": {
+        "host_ports": [
+            {
+                "wwpn": "210000E08B10A95C",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/host_ports/210000E08B10A95C",
+                },
+                "state": "logged in",
+                "hosttype": "VMware",
+                "addrdiscovery": "lunpolling",
+                "lbs": "512",
+                "host": {
+                    'name': 'host1',
+                    'link': {
+                        'rel': 'self',
+                        'href': 'https://localhost:8088/api/v1/hosts/host1',
+                    },
+                },
+                "ioport": {
+                    'id': 'I0200',
+                    'link': {
+                        'rel': 'self',
+                        'href': 'https://localhost:8088/api/v1/ioports/I0200',
+                    },
+                },
+            },
+            {
+                "wwpn": "210000E08B13D0BF",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/host_ports/210000E08B13D0BF",
+                },
+                "state": "logged out",
+                "hosttype": "VMware",
+                "addrdiscovery": "lunpolling",
+                "lbs": "512",
+                "host": {
+                    'name': 'host1',
+                    'link': {
+                        'rel': 'self',
+                        'href': 'https://localhost:8088/api/v1/hosts/host1',
+                    },
+                },
+                "ioport": "",
+            },
+        ]
+    },
 }
 
 ONE = {
-  "server": {
-    "status": "ok",
-    "code": "CMUC00183I",
-    "message": "Operation done successfully."
-  },
-  "counts": {
-    "data_counts": 1,
-    "total_counts": 1
-  },
-  "data": {
-    "host_ports": [
-      {
-        "wwpn": "210000E08B10A95C",
-        "link": {
-          "rel": "self",
-          "href": "https://localhost:8088/api/v1/host_ports/210000E08B10A95C"
-        },
-        "state": "logged in",
-        "hosttype": "VMware",
-        "addrdiscovery": "lunpolling",
-        "lbs": "512",
-        "host": {
-                 'name': 'host1',
-                 'link': {
-                          'rel': 'self',
-                          'href': 'https://localhost:8088/api/v1/hosts/host1'
-                          },
-                 },
-        "login_ports": [
-            {'id': 'I0200',
-             'link': {'rel': 'self',
-                      'href': 'https://localhost:8088/api/v1/ioports/I0200'
-                      },
-             },
+    "server": {
+        "status": "ok",
+        "code": "CMUC00183I",
+        "message": "Operation done successfully.",
+    },
+    "counts": {"data_counts": 1, "total_counts": 1},
+    "data": {
+        "host_ports": [
+            {
+                "wwpn": "210000E08B10A95C",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/host_ports/210000E08B10A95C",
+                },
+                "state": "logged in",
+                "hosttype": "VMware",
+                "addrdiscovery": "lunpolling",
+                "lbs": "512",
+                "host": {
+                    'name': 'host1',
+                    'link': {
+                        'rel': 'self',
+                        'href': 'https://localhost:8088/api/v1/hosts/host1',
+                    },
+                },
+                "login_ports": [
+                    {
+                        'id': 'I0200',
+                        'link': {
+                            'rel': 'self',
+                            'href': 'https://localhost:8088/api/v1/ioports/I0200',
+                        },
+                    },
+                ],
+            },
         ]
-      },
-    ]
-  }
+    },
 }

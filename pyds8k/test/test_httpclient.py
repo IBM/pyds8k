@@ -14,18 +14,25 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.exceptions import URLParseError
-from . import base
-import httpretty
 import json
-import pytest
 import time
+from http import HTTPStatus
+
+import httpretty
+import pytest
+
+from pyds8k.base import DefaultManager, Resource
+from pyds8k.exceptions import URLParseError
 from pyds8k.httpclient import HTTPClient
-from pyds8k.base import Resource, DefaultManager
-from .data import get_response_list_json_by_type, \
-                      get_response_list_data_by_type, \
-                      get_response_data_by_type, \
-                      get_response_json_by_type
+
+from . import base
+from .data import (
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
 info = {'id': 'v1', 'name': 'vol1'}
 
 custom_method_get = {'data': 'custom_method_get'}
@@ -39,9 +46,8 @@ default_list_response_json = get_response_list_json_by_type(DEFAULT)
 
 
 class TestHTTPClient(base.TestCaseWithConnect):
-
     def setUp(self):
-        super(TestHTTPClient, self).setUp()
+        super().setUp()
 
     # DSANSIBLE-62, removing test_parse_url
     def test_parse_url(self):
@@ -49,51 +55,56 @@ class TestHTTPClient(base.TestCaseWithConnect):
         url2 = '/new'
         _, url3 = url1.split('//')
         url4 = 'http://new_domain' + '/new'
-        self.assertEqual('/new', self.client._parse_url(url1))
-        self.assertEqual('/new', self.client._parse_url(url2))
-        self.assertEqual('/new', self.client._parse_url(url3))
-        with self.assertRaises(URLParseError):
+        assert self.client._parse_url(url1) == '/new'
+        assert self.client._parse_url(url2) == '/new'
+        assert self.client._parse_url(url3) == '/new'
+        with pytest.raises(URLParseError):
             self.client._parse_url(url4)
-        new_client = HTTPClient('9.115.247.115', 'admin', 'admin',
-                                service_type='ds8k',
-                                secure=True)
-        with self.assertRaises(URLParseError):
+        new_client = HTTPClient(
+            '9.115.247.115', 'admin', 'admin', service_type='ds8k', secure=True
+        )
+        with pytest.raises(URLParseError):
             new_client._parse_url(url3)
 
     @httpretty.activate
     def test_redirect(self):
         url = '/default/old'
         new_url = '/default/a'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               content_type='application/json',
-                               adding_headers={'Location': new_url},
-                               status=301)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + new_url,
-                               body=default_a_response_json,
-                               content_type='application/json',
-                               status=200)
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            content_type='application/json',
+            adding_headers={'Location': new_url},
+            status=HTTPStatus.MOVED_PERMANENTLY,
+        )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + new_url,
+            body=default_a_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         de = self.resource.one(DEFAULT, 'old').get(allow_redirects=False)
-        self.assertEqual(new_url, de.url)
+        assert new_url == de.url
 
     @pytest.mark.skip(reason="Not work in this way")
     @httpretty.activate
     def test_timeout(self):
         url = '/default/a'
-        new_client = HTTPClient('localhost', 'admin', 'admin',
-                                service_type='ds8k',
-                                timeout=0.01)
+        new_client = HTTPClient(
+            'localhost', 'admin', 'admin', service_type='ds8k', timeout=0.01
+        )
 
         def _verify_request(request, uri, headers):
             time.sleep(10)
-            return (200, headers, default_a_response_json)
+            return (HTTPStatus.OK, headers, default_a_response_json)
 
-        httpretty.register_uri(httpretty.GET,
-                               new_client.domain + self.base_url + url,
-                               body=_verify_request,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            new_client.domain + self.base_url + url,
+            body=_verify_request,
+            content_type='application/json',
+        )
 
         resource = Resource(new_client, DefaultManager(new_client))
         resource.one(DEFAULT, 'a').get()

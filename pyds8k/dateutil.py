@@ -14,32 +14,26 @@
 # limitations under the License.
 ##############################################################################
 
-from datetime import tzinfo, timedelta, time
 import time as _time
+from datetime import time, timedelta, tzinfo
 
 ZERO = timedelta(0)
 STDOFFSET = timedelta(seconds=-_time.timezone)
-if _time.daylight:
-    DSTOFFSET = timedelta(seconds=-_time.altzone)
-else:
-    DSTOFFSET = STDOFFSET
+DSTOFFSET = timedelta(seconds=-_time.altzone) if _time.daylight else STDOFFSET
 DSTDIFF = DSTOFFSET - STDOFFSET
 FORMAT = '%Y-%m-%dT%H:%M:%S%Z'
 
 
 class LocalTimezone(tzinfo):
-
     def utcoffset(self, dt):
         if self._isdst(dt):
             return DSTOFFSET
-        else:
-            return STDOFFSET
+        return STDOFFSET
 
     def dst(self, dt):
         if self._isdst(dt):
             return DSTDIFF
-        else:
-            return ZERO
+        return ZERO
 
     def tzname(self, dt):
         local_time_zone = int(self.utcoffset(dt).total_seconds()) / 60
@@ -53,9 +47,17 @@ class LocalTimezone(tzinfo):
         return prefix + local_time.strftime('%H%M')
 
     def _isdst(self, dt):
-        tt = (dt.year, dt.month, dt.day,
-              dt.hour, dt.minute, dt.second,
-              dt.weekday(), 0, 0)
+        tt = (
+            dt.year,
+            dt.month,
+            dt.day,
+            dt.hour,
+            dt.minute,
+            dt.second,
+            dt.weekday(),
+            0,
+            0,
+        )
         stamp = _time.mktime(tt)
         tt = _time.localtime(stamp)
         return tt.tm_isdst > 0

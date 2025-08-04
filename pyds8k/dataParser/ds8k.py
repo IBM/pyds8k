@@ -15,17 +15,22 @@
 ##############################################################################
 
 from logging import getLogger
-from pyds8k import PYDS8K_DEFAULT_LOGGER
-from pyds8k.dataParser.base import BaseRequestParser, \
-    BaseResponseParser
-from pyds8k import messages
-from pyds8k.exceptions import URLParseError, \
-    RepresentationParseError, \
-    IDMissingError
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER, messages
+from pyds8k.dataParser.base import BaseRequestParser, BaseResponseParser
+from pyds8k.exceptions import (
+    IDMissingError,
+    RepresentationNotFoundError,
+    RepresentationParseError,
+    URLParseError,
+)
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
-success_status = ('ok', 'successful', )
+success_status = (
+    'ok',
+    'successful',
+)
 
 
 class RequestParser(BaseRequestParser):
@@ -37,7 +42,7 @@ class RequestParser(BaseRequestParser):
     param_key = 'params'
 
     def __init__(self, raw_data, resource_key=''):
-        if not (isinstance(raw_data, list) or isinstance(raw_data, dict)):
+        if not (isinstance(raw_data, (list, dict))):
             raise TypeError(messages.NEED_A_DICT_OR_DICT_LIST.format(raw_data))
         self.raw_data = raw_data
         self.request_data = None
@@ -82,7 +87,7 @@ class ResponseParser(BaseResponseParser):
         elif self.representation:
             rep = self.representation
         else:
-            raise Exception(messages.REPRESENTATION_NOT_FOUND)
+            raise RepresentationNotFoundError
         return self.__class__.get_link_from_representation(rep)
 
     def get_representations(self):
@@ -92,10 +97,12 @@ class ResponseParser(BaseResponseParser):
         return parsed
 
     def get_posta_response_data(self):
-        MULTIFLAG = "responses"
-        data = self.raw_data.get(MULTIFLAG, self.raw_data)
+        multi_flag = "responses"
+        data = self.raw_data.get(multi_flag, self.raw_data)
         if not isinstance(data, list):
-            data = [data, ]
+            data = [
+                data,
+            ]
         res = []
         for s_data in data:
             res_status_body = s_data.get(self.status_key)
@@ -108,9 +115,10 @@ class ResponseParser(BaseResponseParser):
                     res.append(({self.resource_data_key: None}, res_url))
                 else:
                     res.append(
-                        ({self.resource_data_key: self._parse_data(res_data)[0]},  # noqa
-                         res_url
-                         )
+                        (
+                            {self.resource_data_key: self._parse_data(res_data)[0]},
+                            res_url,
+                        )
                     )
             # return status part if something failed.
             else:
@@ -144,29 +152,27 @@ class ResponseParser(BaseResponseParser):
         url_objects = representation.get(cls.url_field)
         if not url_objects:
             return ""
-        url = cls._get_url(url_objects)
-        return url
+        return cls._get_url(url_objects)
 
     @classmethod
-    def get_resource_id_from_url(self, url, resource_type):
-        if url.endswith('/'):
-            url = url[:-1]
+    def get_resource_id_from_url(cls, url, resource_type):
+        url = url.removesuffix('/')
         url_frag = url.split('/')
         if len(url_frag) > 1 and url_frag[-2] == resource_type:
             return url_frag[-1]
-        logger.debug("Failed to get resource id from url {}".format(url))
-        raise IDMissingError()
+        logger.debug(f"Failed to get resource id from url {url}")
+        raise IDMissingError
 
     @classmethod
     def _get_url(cls, urls):
         if isinstance(urls, str):
             return urls
-        elif isinstance(urls, dict):
+        if isinstance(urls, dict):
             urls = [urls]
         elif isinstance(urls, list):
             pass
         else:
-            raise URLParseError()
+            raise URLParseError
         for url in urls:
             if url.get('rel') == 'self':
                 return url.get('href', '')
@@ -179,11 +185,11 @@ class ResponseParser(BaseResponseParser):
                 parsed = data.get(self.resource_key)
                 if parsed is None:
                     logger.debug(
-                        "Failed to parse resource from data, return raw data: {}".format(data)  # noqa
+                        f"Failed to parse resource from data, return raw data: {data}"
                     )
                     parsed = data
         else:
-            raise RepresentationParseError()
+            raise RepresentationParseError
         if not isinstance(parsed, list):
             parsed = [parsed]
         return parsed

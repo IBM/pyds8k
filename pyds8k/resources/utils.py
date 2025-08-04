@@ -14,9 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-from pyds8k.exceptions import URLParseError
-from pyds8k import PYDS8K_DEFAULT_LOGGER
 from logging import getLogger
+
+from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.exceptions import URLParseError
 
 logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 
@@ -24,12 +25,10 @@ logger = getLogger(PYDS8K_DEFAULT_LOGGER)
 def update_resource_id_in_url(old_id, new_id, url, field=''):
     if not field:
         if not isinstance(url, str):
-            raise URLParseError()
-        else:
-            return url.replace(old_id, new_id, 1)
-    else:
-        try:
-            url[field] = str(url[field]).replace(old_id, new_id, 1)
-        except Exception:
-            raise URLParseError()
-        return url
+            raise URLParseError
+        return url.replace(old_id, new_id, 1)
+    try:
+        url[field] = str(url[field]).replace(old_id, new_id, 1)
+    except Exception as exc:
+        raise URLParseError from exc
+    return url

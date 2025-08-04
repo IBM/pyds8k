@@ -16,7 +16,4 @@
 
 from . import csr, selfsigned
 
-__all__ = (
-    'csr',
-    'selfsigned'
-)
+__all__ = ('csr', 'selfsigned')

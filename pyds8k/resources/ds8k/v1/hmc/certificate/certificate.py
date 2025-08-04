@@ -17,10 +17,10 @@
 """
 Hardware Management Console Certificate interface.
 """
-from pyds8k.base import ManagerMeta, ResourceMeta
 
-from ...common.base import Base, BaseManager
-from ...common.types import DS8K_HMC_CERTIFICATE
+from pyds8k.base import ManagerMeta, ResourceMeta
+from pyds8k.resources.ds8k.v1.common.base import Base, BaseManager
+from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC_CERTIFICATE
 
 
 class HmcCertificate(Base, metaclass=ResourceMeta):
@@ -42,6 +42,7 @@ class HmcCertificateManager(BaseManager, metaclass=ManagerMeta):
     """
     Manage Hardware Management Console Certificate resources.
     """
+
     resource_class = HmcCertificate
     resource_type = DS8K_HMC_CERTIFICATE
 

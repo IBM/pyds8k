@@ -14,38 +14,20 @@
 # limitations under the License.
 ##############################################################################
 
-import os
 from importlib import import_module
 
-_PATH = os.path.abspath(os.path.dirname(__file__))
-mocks = set([os.path.splitext(resource)[0]
-             for resource in os.listdir(_PATH)
-             if os.path.isfile(os.path.join(_PATH, resource)) and
-             not str(resource).startswith('__init__')
-             ])
-dir_mocks = \
-    [resource for resource in os.listdir(_PATH) if os.path.isdir(
-        os.path.join(_PATH, resource)
-        )]
+from pyds8k.test.utils import get_dir_mocks, get_mocks
+
+mocks = get_mocks(__file__)
+dir_mocks = get_dir_mocks(__file__)
 success_response_one = {}
 success_response_all = {}
 
 for re in mocks:
-    success_response_one[re] = import_module(
-        '{0}.{1}'.format(__name__, re)
-    ).ONE
-    success_response_all[re] = import_module(
-        '{0}.{1}'.format(__name__, re)
-    ).ALL
+    success_response_one[re] = import_module(f'{__name__}.{re}').ONE
+    success_response_all[re] = import_module(f'{__name__}.{re}').ALL
 
 
 for re in dir_mocks:
-    if re != '__pycache__':
-        success_response_one.update(
-            import_module('{0}.{1}'.format(__name__,
-                                           re)).success_response_one
-        )
-        success_response_all.update(
-            import_module('{0}.{1}'.format(__name__,
-                                           re)).success_response_all
-        )
+    success_response_one.update(import_module(f'{__name__}.{re}').success_response_one)
+    success_response_all.update(import_module(f'{__name__}.{re}').success_response_all)

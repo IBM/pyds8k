@@ -39,7 +39,7 @@ DS8K_LCU_TYPES = (
     DS8K_LCU_TYPE_3990_3,
     DS8K_LCU_TYPE_3990_TPF,
     DS8K_LCU_TYPE_3990_6,
-    DS8K_LCU_TYPE_bs2000
+    DS8K_LCU_TYPE_bs2000,
 )
 DS8K_VOLUME = 'volumes'
 DS8K_SE = 'SE'
@@ -52,18 +52,19 @@ DS8K_EVENT = 'events'
 DS8K_VOLUME_TYPE_FB = 'fb'
 DS8K_VOLUME_TYPE_CKD = 'ckd'
 DS8K_VOLUME_TYPES = (DS8K_VOLUME_TYPE_FB, DS8K_VOLUME_TYPE_CKD)
-DS8K_LSS_TYPES = (DS8K_VOLUME_TYPE_CKD, )
+DS8K_LSS_TYPES = (DS8K_VOLUME_TYPE_CKD,)
 DS8K_FLASHCOPY = 'flashcopy'
 DS8K_PPRC = 'pprc'
 DS8K_CAPTYPE_GIB = 'gib'
 DS8K_CAPTYPE_BYTE = 'bytes'
 DS8K_CAPTYPE_CYL = 'cyl'
 DS8K_CAPTYPE_MOD1 = 'mod1'
-DS8K_CAPTYPES = (DS8K_CAPTYPE_GIB,
-                 DS8K_CAPTYPE_BYTE,
-                 DS8K_CAPTYPE_CYL,
-                 DS8K_CAPTYPE_MOD1
-                 )
+DS8K_CAPTYPES = (
+    DS8K_CAPTYPE_GIB,
+    DS8K_CAPTYPE_BYTE,
+    DS8K_CAPTYPE_CYL,
+    DS8K_CAPTYPE_MOD1,
+)
 DS8K_TP_NONE = 'none'
 DS8K_TP_ESE = 'ese'
 DS8K_TP_TSE = 'tse'
@@ -84,13 +85,15 @@ DS8K_OPTION_FRR = "fast_reverse_restore"
 DS8K_OPTION_PSET = "permit_space_efficient_target"
 DS8K_OPTION_FSETOOS = "fail_space_efficient_target_out_of_space"
 
-DS8K_FC_OPTIONS = (DS8K_OPTION_FRCO,
-                   DS8K_OPTION_ITW,
-                   DS8K_OPTION_RECH,
-                   DS8K_OPTION_NBC,
-                   DS8K_OPTION_PER,
-                   DS8K_OPTION_APTP,
-                   DS8K_OPTION_RERE,
-                   DS8K_OPTION_FRR,
-                   DS8K_OPTION_PSET,
-                   DS8K_OPTION_FSETOOS)
+DS8K_FC_OPTIONS = (
+    DS8K_OPTION_FRCO,
+    DS8K_OPTION_ITW,
+    DS8K_OPTION_RECH,
+    DS8K_OPTION_NBC,
+    DS8K_OPTION_PER,
+    DS8K_OPTION_APTP,
+    DS8K_OPTION_RERE,
+    DS8K_OPTION_FRR,
+    DS8K_OPTION_PSET,
+    DS8K_OPTION_FSETOOS,
+)

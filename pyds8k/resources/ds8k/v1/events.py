@@ -17,27 +17,31 @@
 """
 Event interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_EVENT
+
 from .common.base import Base, ReadOnlyManager
+from .common.types import DS8K_EVENT
 
 
 class Event(Base, metaclass=ResourceMeta):
     resource_type = DS8K_EVENT
     # id_field = 'id'
-    _template = {'id': '',
-                 'type': '',
-                 'severity': '',
-                 'time': '',
-                 'resource_id': '',
-                 'formatted_parameter': '',
-                 'description': '',
-                 }
+    _template = {
+        'id': '',
+        'type': '',
+        'severity': '',
+        'time': '',
+        'resource_id': '',
+        'formatted_parameter': '',
+        'description': '',
+    }
 
 
 class EventManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Event resources.
     """
+
     resource_class = Event
     resource_type = DS8K_EVENT

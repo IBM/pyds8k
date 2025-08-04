@@ -12,16 +12,17 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - name: Run Ruff Lint
+        uses: astral-sh/ruff-action@v3
         with:
-          python-version: "3.12"
-      - name: Install tox and any other packages
-        run: |
-          pip install tox
-      - name: Run tox
-        run: tox -e flake8
+          src: "./pyds8k"
+      - name: Run Ruff Format
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check --diff"
+          src: "./pyds8k"
 
   unit_test:
     runs-on: ${{ matrix.os }}

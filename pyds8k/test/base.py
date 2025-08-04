@@ -15,36 +15,32 @@
 ##############################################################################
 
 import unittest
+
+from pyds8k.base import DefaultManager, Resource
 from pyds8k.httpclient import HTTPClient
-from pyds8k.base import Resource, DefaultManager
 
 
 class TestCaseWithConnect(unittest.TestCase):
-
     def setUp(self):
         self.client = HTTPClient(
             "http://localhost:8088/api/",
             'admin',
             'admin',
             service_type='ds8k',
-            port=8088
+            port=8088,
         )
         self.base_url = self.client.base_url
-        self.resource = Resource(
-            self.client,
-            manager=DefaultManager(self.client)
-        )
+        self.resource = Resource(self.client, manager=DefaultManager(self.client))
         self.domain = self.client.domain
         # self.maxDiff = None
 
     def tearDown(self):
-        super(TestCaseWithConnect, self).tearDown()
+        super().tearDown()
 
 
 class TestCaseWithoutConnect(unittest.TestCase):
-
     def setUp(self):
-        super(TestCaseWithoutConnect, self).setUp()
+        super().setUp()
 
     def tearDown(self):
-        super(TestCaseWithoutConnect, self).tearDown()
+        super().tearDown()

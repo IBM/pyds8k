@@ -17,36 +17,41 @@
 """
 ESE Rep interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_ESEREP
+
 from .common.base import SingletonBase, SingletonBaseManager
+from .common.types import DS8K_ESEREP
 from .pools import Pool, PoolManager
 
 
 class ESERep(SingletonBase, metaclass=ResourceMeta):
     resource_type = DS8K_ESEREP
     # id_field = 'id'
-    _template = {'cap': '',
-                 'capalloc': '',
-                 'capavail': '',
-                 'overprovisioned': '',
-                 'threshold': '',
-                 'pool': '',
-                 }
+    _template = {
+        'cap': '',
+        'capalloc': '',
+        'capavail': '',
+        'overprovisioned': '',
+        'threshold': '',
+        'pool': '',
+    }
     readonly_fileds = ('capalloc', 'capavail', 'overprovisioned', 'pool')
-    related_resource = {'_pool': (Pool, PoolManager),
-                        }
+    related_resource = {
+        '_pool': (Pool, PoolManager),
+    }
 
     def __getattr__(self, key):
-        if key == 'id' or key == self.id_field:
-            return 'eserep_in_pool_{}'.format(self.pool)
-        return super(ESERep, self).__getattr__(key)
+        if key in ('id', self.id_field):
+            return f'eserep_in_pool_{self.pool}'
+        return super().__getattr__(key)
 
 
 class ESERepManager(SingletonBaseManager, metaclass=ManagerMeta):
     """
     Manage ESE Rep resources.
     """
+
     resource_class = ESERep
     resource_type = DS8K_ESEREP
 

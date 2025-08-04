@@ -14,23 +14,19 @@
 # limitations under the License.
 ##############################################################################
 
-import os
-import time
 import configparser
+import time
 from importlib import import_module
-from pyds8k.messages import GET_CONFIG_SETTINGS_IOERROR, \
-    GET_CONFIG_SETTINGS_ERROR
+from logging import getLogger
+from pathlib import Path
 
-_PATH = os.path.abspath(os.path.dirname(__file__))
+from pyds8k import PYDS8K_DEFAULT_LOGGER
+from pyds8k.messages import GET_CONFIG_SETTINGS_ERROR, GET_CONFIG_SETTINGS_IOERROR
+
+PATH = Path(__file__).parent.resolve()
 CONFIG_FILE_NAME = 'config.ini'
-CONFIG_FILE_PATH = os.path.join(_PATH, CONFIG_FILE_NAME)
+CONFIG_FILE_PATH = PATH.joinpath(CONFIG_FILE_NAME)
 logger = None
-
-# HTTP STATUS CODES
-HTTP200 = 200
-HTTP204 = 204
-HTTP404 = 404
-HTTP500 = 500
 
 # HTTP METHODS
 POSTA = 'POST-to-Append'
@@ -42,8 +38,6 @@ DELETE = 'DELETE'
 
 
 def _get_logger():
-    from logging import getLogger
-    from pyds8k import PYDS8K_DEFAULT_LOGGER
     global logger
     if not logger:
         logger = getLogger(PYDS8K_DEFAULT_LOGGER)
@@ -58,58 +52,50 @@ def get_subclasses(cls):
 
 
 def get_config_settings(category="settings"):
-    result_dict = dict()
+    result_dict = {}
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
-        for setting, value in config.items(category):
-            result_dict[setting] = value
-    except IOError as e:
-        _get_logger().debug(GET_CONFIG_SETTINGS_IOERROR.format(
-            CONFIG_FILE_PATH,
-            str(e)
-            )
+        result_dict = {config.items(category)}
+    except OSError as e:
+        _get_logger().debug(
+            GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
-    except Exception as e:
+    except configparser.Error as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
     return result_dict
 
 
 def get_config_all():
-    result_dict = dict()
+    result_dict = {}
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
         for section in config.sections():
-            result_dict[section] = dict()
+            result_dict[section] = {}
             for setting, value in config.items(section):
                 result_dict[section][setting] = value
-    except IOError as e:
-        _get_logger().debug(GET_CONFIG_SETTINGS_IOERROR.format(
-            CONFIG_FILE_PATH,
-            str(e)
-            )
+    except OSError as e:
+        _get_logger().debug(
+            GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
-    except Exception as e:
+    except configparser.Error as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
     return result_dict
 
 
 def get_config_all_items():
-    result_dict = dict()
+    result_dict = {}
     try:
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE_PATH)
         for section in config.sections():
-            for setting, value in config.items(section):
-                result_dict[setting] = value
-    except IOError as e:
-        _get_logger().debug(GET_CONFIG_SETTINGS_IOERROR.format(
-            CONFIG_FILE_PATH,
-            str(e)
-            )
+            result_dict = {config.items(section)}
+    except OSError as e:
+        _get_logger().debug(
+            GET_CONFIG_SETTINGS_IOERROR.format(CONFIG_FILE_PATH, str(e))
         )
-    except Exception as e:
+    except configparser.Error as e:
         _get_logger().error(GET_CONFIG_SETTINGS_ERROR.format(str(e)))
     return result_dict
 
@@ -125,7 +111,7 @@ def set_config_by_name(name, value):
     config.read(CONFIG_FILE_PATH)
     config.set('settings', name, value)
 
-    with open(CONFIG_FILE_PATH, 'wb') as config_file:
+    with CONFIG_FILE_PATH.open('wb') as config_file:
         config.write(config_file)
 
 
@@ -153,15 +139,13 @@ def set_runtime_service_type(service_type):
 
 def get_request_parser_class(service_type):
     prefix = service_type
-    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix)
-                           )
+    Parser = import_module(f'{__package__}.dataParser.{prefix}')  # noqa: N806
     return Parser.RequestParser
 
 
 def get_response_parser_class(service_type):
     prefix = service_type
-    Parser = import_module('{0}.dataParser.{1}'.format(__package__, prefix)
-                           )
+    Parser = import_module(f'{__package__}.dataParser.{prefix}')  # noqa: N806
     return Parser.ResponseParser
 
 
@@ -171,12 +155,10 @@ def timer(func):
         result = func(self, *args, **kwargs)
         end = time.time()
         _get_logger().info(
-            "Successfully called method '{}' in {} seconds".format(
-                func.__name__,
-                round(end - start, 2)
-            )
+            f"Successfully called method '{func.__name__}' in {round(end - start, 2)} seconds"
         )
         return result
+
     return inner
 
 
@@ -187,19 +169,14 @@ def res_timer_recorder(func):
         end = time.time()
         sec = round(end - start, 2)
         if not res:
-            _get_logger().info(
-                "Successfully got 0 resources in {} seconds".format(sec)
-            )
+            _get_logger().info(f"Successfully got 0 resources in {sec} seconds")
             return []
         _get_logger().info(
-            "Successfully got {} resources in {} seconds, \
-{} seconds per 100 instances.".format(
-                len(res),
-                sec,
-                round(sec / len(res) * 100, 2)
-            )
+            f"Successfully got {len(res)} resources in {sec} seconds, \
+{round(sec / len(res) * 100, 2)} seconds per 100 instances."
         )
         return res
+
     return inner
 
 
@@ -207,19 +184,19 @@ def dictionarize(func):
     def inner(self, *args, **kwargs):
         res_obj = func(self, *args, **kwargs)
         if not isinstance(res_obj, list):
-            res_obj = [res_obj, ]
-        coverted = []
-        for res in res_obj:
-            coverted.append(res.representation)
-        return coverted
+            res_obj = [
+                res_obj,
+            ]
+
+        return [res.representation for res in res_obj]
+
     return inner
 
 
 def is_absolute_url(url):
     if url.startswith('/'):
         return False
-    elif '//' in url:
+    if '//' in url:
         return True
     # Don't verify the URI's validation here.
-    else:
-        return True
+    return True

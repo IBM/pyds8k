@@ -17,7 +17,9 @@
 """
 FlashCopy interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
+
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_FLASHCOPY
 from .volumes import Volume, VolumeManager
@@ -26,26 +28,27 @@ from .volumes import Volume, VolumeManager
 class FlashCopy(Base, metaclass=ResourceMeta):
     resource_type = DS8K_FLASHCOPY
     # id_field = 'id'
-    _template = {'id': '',
-                 'persistent': '',
-                 'recording': '',
-                 'backgroundcopy': '',
-                 'state': '',
-                 'sourcevolume': '',
-                 'targetvolume': '',
-                 }
+    _template = {
+        'id': '',
+        'persistent': '',
+        'recording': '',
+        'backgroundcopy': '',
+        'state': '',
+        'sourcevolume': '',
+        'targetvolume': '',
+    }
 
-    related_resource = {'_sourcevolume': (Volume, VolumeManager),
-                        '_targetvolume': (Volume, VolumeManager)
-                        }
+    related_resource = {
+        '_sourcevolume': (Volume, VolumeManager),
+        '_targetvolume': (Volume, VolumeManager),
+    }
 
     def _add_details(self, info, force=False):
-        super(FlashCopy, self)._add_details(info, force=force)
+        super()._add_details(info, force=force)
 
         # Temporarily, remove this line when flashcopy resource has id field.
         self._id = self.representation['id'] = '{}:{}'.format(
-            info['sourcevolume']['id'],
-            info['targetvolume']['id']
+            info['sourcevolume']['id'], info['targetvolume']['id']
         )
 
     # def __repr__(self):
@@ -56,5 +59,6 @@ class FlashCopyManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage FlashCopy resources.
     """
+
     resource_class = FlashCopy
     resource_type = DS8K_FLASHCOPY

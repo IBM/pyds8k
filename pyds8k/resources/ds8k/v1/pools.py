@@ -17,12 +17,13 @@
 """
 Extent pool interface.
 """
+
 from pyds8k.base import ManagerMeta, ResourceMeta
-from .common.types import DS8K_POOL, DS8K_VOLUME, \
-    DS8K_TSEREP, DS8K_ESEREP
+from pyds8k.exceptions import IDMissingError
+
 from .common.base import Base, ReadOnlyManager
 from .common.mixins import VolumeMixin
-from pyds8k.exceptions import IDMissingError
+from .common.types import DS8K_ESEREP, DS8K_POOL, DS8K_TSEREP, DS8K_VOLUME
 
 
 # Note: VolumeMixin will override the methods with
@@ -30,90 +31,88 @@ from pyds8k.exceptions import IDMissingError
 class Pool(VolumeMixin, Base, metaclass=ResourceMeta):
     resource_type = DS8K_POOL
     # id_field = 'id'
-    _template = {'id': '',
-                 'name': '',
-                 'node': '',
-                 'stgtype': '',
-                 'cap': '',
-                 'capalloc': '',
-                 'capavail': '',
-                 'overprovisioned': '',
-                 'easytier': '',
-                 'tieralloc': [],
-                 'threshold': '',
-                 'real_capacity_allocated_on_ese': None,
-                 'virtual_capacity_allocated_on_ese': None,
-                 DS8K_VOLUME: '',
-                 DS8K_TSEREP: '',
-                 DS8K_ESEREP: '',
-                 }
+    _template = {
+        'id': '',
+        'name': '',
+        'node': '',
+        'stgtype': '',
+        'cap': '',
+        'capalloc': '',
+        'capavail': '',
+        'overprovisioned': '',
+        'easytier': '',
+        'tieralloc': [],
+        'threshold': '',
+        'real_capacity_allocated_on_ese': None,
+        'virtual_capacity_allocated_on_ese': None,
+        DS8K_VOLUME: '',
+        DS8K_TSEREP: '',
+        DS8K_ESEREP: '',
+    }
     related_resources_collection = (DS8K_VOLUME, DS8K_TSEREP, DS8K_ESEREP)
 
     def __repr__(self):
-        return "<Extent Pool: {0}>".format(self._get_id())
+        return f"<Extent Pool: {self._get_id()}>"
 
     def get_tserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         tserep = self.all(DS8K_TSEREP).list()
         self._start_updating()
         setattr(self, DS8K_TSEREP, tserep)
         self._stop_updating()
         return tserep
 
-    def get_TSE_rep(self):
+    def get_TSE_rep(self):  # noqa: N802
         return self.get_tserep()[0]
 
     def get_eserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         eserep = self.all(DS8K_ESEREP).list()
         self._start_updating()
         setattr(self, DS8K_ESEREP, eserep)
         self._stop_updating()
         return eserep
 
-    def get_ESE_rep(self):
+    def get_ESE_rep(self):  # noqa: N802
         return self.get_eserep()[0]
 
     def delete_tserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_TSEREP).delete()
 
     def delete_eserep(self):
         if not self.id:
-            raise IDMissingError()
+            raise IDMissingError
         return self.all(DS8K_ESEREP).delete()
 
     def update_tserep_cap(self, cap, captype=''):
         if not self.id:
-            raise IDMissingError()
-        return self.all(DS8K_TSEREP
-                        ).update({'cap': cap, 'captype': captype})
+            raise IDMissingError
+        return self.all(DS8K_TSEREP).update({'cap': cap, 'captype': captype})
 
     def update_eserep_cap(self, cap, captype=''):
         if not self.id:
-            raise IDMissingError()
-        return self.all(DS8K_ESEREP
-                        ).update({'cap': cap, 'captype': captype})
+            raise IDMissingError
+        return self.all(DS8K_ESEREP).update({'cap': cap, 'captype': captype})
 
     def update_tserep_threshold(self, threshold):
         if not self.id:
-            raise IDMissingError()
-        return self.all(DS8K_TSEREP
-                        ).update({'threshold': threshold})
+            raise IDMissingError
+        return self.all(DS8K_TSEREP).update({'threshold': threshold})
 
     def update_eserep_threshold(self, threshold):
         if not self.id:
-            raise IDMissingError()
-        return self.all(DS8K_ESEREP
-                        ).update({'threshold': threshold})
+            raise IDMissingError
+        return self.all(DS8K_ESEREP).update({'threshold': threshold})
 
 
 class PoolManager(ReadOnlyManager, metaclass=ManagerMeta):
     """
     Manage Extent Pool resources.
     """
+
     resource_class = Pool
     resource_type = DS8K_POOL

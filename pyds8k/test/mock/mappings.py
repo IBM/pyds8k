@@ -18,12 +18,9 @@ ALL = {
     "server": {
         "status": "ok",
         "code": "CMUC00183I",
-        "message": "Operation done successfully."
+        "message": "Operation done successfully.",
     },
-    "counts": {
-        "data_counts": 32,
-        "total_counts": 32
-    },
+    "counts": {"data_counts": 32, "total_counts": 32},
     'data': {
         'mappings': [
             {
@@ -37,8 +34,7 @@ ALL = {
                 },
                 'link': {
                     'rel': 'self',
-                    'href': 'https://localhost:8088/api/v1/hosts/host1/'
-                            'mappings/00'
+                    'href': 'https://localhost:8088/api/v1/hosts/host1/mappings/00',
                 },
             },
             {
@@ -52,24 +48,20 @@ ALL = {
                 },
                 'link': {
                     'rel': 'self',
-                    'href': 'https://localhost:8088/api/v1/hosts/host1/'
-                            'mappings/01'
+                    'href': 'https://localhost:8088/api/v1/hosts/host1/mappings/01',
                 },
             },
         ]
-    }
+    },
 }
 
 ONE = {
     "server": {
         "status": "ok",
         "code": "CMUC00183I",
-        "message": "Operation done successfully."
+        "message": "Operation done successfully.",
     },
-    "counts": {
-        "data_counts": 1,
-        "total_counts": 1
-    },
+    "counts": {"data_counts": 1, "total_counts": 1},
     'data': {
         'mappings': [
             {
@@ -83,10 +75,9 @@ ONE = {
                 },
                 'link': {
                     'rel': 'self',
-                    'href': 'https://localhost:8088/api/v1/hosts/host1/'
-                            'mappings/00'
+                    'href': 'https://localhost:8088/api/v1/hosts/host1/mappings/00',
                 },
             },
         ]
-    }
+    },
 }

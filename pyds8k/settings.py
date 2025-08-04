@@ -15,9 +15,13 @@
 ##############################################################################
 
 import logging
+
 # from utils import get_config_settings
 
 settings = {'debug': 'true'}
-LOG_LEVEL = logging.DEBUG if 'debug' in settings and \
-    settings['debug'].lower() == 'true' else logging.INFO
-LOG_PATH = settings['log_path'] if 'log_path' in settings else '/tmp'
+LOG_LEVEL = (
+    logging.DEBUG
+    if 'debug' in settings and settings['debug'].lower() == 'true'
+    else logging.INFO
+)
+LOG_PATH = settings.get('log_path', '/tmp')

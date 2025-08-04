@@ -15,7 +15,7 @@
 ##############################################################################
 
 # system
-SYSTEM_ID = 'id'   # 2107-{sn}
+SYSTEM_ID = 'id'  # 2107-{sn}
 SYSTEM_CODE_LEVEL = 'bundle'
 SYSTEM_NAME = 'name'
 SYSTEM_MODEL = 'MTM'

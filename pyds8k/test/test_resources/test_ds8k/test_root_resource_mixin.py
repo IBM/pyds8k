@@ -14,21 +14,28 @@
 # limitations under the License.
 ##############################################################################
 
+from http import HTTPStatus
+
 import httpretty
 import pytest
+
 from pyds8k.resources.ds8k.v1.common import types
-from pyds8k.test.data import get_response_list_json_by_type, \
-    get_response_list_data_by_type, \
-    get_response_data_by_type, \
-    get_response_json_by_type
-from pyds8k.test.data import action_response_json
-from .base import TestDS8KWithConnect
-from pyds8k.resources.ds8k.v1.systems import System
+from pyds8k.resources.ds8k.v1.eserep import ESERep
 from pyds8k.resources.ds8k.v1.lss import LSS
+from pyds8k.resources.ds8k.v1.systems import System
+
 # from pyds8k.resources.ds8k.v1.ioports import IOPort
 from pyds8k.resources.ds8k.v1.tserep import TSERep
-from pyds8k.resources.ds8k.v1.eserep import ESERep
 from pyds8k.resources.ds8k.v1.volumes import Volume
+from pyds8k.test.data import (
+    action_response_json,
+    get_response_data_by_type,
+    get_response_json_by_type,
+    get_response_list_data_by_type,
+    get_response_list_json_by_type,
+)
+
+from .base import TestDS8KWithConnect
 
 system_list_response = get_response_list_data_by_type(types.DS8K_SYSTEM)
 system_list_response_json = get_response_list_json_by_type(types.DS8K_SYSTEM)
@@ -44,25 +51,25 @@ tserep_list_response_json = get_response_list_json_by_type(types.DS8K_TSEREP)
 eserep_list_response_json = get_response_list_json_by_type(types.DS8K_ESEREP)
 volume_list_response = get_response_list_data_by_type(types.DS8K_VOLUME)
 volume_list_response_json = get_response_list_json_by_type(types.DS8K_VOLUME)
-resource_group_list_response = \
-    get_response_list_data_by_type(types.DS8K_RESOURCE_GROUP)
-resource_group_list_response_json = \
-    get_response_list_json_by_type(types.DS8K_RESOURCE_GROUP)
+resource_group_list_response = get_response_list_data_by_type(types.DS8K_RESOURCE_GROUP)
+resource_group_list_response_json = get_response_list_json_by_type(
+    types.DS8K_RESOURCE_GROUP
+)
 
 
 class TestRootResourceMixin(TestDS8KWithConnect):
-
     @httpretty.activate
     def test_get_system(self):
         url = '/systems'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=system_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=system_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         sys = self.system.get_system()
-        self.assertIsInstance(sys, System)
+        assert isinstance(sys, System)
         sys_data = system_list_response['data']['systems'][0]
         self._assert_equal_between_dict_and_resource(sys_data, sys)
 
@@ -78,29 +85,29 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def _test_get_lss_by_type(self, lss_type='fb'):
         url = '/lss'
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=lss_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=lss_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         self.system.get_lss(lss_type=lss_type)
-        self.assertEqual([lss_type, ],
-                         httpretty.last_request().querystring.get('type')
-                         )
+        assert [lss_type] == httpretty.last_request().querystring.get('type')
 
     @httpretty.activate
     def test_get_lss_by_id(self):
         lss_id = '00'
-        url = '/lss/{}'.format(lss_id)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=lss_a_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        url = f'/lss/{lss_id}'
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=lss_a_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         lss = self.system.get_lss_by_id(lss_id)
-        self.assertIsInstance(lss, LSS)
+        assert isinstance(lss, LSS)
         lss_data = lss_a_response['data']['lss'][0]
         self._assert_equal_between_dict_and_resource(lss_data, lss)
 
@@ -161,14 +168,14 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     def test_get_flashcopies(self):
         self._test_resource_list_by_route(types.DS8K_FLASHCOPY)
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     def test_get_flashcopy(self):
         self._test_resource_by_route(types.DS8K_FLASHCOPY)
 
     def test_get_pprc(self):
         self._test_resource_list_by_route(types.DS8K_PPRC)
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     def test_get_pprc_by_id(self):
         self._test_resource_by_route(types.DS8K_PPRC)
 
@@ -181,57 +188,58 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_delete_tserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/tserep'.format(pool_name)
-        httpretty.register_uri(httpretty.DELETE,
-                               self.domain + self.base_url + url,
-                               body=action_response_json,
-                               content_type='application/json',
-                               status=204,
-                               )
+        url = f'/pools/{pool_name}/tserep'
+        httpretty.register_uri(
+            httpretty.DELETE,
+            self.domain + self.base_url + url,
+            body=action_response_json,
+            content_type='application/json',
+            status=HTTPStatus.NO_CONTENT,
+        )
         self.system.delete_tserep_by_pool(pool_name)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_delete_eserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/eserep'.format(pool_name)
+        url = f'/pools/{pool_name}/eserep'
         httpretty.register_uri(
-                               httpretty.DELETE,
-                               self.domain + self.base_url + url,
-                               body=action_response_json,
-                               content_type='application/json',
-                               status=204,
-                               )
+            httpretty.DELETE,
+            self.domain + self.base_url + url,
+            body=action_response_json,
+            content_type='application/json',
+            status=HTTPStatus.NO_CONTENT,
+        )
         self.system.delete_eserep_by_pool(pool_name)
-        self.assertEqual(httpretty.DELETE, httpretty.last_request().method)
+        assert httpretty.last_request().method == httpretty.DELETE
 
     @httpretty.activate
     def test_get_tserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/tserep'.format(pool_name)
+        url = f'/pools/{pool_name}/tserep'
         httpretty.register_uri(
-                               httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=tserep_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=tserep_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         tserep = self.system.get_tserep_by_pool(pool_name)
-        self.assertIsInstance(tserep, TSERep)
+        assert isinstance(tserep, TSERep)
 
     @httpretty.activate
     def test_get_eserep_by_pool(self):
         pool_name = 'testpool_0'
-        url = '/pools/{}/eserep'.format(pool_name)
+        url = f'/pools/{pool_name}/eserep'
         httpretty.register_uri(
-                               httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=eserep_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=eserep_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         eserep = self.system.get_eserep_by_pool(pool_name)
-        self.assertIsInstance(eserep, ESERep)
+        assert isinstance(eserep, ESERep)
 
     def test_get_volumes(self):
         self._test_resource_list_by_route(types.DS8K_VOLUME)
@@ -242,56 +250,50 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     @httpretty.activate
     def test_get_volumes_by_host(self):
         host_name = 'testhost'
-        url = '/hosts/{}/volumes'.format(host_name)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=volume_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        url = f'/hosts/{host_name}/volumes'
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=volume_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         vol_list = self.system.get_volumes_by_host(host_name=host_name)
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(
-                         len(vol_list),
-                         len(volume_list_response['data']['volumes'])
-                         )
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
 
     @httpretty.activate
     def test_get_volumes_by_lss(self):
         lss_id = '00'
-        url = '/lss/{}/volumes'.format(lss_id)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=volume_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        url = f'/lss/{lss_id}/volumes'
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=volume_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         vol_list = self.system.get_volumes_by_lss(lss_id=lss_id)
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(
-                         len(vol_list),
-                         len(volume_list_response['data']['volumes'])
-                         )
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
 
     @httpretty.activate
     def test_get_volumes_by_pool(self):
         pool_id = 'P0'
-        url = '/pools/{}/volumes'.format(pool_id)
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=volume_list_response_json,
-                               content_type='application/json',
-                               status=200,
-                               )
+        url = f'/pools/{pool_id}/volumes'
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=volume_list_response_json,
+            content_type='application/json',
+            status=HTTPStatus.OK,
+        )
         vol_list = self.system.get_volumes_by_pool(pool_id=pool_id)
-        self.assertIsInstance(vol_list, list)
-        self.assertIsInstance(vol_list[0], Volume)
-        self.assertEqual(
-                         len(vol_list),
-                         len(volume_list_response['data']['volumes'])
-                         )
+        assert isinstance(vol_list, list)
+        assert isinstance(vol_list[0], Volume)
+        assert len(vol_list) == len(volume_list_response['data']['volumes'])
 
     def test_get_resource_groups(self):
         self._test_resource_list_by_route(types.DS8K_RESOURCE_GROUP)

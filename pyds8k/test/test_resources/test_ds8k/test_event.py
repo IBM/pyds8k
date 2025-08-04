@@ -14,67 +14,69 @@
 # limitations under the License.
 ##############################################################################
 
+from datetime import datetime, timezone
+
 import httpretty
-from datetime import datetime
-from .base import TestDS8KWithConnect
-from pyds8k.test.data import get_response_list_json_by_type
-from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
+import pytest
+
 from pyds8k.exceptions import InvalidArgumentError
+from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
+from pyds8k.test.data import get_response_list_json_by_type
+
+from .base import TestDS8KWithConnect
 
 event_list_response = get_response_list_json_by_type(DS8K_EVENT)
 
 
 class TestHost(TestDS8KWithConnect):
-
     @httpretty.activate
     def test_get_events_by_filter_set_severity(self):
         url = '/events'
 
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=event_list_response,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=event_list_response,
+            content_type='application/json',
+        )
         self.system.get_events_by_filter(warning=True, error=True)
         req = httpretty.last_request()
-        self.assertIsNotNone(req.querystring)
-        self.assertIn('severity', req.querystring)
-        self.assertEqual('warning,error', req.querystring.get('severity')[0])
+        assert req.querystring is not None
+        assert 'severity' in req.querystring
+        assert req.querystring.get('severity')[0] == 'warning,error'
 
     @httpretty.activate
     def test_get_events_by_filter_set_date_error(self):
         url = '/events'
 
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=event_list_response,
-                               content_type='application/json',
-                               )
-        with self.assertRaises(InvalidArgumentError):
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=event_list_response,
+            content_type='application/json',
+        )
+        with pytest.raises(InvalidArgumentError):
             self.system.get_events_by_filter(before='test')
 
     @httpretty.activate
     def test_get_events_by_filter_set_date(self):
         url = '/events'
-        before = datetime(2015, 4, 1)
-        after = datetime(2015, 1, 1)
+        before = datetime(2015, 4, 1, tzinfo=timezone.utc)
+        after = datetime(2015, 1, 1, tzinfo=timezone.utc)
 
-        httpretty.register_uri(httpretty.GET,
-                               self.domain + self.base_url + url,
-                               body=event_list_response,
-                               content_type='application/json',
-                               )
+        httpretty.register_uri(
+            httpretty.GET,
+            self.domain + self.base_url + url,
+            body=event_list_response,
+            content_type='application/json',
+        )
         self.system.get_events_by_filter(before=before, after=after)
         req = httpretty.last_request()
-        self.assertIsNotNone(req.querystring)
-        self.assertIn('before', req.querystring)
-        self.assertIn('after', req.querystring)
+        assert req.querystring is not None
+        assert 'before' in req.querystring
+        assert 'after' in req.querystring
 
         # httpretty unquote "+" and " " in a wrong way,
         # so I can not verify time zone here.
-        self.assertEqual('2015-04-01T00:00:00',
-                         req.querystring.get('before')[0][:-5]
-                         )
-        self.assertEqual('2015-01-01T00:00:00',
-                         req.querystring.get('after')[0][:-5]
-                         )
+        assert req.querystring.get('before')[0][:-5] == '2015-04-01T00:00:00'
+        assert req.querystring.get('after')[0][:-5] == '2015-01-01T00:00:00'

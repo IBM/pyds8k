@@ -14,9 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-from io import StringIO
 import sys
 from contextlib import contextmanager
+from io import StringIO
+from pathlib import Path
 
 
 @contextmanager
@@ -26,3 +27,37 @@ def capture_sys_stderr_and_return(command, *args, **kwargs):
     sys.stderr.seek(0)
     yield sys.stderr.read()
     sys.stderr = err
+
+
+def get_mocks(path):
+    """Get a set of mock file names.
+
+    Args:
+        path (str): The file path
+
+    Returns:
+        set: A set containing mock names.
+    """
+    _path = Path(path).parent.absolute()
+    return {
+        resource.stem
+        for resource in _path.iterdir()
+        if resource.is_file() and not resource.stem.startswith('__init__')
+    }
+
+
+def get_dir_mocks(path):
+    """Get a list of mock directory names.
+
+    Args:
+        path (str): The file path
+
+    Returns:
+        list: A list of directory names.
+    """
+    _path = Path(path).parent.absolute()
+    return [
+        resource.name
+        for resource in _path.iterdir()
+        if resource.is_dir() and resource.name != '__pycache__'
+    ]

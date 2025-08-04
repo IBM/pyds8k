@@ -14,71 +14,48 @@
 # limitations under the License.
 ##############################################################################
 
-ALL = {"server":
-       {
-           "status": "ok",
-           "code": "",
-           "message": "Operation done successfully."
-       },
-       "counts":
-       {
-           "data_counts": 2,
-           "total_counts": 2
-       },
-       "data":
-       {
-           "users":
-           [
-               {
-                   "name": "superuser",
-                   "link":
-                   {
-                       "rel": "self",
-                       "href": "https://localhost:8088/api/v1/users/superuser"
-                   },
-                   "state": "active",
-                   "group": ["Administrator"],
-               },
-               {
-                   "name": "admin",
-                   "link":
-                   {
-                       "rel": "self",
-                       "href": "https://localhost:8088/api/v1/users/admin"
-                   },
-                   "state": "active",
-                   "group": ["Administrator"],
-               },
-           ]
-       }
-       }
+ALL = {
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 2, "total_counts": 2},
+    "data": {
+        "users": [
+            {
+                "name": "superuser",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/users/superuser",
+                },
+                "state": "active",
+                "group": ["Administrator"],
+            },
+            {
+                "name": "admin",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/users/admin",
+                },
+                "state": "active",
+                "group": ["Administrator"],
+            },
+        ]
+    },
+}
 
 
-ONE = {"server":
-       {
-           "status": "ok",
-           "code": "",
-           "message": "Operation done successfully."
-       },
-       "counts":
-       {
-           "data_counts": 1,
-           "total_counts": 1
-       },
-       "data":
-       {
-           "users":
-           [
-               {
-                   "name": "superuser",
-                   "link":
-                   {
-                       "rel": "self",
-                       "href": "https://localhost:8088/api/v1/users/superuser"
-                   },
-                   "state": "active",
-                   "group": ["Administrator"],
-               },
-           ]
-        }
-       }
+ONE = {
+    "server": {"status": "ok", "code": "", "message": "Operation done successfully."},
+    "counts": {"data_counts": 1, "total_counts": 1},
+    "data": {
+        "users": [
+            {
+                "name": "superuser",
+                "link": {
+                    "rel": "self",
+                    "href": "https://localhost:8088/api/v1/users/superuser",
+                },
+                "state": "active",
+                "group": ["Administrator"],
+            },
+        ]
+    },
+}
