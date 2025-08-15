@@ -15,11 +15,11 @@
 ##############################################################################
 
 from datetime import datetime
-from zoneinfo import ZoneInfo
 
 import pytest
 import responses
 from responses import matchers
+from tzlocal import get_localzone
 
 from pyds8k.exceptions import InvalidArgumentError
 from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
@@ -60,8 +60,9 @@ class TestHost(TestDS8KWithConnect):
     @responses.activate
     def test_get_events_by_filter_set_date(self):
         url = '/events'
-        before = datetime(2015, 4, 1, tzinfo=ZoneInfo("America/Phoenix"))
-        after = datetime(2015, 1, 1, tzinfo=ZoneInfo("America/Phoenix"))
+        local_time = get_localzone()
+        before = datetime(2015, 4, 1, tzinfo=local_time)
+        after = datetime(2015, 1, 1, tzinfo=local_time)
         params = {
             'before': before.astimezone().strftime('%Y-%m-%dT%X%z'),
             'after': after.astimezone().strftime('%Y-%m-%dT%X%z'),

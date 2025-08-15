@@ -32,6 +32,8 @@ test = [
     "pytest-cov>=3.0.0",
     "responses>=0.24.0",
     "tox>=4.22.0",
+    "tzdata>=2025.2",
+    "tzlocal>=5.3.1",
 ]
 
 [build-system]
