@@ -1490,7 +1490,6 @@ class RootHMCMixin:
         C=None,  # noqa: N803
         ST=None,  # noqa: N803
         L=None,  # noqa: N803
-        days=365,
         email=None,
         force=True,
     ):
@@ -1509,8 +1508,6 @@ class RootHMCMixin:
             is located.  Do not abbreviate this value. Defaults to None.
             L (str): Optional. The city or town where your organization is
             located. Defaults to None.
-            days (int): Optional. The number of days the certificate is valid.
-            Defaults to 365.
             email (str): Optional. An email contact address within your
             organization. Defaults to None.
             force (bool): Optional. Force the creation of a new CSR if one is
@@ -1531,7 +1528,6 @@ class RootHMCMixin:
                 "C": C,
                 "ST": ST,
                 "L": L,
-                "days": days,
                 "email": email,
                 "force": str(force),
             }

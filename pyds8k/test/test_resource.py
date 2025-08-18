@@ -17,8 +17,8 @@
 import json
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
 
 from pyds8k import messages
 from pyds8k.base import DefaultManager, Resource
@@ -73,20 +73,18 @@ class TestResource(base.TestCaseWithConnect):
         assert vol2.url == url2
         assert vol3.url == url1
 
-    @httpretty.activate
+    @responses.activate
     def test_toUrl(self):  # noqa: N802
         domain = self.client.domain
         url = '/default/a/default/b/default/c'
         method = 'attach'
         body = {'test': 'test'}
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url + '/' + method,
             body=custom_method_get_json,
             content_type='application/json',
         )
-        httpretty.register_uri(
-            httpretty.POST,
+        responses.post(
             domain + self.base_url + url + '/' + method,
             body=action_response_json,
             content_type='application/json',
@@ -100,45 +98,38 @@ class TestResource(base.TestCaseWithConnect):
         assert vol.url == url
         assert body2 == action_response['server']
 
-    @httpretty.activate
+    @responses.activate
     def test_create_from_template_and_save(self):
         domain = self.client.domain
         url = '/default/a/default/b/default'
-        httpretty.register_uri(
-            httpretty.POST,
+        responses.post(
             domain + self.base_url + url,
-            responses=[
-                httpretty.Response(
-                    body=action_response_json,
-                    content_type='application/json',
-                    adding_headers={'Location': self.base_url + url + '/vol1_id'},
-                    status=HTTPStatus.CREATED,
-                ),
-                httpretty.Response(
-                    body=action_response_json,
-                    content_type='application/json',
-                    adding_headers={'Location': self.base_url + url + '/vol2_id'},
-                    status=HTTPStatus.CREATED,
-                ),
-                httpretty.Response(
-                    body=action_response_json,
-                    content_type='application/json',
-                    adding_headers={'Location': self.base_url + url + '/vol3_id'},
-                    status=HTTPStatus.CREATED,
-                ),
-            ],
+            body=action_response_json,
+            content_type='application/json',
+            headers={'Location': self.base_url + url + '/vol1_id'},
+            status=HTTPStatus.CREATED.value,
         )
-        httpretty.register_uri(
-            httpretty.PUT,
+        responses.post(
+            domain + self.base_url + url,
+            body=action_response_json,
+            content_type='application/json',
+            headers={'Location': self.base_url + url + '/vol2_id'},
+            status=HTTPStatus.CREATED.value,
+        )
+        responses.post(
+            domain + self.base_url + url,
+            body=action_response_json,
+            content_type='application/json',
+            headers={'Location': self.base_url + url + '/vol3_id'},
+            status=HTTPStatus.CREATED.value,
+        )
+
+        responses.put(
             domain + self.base_url + url + '/vol3_id',
-            responses=[
-                httpretty.Response(
-                    body=action_response_json,
-                    content_type='application/json',
-                    adding_headers={'Location': self.base_url + url + '/vol3_id'},
-                    status=HTTPStatus.CREATED,
-                ),
-            ],
+            body=action_response_json,
+            content_type='application/json',
+            headers={'Location': self.base_url + url + '/vol3_id'},
+            status=HTTPStatus.CREATED.value,
         )
         vol1 = (
             self.resource.one(DEFAULT, 'a')
@@ -201,20 +192,18 @@ class TestResource(base.TestCaseWithConnect):
     def test_create(self):
         pass
 
-    @httpretty.activate
+    @responses.activate
     def test_lazy_loading(self):
         domain = self.client.domain
         url_list = '/default'
         vol_id = default_a_response['data']['default'][0]['id']
         url_a = f'/default/{vol_id}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url_list,
             body=default_list_response_json,
             content_type='application/json',
         )
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url_a,
             body=default_a_response_json,
             content_type='application/json',
@@ -343,19 +332,17 @@ class TestResource(base.TestCaseWithConnect):
         re1._add_details(info={'key1': 'val1'}, force=True)
         assert re1.key1 == 'val1'
 
-    @httpretty.activate
+    @responses.activate
     def test_list(self):
         domain = self.client.domain
         url = '/default'
         url1 = default_a_response['data']['default'][0]['link']['href']
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url,
             body=default_list_response_json,
             content_type='application/json',
         )
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url1,
             body=default_a_response_json,
             content_type='application/json',
@@ -375,13 +362,12 @@ class TestResource(base.TestCaseWithConnect):
         vol1._template = {'id': '', 'name': ''}
         assert vol1.name == default_a_response['data']['default'][0]['name']
 
-    @httpretty.activate
+    @responses.activate
     def test_get(self):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url,
             body=default_a_response_json,
             content_type='application/json',
@@ -398,14 +384,14 @@ class TestResource(base.TestCaseWithConnect):
         assert vol1.url == default_a_response['data']['default'][0]['link']['href']
         assert vol1.name == default_a_response['data']['default'][0]['name']
 
-    @httpretty.activate
+    @responses.activate
     def test_post(self):
         # post append: tested in test_create_from_template_and_save
 
         # post: tested in test_toUrl
         pass
 
-    @httpretty.activate
+    @responses.activate
     def test_put(self):
         # put new: tested in test_create_from_template_and_save
 
@@ -413,18 +399,16 @@ class TestResource(base.TestCaseWithConnect):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url,
             body=default_a_response_json,
             content_type='application/json',
         )
-        httpretty.register_uri(
-            httpretty.PUT,
+        responses.put(
             domain + self.base_url + url,
             body=json.dumps({'status': 'updated'}),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
@@ -434,23 +418,21 @@ class TestResource(base.TestCaseWithConnect):
         assert data == {'status': 'updated'}
         assert resp.status_code == HTTPStatus.OK
 
-    @httpretty.activate
+    @responses.activate
     def test_patch(self):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url,
             body=default_a_response_json,
             content_type='application/json',
         )
-        httpretty.register_uri(
-            httpretty.PATCH,
+        responses.patch(
             domain + self.base_url + url,
             body=json.dumps({'status': 'updated'}),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
@@ -462,28 +444,26 @@ class TestResource(base.TestCaseWithConnect):
         assert data == {'status': 'updated'}
         assert resp.status_code == HTTPStatus.OK
 
-    @httpretty.activate
+    @responses.activate
     def test_delete(self):
         domain = self.client.domain
         url = default_a_response['data']['default'][0]['link']['href']
         vol_id = default_a_response['data']['default'][0]['id']
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             domain + self.base_url + url,
             body=default_a_response_json,
             content_type='application/json',
         )
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             domain + self.base_url + url,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
 
         vol = self.resource.one(DEFAULT, vol_id).get()
         assert vol.name == default_a_response['data']['default'][0]['name']
         resp, data = vol.delete()
-        assert resp.status_code == HTTPStatus.NO_CONTENT
+        assert resp.status_code == HTTPStatus.OK
         assert data == DEFAULT_SUCCESS_BODY_DICT
 
     def test_save(self):

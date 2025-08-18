@@ -14,10 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
@@ -36,9 +36,10 @@ class TestHmcCertificateSelfsigned(TestDS8KWithConnect):
     def setUp(self):
         super().setUp()
 
-    @httpretty.activate
+    @responses.activate
     def test_create_hmc_selfsigned_certificate(self):
         url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}/{DS8K_HMC_CERTIFICATE_SELFSIGNED}'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         O = "IBM"  # noqa: E741, N806
         OU = "DS8000"  # noqa: N806
@@ -47,38 +48,34 @@ class TestHmcCertificateSelfsigned(TestDS8KWithConnect):
         L = "Armok"  # noqa: N806
         email = "ansible@fake_server.com"
         days = 1
+        restart = 'False'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser(
-                {
-                    'O': O,
-                    'OU': OU,
-                    'C': C,
-                    'ST': ST,
-                    'L': L,
-                    'email': email,
-                    'days': days,
-                }
-            )
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (HTTPStatus.CREATED, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                'O': O,
+                'OU': OU,
+                'C': C,
+                'ST': ST,
+                'L': L,
+                'days': days,
+                'email': email,
+                'restart': restart,
+            }
         )
+
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=action_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
+        )
+
         # Way 1
         resp1 = self.system.create_hmc_selfsigned_certificate(
             O=O, OU=OU, C=C, ST=ST, L=L, email=email, days=days
         )
 
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert resp1[0].status_code == HTTPStatus.CREATED
         assert resp1[1] == action_response['server']

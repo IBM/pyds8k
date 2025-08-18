@@ -16,7 +16,8 @@
 
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.base import Resource, get_resource_and_manager_class_by_route
 from pyds8k.client.ds8k.v1.sc_client import SCClient
@@ -25,7 +26,6 @@ from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.test.base import TestCaseWithConnect
 from pyds8k.test.data import (
     create_mappings_response_json,
-    get_request_json_body,
     get_response_data_by_type,
     get_response_json_by_type,
     get_response_list_data_by_type,
@@ -44,7 +44,7 @@ volume_a_res = get_response_data_by_type(types.DS8K_VOLUME)
 class TestClient(TestUtils, TestCaseWithConnect):
     def setUp(self):
         super().setUp()
-        self.rest_client = SCClient('localhost:8088/api/', 'admin', 'admin')
+        self.rest_client = SCClient('https://localhost:8088/api/', 'admin', 'admin')
 
     def _assert_equal_between_dicts(self, returned_dict, origin_dict):
         for key, value in origin_dict.items():
@@ -71,43 +71,38 @@ class TestClient(TestUtils, TestCaseWithConnect):
             base_route, resource_response, id_field
         )
         url = '/{}/{}'.format(route.replace('.', '/'), route_id)
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=get_response_json_by_type(base_route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         return route_id
 
     def _set_sub_resource(self, route, route_id, sub_route):
         sub_route_url = f'/{route}/{route_id}/{sub_route}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + sub_route_url,
             body=get_response_list_json_by_type(sub_route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
 
     def _post_sub_resource(self, route, route_id, sub_route, body):
         sub_route_url = f'/{route}/{route_id}/{sub_route}'
+        uri = f'{self.domain}{self.base_url}{sub_route_url}'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{sub_route_url}"
+        resq = RequestParser(body)
 
-            resq = RequestParser(body)
-            assert get_request_json_body(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, create_mappings_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + sub_route_url,
-            body=_verify_request,
+        responses.post(
+            uri,
+            status=HTTPStatus.OK,
+            body=create_mappings_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
 
-    @httpretty.activate
+    @responses.activate
     def _test_resource_by_route(self, route, func, sub_resource=None):
         if sub_resource is None:
             sub_resource = []
@@ -123,7 +118,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         ).get_representations()[0]
         self._assert_equal_between_dicts(res, rep)
 
-    @httpretty.activate
+    @responses.activate
     def _test_sub_resource(self, route, sub_route, func):
         route_id = self._set_resource_list(route)
         self._set_sub_resource(route, route_id, sub_route)
@@ -135,7 +130,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         ).get_representations()[0]
         self._assert_equal_between_dicts(res, rep)
 
-    @httpretty.activate
+    @responses.activate
     def _test_resource_list_by_route(self, route, func=None):
         prefix = f'{self.client.service_type}.{self.client.service_version}'
         res_class, _ = get_resource_and_manager_class_by_route(
@@ -146,12 +141,11 @@ class TestClient(TestUtils, TestCaseWithConnect):
             raise Exception(msg)
         url = '/{}'.format(route.replace('.', '/'))
         base_route = route.split('.')[-1]
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=get_response_list_json_by_type(base_route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         func = func or 'get_{}'.format(route.replace('.', '_'))
         res = getattr(self.rest_client, func)()
@@ -162,7 +156,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
         ).get_representations()[0]
         self._assert_equal_between_dicts(res[0], rep)
 
-    @httpretty.activate
+    @responses.activate
     def _test_sub_resource_post(self, route, sub_route, func, body, *params):
         route_id = self._set_resource_list(route)
         self._post_sub_resource(route, route_id, sub_route, body)
@@ -173,12 +167,11 @@ class TestClient(TestUtils, TestCaseWithConnect):
         ).get_representations()[0]
         self._assert_equal_between_obj_and_dict(res, rep)
 
-    @httpretty.activate
+    @responses.activate
     def test_get_system(self):
         sys_url = '/systems'
 
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + sys_url,
             body=system_list_res_json,
             content_type='application/json',
@@ -271,11 +264,7 @@ class TestClient(TestUtils, TestCaseWithConnect):
     def test_map_volume_to_host(self):
         volume_id = '000B'
         lunid = '09'
-        body = {
-            "mappings": [
-                {lunid: volume_id},
-            ]
-        }
+        body = {"mappings": [{lunid: volume_id}]}
         self._test_sub_resource_post(
             types.DS8K_HOST,
             types.DS8K_VOLMAP,

@@ -14,10 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
@@ -35,9 +35,10 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
     def setUp(self):
         super().setUp()
 
-    @httpretty.activate
+    @responses.activate
     def test_create_hmc_certificate_csr(self):
         url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}/{DS8K_HMC_CERTIFICATE_CSR}'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         O = "IBM"  # noqa: E741, N806
         OU = "DS8000"  # noqa: N806
@@ -47,46 +48,35 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
         email = "ansible@fake_server.com"
         force = "True"
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser(
-                {
-                    'O': O,
-                    'OU': OU,
-                    'C': C,
-                    'ST': ST,
-                    'L': L,
-                    'email': email,
-                    'force': force,
-                }
-            )
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (
-                HTTPStatus.CREATED,
-                headers,
-                create_hmc_certificate_csr_response_json,
-            )
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                'O': O,
+                'OU': OU,
+                'C': C,
+                'ST': ST,
+                'L': L,
+                'email': email,
+                'force': force,
+            }
         )
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_hmc_certificate_csr_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
+        )
+
         # Way 1
         resp1 = self.system.create_hmc_csr(
             O=O, OU=OU, C=C, ST=ST, L=L, email=email, force=force
         )
 
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert '-----BEGIN CERTIFICATE REQUEST-----' in resp1
 
         # ???: Doesn't work because HmcCertificateCsr doesn't have a template?
-        # # Way 2
+        # Way 2
         # hmc_certificate_csr = self.system.all(
         #     '{}.{}.{}'.format(DS8K_HMC,
         #                       DS8K_HMC_CERTIFICATE,
@@ -100,6 +90,6 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
         #                                    email=email,
         #                                    force=force)
         # resp2, data2 = hmc_certificate_csr2.post()
-        # self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        # assert responses.calls[-1].request.method == responses.POST
         # # self.assertIsInstance(data2[0], HmcCertificateCsr)
-        # self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
+        # assert resp2.status_code == HTTPStatus.CREATED

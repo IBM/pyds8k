@@ -18,7 +18,7 @@ import operator
 from functools import cmp_to_key, partial
 from http import HTTPStatus
 
-import httpretty
+import responses
 
 from pyds8k.base import Resource, get_resource_and_manager_class_by_route
 from pyds8k.resources.ds8k.v1.common import types
@@ -68,7 +68,7 @@ class TestUtils:
         for index, re in enumerate(resource_list):
             self._assert_equal_between_dict_and_resource(dict_list[index], re)
 
-    @httpretty.activate
+    @responses.activate
     def _test_resource_by_route(self, route):
         resource_response = get_response_data_by_type(route)
         res_class = self._get_class_by_name(route)
@@ -77,31 +77,29 @@ class TestUtils:
             route, resource_response, id_field
         )
         url = f'/{route}/{route_id}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=get_response_json_by_type(route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         res = getattr(self.system, f'get_{route}')(route_id)
         assert isinstance(res, res_class)
         res_data = resource_response['data'][route][0]
         self._assert_equal_between_dict_and_resource(res_data, res)
 
-    @httpretty.activate
+    @responses.activate
     def _test_resource_list_by_route(self, route, cmp_func=None):
         res_list_resp = get_response_list_data_by_type(route)
         url = f'/{route}'
         res_class = self._get_class_by_name(route)
         id_field = res_class.id_field
         cmp_f = cmp_func if cmp_func else self._get_sort_func_by(id_field)
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=get_response_list_json_by_type(route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         res_list = getattr(self.system, f'get_{route}')()
         assert isinstance(res_list[0], res_class)
@@ -113,7 +111,7 @@ class TestUtils:
             res_list_data, res_list
         )
 
-    @httpretty.activate
+    @responses.activate
     def _test_sub_resource_list_by_route(self, route, sub_route, cmp_func=None):
         sub_res_list_resp = get_response_list_data_by_type(sub_route)
         res_resp = get_response_data_by_type(route)
@@ -123,19 +121,17 @@ class TestUtils:
         route_url = f'/{route}/{route_id}'
         sub_route_url = f'/{route}/{route_id}/{sub_route}'
         cmp_f = cmp_func if cmp_func else self._sorted_by_id
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + sub_route_url,
             body=get_response_list_json_by_type(sub_route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + route_url,
             body=get_response_json_by_type(route),
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         try:
             res = getattr(self.system, f'get_{route}')(route_id)

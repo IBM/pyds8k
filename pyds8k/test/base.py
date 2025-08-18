@@ -23,7 +23,7 @@ from pyds8k.httpclient import HTTPClient
 class TestCaseWithConnect(unittest.TestCase):
     def setUp(self):
         self.client = HTTPClient(
-            "http://localhost:8088/api/",
+            "https://localhost:8088/api/",  # FIXME: requests required https, not sure why
             'admin',
             'admin',
             service_type='ds8k',

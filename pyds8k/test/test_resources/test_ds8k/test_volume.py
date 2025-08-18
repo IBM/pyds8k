@@ -17,8 +17,9 @@
 import json
 from http import HTTPStatus
 
-import httpretty
 import pytest
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.exceptions import FieldReadOnly
@@ -113,7 +114,7 @@ class TestVolume(TestDS8KWithConnect):
         for vol, value in enumerate(volume.representation[types.DS8K_PPRC]):
             assert value == getattr(pprc[vol], pprc[vol].id_field)
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_volume(self):
         response_a_json = get_response_json_by_type(DS8K_VOLUME)
         response_a = get_response_data_by_type(DS8K_VOLUME)
@@ -121,84 +122,79 @@ class TestVolume(TestDS8KWithConnect):
             DS8K_VOLUME, response_a, Volume.id_field
         )
         url = f'/volumes/{name}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
+
         # Way 1
         _ = self.system.delete_volume(name)
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
         # self.assertEqual(resp1, action_response['server'])
 
         # Way 2
         volume = self.system.get_volume(name)
         assert isinstance(volume, Volume)
         resp2, _ = volume.delete()
-        assert resp2.status_code == HTTPStatus.NO_CONTENT
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert resp2.status_code == HTTPStatus.OK.value
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_update_volume_rename(self):
         volume_id = 'a_0000'
         url = f'/volumes/{volume_id}'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         new_name = 'new_name'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'name': new_name})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'name': new_name})
+        responses.put(
+            uri,
+            status=HTTPStatus.OK,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
+
         res = self.system.update_volume_rename(volume_id, new_name)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert res == action_response['server']
 
         vol = self.system.one(DS8K_VOLUME, volume_id, rebuild_url=True)
         vol._add_details({'name': volume_id})
         vol.name = new_name
         _, body = vol.save()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert body == action_response['server']
 
-    @httpretty.activate
+    @responses.activate
     def test_update_volume_extend(self):
         volume_id = 'a_0000'
         url = f'/volumes/{volume_id}'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         new_size = '100'
         captype = 'gib'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'cap': new_size, 'captype': captype})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'cap': new_size, 'captype': captype})
+        responses.put(
+            uri,
+            status=HTTPStatus.OK,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
+
         res = self.system.update_volume_extend(volume_id, new_size, captype)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert res == action_response['server']
 
         vol = self.system.one(DS8K_VOLUME, volume_id, rebuild_url=True)
@@ -206,70 +202,67 @@ class TestVolume(TestDS8KWithConnect):
         vol.cap = new_size
         vol.captype = captype
         _, body = vol.save()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert body == action_response['server']
 
-    @httpretty.activate
+    @responses.activate
     def test_update_volume_move(self):
         volume_id = 'a_0000'
         url = f'/volumes/{volume_id}'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         new_pool = 'new_pool'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'pool': new_pool})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'pool': new_pool})
+        responses.put(
+            uri,
+            status=HTTPStatus.OK,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
+
         res = self.system.update_volume_move(volume_id, new_pool)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert res == action_response['server']
 
         vol = self.system.one(DS8K_VOLUME, volume_id, rebuild_url=True)
         vol._add_details({'name': volume_id})
         vol.pool = new_pool
         _, body = vol.save()
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert body == action_response['server']
 
     @pytest.mark.skip
-    @httpretty.activate
+    @responses.activate
     def test_update_volume_map(self):
         volume_id = 'a_0000'
         url = f'/volumes/{volume_id}'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         host_name = 'host1'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'host': host_name})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'host': host_name})
+        responses.put(
+            uri,
+            status=HTTPStatus.OK,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
+
         res = self.system.update_volume_map(volume_id, host_name)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].method == responses.PUT
         assert res == action_response['server']
 
         vol = self.system.one(DS8K_VOLUME, volume_id, rebuild_url=True)
         vol._add_details({'name': volume_id})
         vol.host = host_name
 
-    @httpretty.activate
+    @responses.activate
     def test_create_volume(self):
         url = '/volumes'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         name = 'volume1'
         cap = '10'
@@ -279,32 +272,25 @@ class TestVolume(TestDS8KWithConnect):
         tp = 'ese'
         lss = '00'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser(
-                {
-                    'name': name,
-                    'cap': cap,
-                    'pool': pool,
-                    'stgtype': stgtype,
-                    'captype': captype,
-                    'lss': lss,
-                    'tp': tp,
-                }
-            )
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (HTTPStatus.CREATED, headers, create_volume_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                'name': name,
+                'cap': cap,
+                'captype': captype,
+                'stgtype': stgtype,
+                'pool': pool,
+                'lss': lss,
+                'tp': tp,
+            }
         )
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_volume_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
+        )
+
         # Way 1
         resp1 = self.system.create_volume(
             name=name,
@@ -315,7 +301,7 @@ class TestVolume(TestDS8KWithConnect):
             lss=lss,
             tp=tp,
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volume)
 
         # Way 2
@@ -330,7 +316,7 @@ class TestVolume(TestDS8KWithConnect):
             tp=tp,
         )
         resp2, data2 = new_vol2.posta()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data2[0], Volume)
         assert resp2.status_code == HTTPStatus.CREATED
 
@@ -346,7 +332,7 @@ class TestVolume(TestDS8KWithConnect):
             tp=tp,
         )
         resp3, data3 = new_vol3.save()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data3[0], Volume)
         assert resp3.status_code == HTTPStatus.CREATED
 
@@ -354,9 +340,10 @@ class TestVolume(TestDS8KWithConnect):
         # Don't init a resource instance by yourself when create new.
         # use .create() instead.
 
-    @httpretty.activate
+    @responses.activate
     def test_create_volumes(self):
         url = '/volumes'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         name = 'volume1'
         quantity = '10'
@@ -368,56 +355,43 @@ class TestVolume(TestDS8KWithConnect):
         tp = 'ese'
         lss = '00'
 
-        def _verify_request1(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
+        resq = RequestParser(
+            {
+                'name': name,
+                'cap': cap,
+                'pool': pool,
+                'stgtype': stgtype,
+                'captype': captype,
+                'lss': lss,
+                'tp': tp,
+                'quantity': quantity,
+            }
+        )
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_volumes_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
+        )
 
-            resq = RequestParser(
-                {
-                    'name': name,
-                    'cap': cap,
-                    'pool': pool,
-                    'stgtype': stgtype,
-                    'captype': captype,
-                    'lss': lss,
-                    'tp': tp,
-                    'quantity': quantity,
-                }
-            )
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.CREATED, headers, create_volumes_response_json)
-
-        def _verify_request2(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser(
-                {
-                    'namecol': namecol,
-                    'cap': cap,
-                    'pool': pool,
-                    'stgtype': stgtype,
-                    'name': '',
-                    'quantity': '',
-                    'captype': captype,
-                    'lss': lss,
-                    'tp': tp,
-                }
-            )
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.CREATED, headers, create_volumes_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            responses=[
-                httpretty.Response(
-                    body=_verify_request1,
-                    content_type='application/json',
-                ),
-                httpretty.Response(
-                    body=_verify_request2,
-                    content_type='application/json',
-                ),
-            ],
+        resq = RequestParser(
+            {
+                'namecol': namecol,
+                'cap': cap,
+                'captype': captype,
+                'stgtype': stgtype,
+                'pool': pool,
+                'lss': lss,
+                'tp': tp,
+            }
+        )
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_volumes_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
 
         resp1 = self.system.create_volumes_with_same_prefix(
@@ -430,24 +404,25 @@ class TestVolume(TestDS8KWithConnect):
             lss=lss,
             tp=tp,
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volume)
 
         resp2 = self.system.create_volumes_without_same_prefix(
             namecol, cap, pool, stgtype=stgtype, captype=captype, lss=lss, tp=tp
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp2[0], Volume)
 
         resp3 = self.system.create_volumes_with_names(
             namecol, cap, pool, stgtype=stgtype, captype=captype, lss=lss, tp=tp
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp3[0], Volume)
 
-    @httpretty.activate
+    @responses.activate
     def test_create_volumes_partial_failed(self):
         url = '/volumes'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         name = 'volume1'
         quantity = '10'
@@ -458,37 +433,24 @@ class TestVolume(TestDS8KWithConnect):
         tp = 'ese'
         lss = '00'
 
-        def _verify_request1(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser(
-                {
-                    'name': name,
-                    'cap': cap,
-                    'pool': pool,
-                    'stgtype': stgtype,
-                    'captype': captype,
-                    'lss': lss,
-                    'tp': tp,
-                    'quantity': quantity,
-                }
-            )
-            assert json.loads(request.body) == resq.get_request_data()
-            return (
-                HTTPStatus.CREATED,
-                headers,
-                create_volumes_partial_failed_response_json,
-            )
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            responses=[
-                httpretty.Response(
-                    body=_verify_request1,
-                    content_type='application/json',
-                ),
-            ],
+        resq = RequestParser(
+            {
+                'name': name,
+                'cap': cap,
+                'pool': pool,
+                'stgtype': stgtype,
+                'captype': captype,
+                'lss': lss,
+                'tp': tp,
+                'quantity': quantity,
+            }
+        )
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_volumes_partial_failed_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
 
         resp1 = self.system.create_volumes_with_same_prefix(
@@ -501,7 +463,7 @@ class TestVolume(TestDS8KWithConnect):
             lss=lss,
             tp=tp,
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         # return 1 created volume and 1 error status
         assert isinstance(resp1[0], Volume)
         assert isinstance(resp1[1], dict)
@@ -531,9 +493,10 @@ class TestVolume(TestDS8KWithConnect):
                 'name', '10', 'testpool_0', types.DS8K_VOLUME_TYPE_FB, tp='fake_tp'
             )
 
-    @httpretty.activate
+    @responses.activate
     def test_create_volume_with_volid(self):
         url = '/volumes'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         name = 'volume1'
         cap = '10'
@@ -544,40 +507,31 @@ class TestVolume(TestDS8KWithConnect):
         lss = '00'
         _id = '0000'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url + url}"
-
-            req = RequestParser(
-                {
-                    'name': name,
-                    'cap': cap,
-                    'pool': pool,
-                    'stgtype': stgtype,
-                    'captype': captype,
-                    'lss': lss,
-                    'tp': tp,
-                    'id': _id,
-                }
-            )
-
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-
-            prepared_response = create_volume_response.copy()
-            prepared_response['data']['volumes'][0]['id'] = _id
-            prepared_href = f"{self.domain}{self.base_url}{url}/{_id}"
-            prepared_response['link']['href'] = prepared_href
-
-            return 201, headers, json.dumps(prepared_response)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                'name': name,
+                'cap': cap,
+                'pool': pool,
+                'stgtype': stgtype,
+                'captype': captype,
+                'lss': lss,
+                'tp': tp,
+                'id': _id,
+            }
         )
+
+        prepared_response = create_volume_response.copy()
+        prepared_response['data']['volumes'][0]['id'] = _id
+        prepared_href = f"{self.domain}{self.base_url}{url}/{_id}"
+        prepared_response['link']['href'] = prepared_href
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=json.dumps(prepared_response),
+            content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
+        )
+
         # Way 1
         resp1 = self.system.create_volume(
             name=name,
@@ -589,7 +543,7 @@ class TestVolume(TestDS8KWithConnect):
             tp=tp,
             id=_id,
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volume)
 
         # Way 2
@@ -605,7 +559,7 @@ class TestVolume(TestDS8KWithConnect):
             id=_id,
         )
         resp2, data2 = new_vol2.posta()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data2[0], Volume)
         assert resp2.status_code == HTTPStatus.CREATED
 
@@ -622,7 +576,7 @@ class TestVolume(TestDS8KWithConnect):
             id=_id,
         )
         resp3, data3 = new_vol3.save()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data3[0], Volume)
         assert resp3.status_code == HTTPStatus.CREATED
 
@@ -630,9 +584,10 @@ class TestVolume(TestDS8KWithConnect):
         # Don't init a resource instance by yourself when create new.
         # use .create() instead.
 
-    @httpretty.activate
+    @responses.activate
     def test_create_volumes_with_volids(self):
         url = '/volumes'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         name_col = ['volume0000']
         cap = '10'
@@ -643,45 +598,39 @@ class TestVolume(TestDS8KWithConnect):
         lss = '00'
         ids = ['0000']
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser(
-                {
-                    'name_col': name_col,
-                    'cap': cap,
-                    'pool': pool,
-                    'stgtype': stgtype,
-                    'captype': captype,
-                    'lss': lss,
-                    'tp': tp,
-                    'ids': ids,
-                }
-            )
-
-            prepared_request = req.get_request_data().get('request').get('params')
-            req_name_col = prepared_request.pop('name_col')
-            received_request = json.loads(request.body).get('request').get('params')
-            rec_namecol = received_request.pop('namecol')
-
-            assert req_name_col == rec_namecol
-
-            assert {**received_request, **prepared_request} == received_request
-
-            prepared_response = create_volume_response.copy()
-            prepared_response['data']['volumes'][0]['id'] = ids[0]
-            prepared_href = f"{self.domain}{self.base_url}{url}/{ids[0]}"
-            prepared_response['link']['href'] = prepared_href
-
-            return 201, headers, json.dumps(prepared_response)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                'name_col': name_col,
+                'cap': cap,
+                'captype': captype,
+                'stgtype': stgtype,
+                'pool': pool,
+                'lss': lss,
+                'tp': tp,
+                'ids': ids,
+            }
         )
-        # Way 1
+
+        # CAVEAT: The REST api uses namecol, not name_col.
+        prepared_request = req.get_request_data()
+        prepared_request['request']['params']['namecol'] = prepared_request['request'][
+            'params'
+        ]['name_col']
+        del prepared_request['request']['params']['name_col']
+
+        prepared_response = create_volume_response.copy()
+        prepared_response['data']['volumes'][0]['id'] = ids[0]
+        prepared_href = f"{self.domain}{self.base_url}{url}/{ids[0]}"
+        prepared_response['link']['href'] = prepared_href
+
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=json.dumps(prepared_response),
+            content_type='application/json',
+            match=[matchers.json_params_matcher(prepared_request)],
+        )
+
         resp1 = self.system.create_volumes(
             name_col=name_col,
             cap=cap,
@@ -692,45 +641,44 @@ class TestVolume(TestDS8KWithConnect):
             tp=tp,
             ids=ids,
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volume)
 
-    @httpretty.activate
+    @responses.activate
     def test_create_alias_volumes(self):
         url = '/volumes'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         vol_id = '00FF'
-        ckd_base_ids = ['0000', '0001']
         quantity = 2
+        alias_create_order = 'decrement'
+        ckd_base_ids = ['0000', '0001']
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
+        req = RequestParser(
+            {
+                'id': vol_id,
+                'quantity': quantity,
+                'alias': 'true',  # CAVEAT: The API always sends true.
+                'alias_create_order': alias_create_order,
+                'ckd_base_ids': ckd_base_ids,
+            }
+        )
 
-            req = RequestParser(
-                {'id': vol_id, 'quantity': quantity, 'ckd_base_ids': ckd_base_ids}
-            )
+        prepared_response = create_volume_response.copy()
+        prepared_response['data']['volumes'][0]['id'] = vol_id
+        prepared_href = f"{self.domain}{self.base_url}{url}/{vol_id}"
+        prepared_response['link']['href'] = prepared_href
 
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-
-            prepared_response = create_volume_response.copy()
-            prepared_response['data']['volumes'][0]['id'] = vol_id
-            prepared_href = f"{self.domain}{self.base_url}{url}/{vol_id}"
-            prepared_response['link']['href'] = prepared_href
-
-            return 201, headers, json.dumps(prepared_response)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=json.dumps(prepared_response),
             content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
         )
 
         resp1 = self.system.create_alias_volumes(
             vol_id, ckd_base_ids, quantity=quantity
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], Volume)

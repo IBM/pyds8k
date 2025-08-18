@@ -76,6 +76,9 @@ class UtilsMixin:
     def remove_None_fields_from_dict(self, input_dict):  # noqa: N802
         return {key: value for key, value in input_dict.items() if value is not None}
 
+    def remove_empty_fields_from_dict(self, input_dict):
+        return {key: value for key, value in input_dict.items() if value}
+
 
 # all the resources are under folder "resources",
 # the route prefix of a resource resources/a/b/c.py is a.b
@@ -234,7 +237,7 @@ class Resource(UtilsMixin, BaseResource):
         if self.id_field in _info:
             del _info[self.id_field]
         _info.update(custom_info)
-        data = self.remove_None_fields_from_dict(_info)
+        data = self.remove_empty_fields_from_dict(_info)
 
         res = self.__class__(
             client=self.client,
@@ -769,7 +772,7 @@ class Manager(UtilsMixin, BaseManager):
         else:
             self.url = url
             post_body = body or self.managed_object.representation
-        post_body = self.remove_None_fields_from_dict(post_body)
+        post_body = self.remove_empty_fields_from_dict(post_body)
         resp, body = self.client.post(self.url, body=self._get_request_data(post_body))
         data = self._get_data(body, method=POSTA, response=resp)
         if not isinstance(data, list):

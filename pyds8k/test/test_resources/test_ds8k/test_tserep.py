@@ -14,10 +14,10 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import DS8K_TSEREP
@@ -44,32 +44,29 @@ class TestTSERep(TestDS8KWithConnect):
         assert isinstance(tse._pool, Pool)
         assert tse._pool.id == pool_id
 
-    @httpretty.activate
+    @responses.activate
     def test_update(self):
         pool_id = 'P1'
         url = f'/pools/{pool_id}/tserep'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         cap = '10'
         threshold = '70'
-        httpretty.register_uri(
-            httpretty.GET,
-            self.domain + self.base_url + url,
+
+        responses.get(
+            uri,
             body=tserep_list_response_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'cap': cap, 'threshold': threshold})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'cap': cap, 'threshold': threshold})
+        responses.put(
+            uri,
+            status=HTTPStatus.OK,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
         tserep = self.system.get_tserep_by_pool(pool_id)
 

@@ -14,11 +14,11 @@
 # limitations under the License.
 ##############################################################################
 
-import json
 from functools import cmp_to_key
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
@@ -65,73 +65,65 @@ class TestPool(TestDS8KWithConnect):
     def test_get_eserep(self):
         self._test_sub_resource_list_by_route(DS8K_POOL, DS8K_ESEREP)
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_tserep(self):
         url = f'/pools/{self.pool_id}/tserep'
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
         self.pool.delete_tserep()
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_eserep(self):
         url = f'/pools/{self.pool_id}/eserep'
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
         self.pool.delete_eserep()
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
 
-    @httpretty.activate
+    @responses.activate
     def test_update_tserep_cap(self):
         url = f'/pools/{self.pool_id}/tserep'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         cap = '10'
         captype = 'gib'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'cap': cap, 'captype': captype})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'cap': cap, 'captype': captype})
+        responses.put(
+            uri,
+            status=HTTPStatus.OK,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
         _, body = self.pool.update_tserep_cap(cap, captype)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert body == action_response['server']
 
-    @httpretty.activate
+    @responses.activate
     def test_update_tserep_threshold(self):
         url = f'/pools/{self.pool_id}/tserep'
+        uri = f'{self.domain}{self.base_url}{url}'
+
         threshold = '70'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            resq = RequestParser({'threshold': threshold})
-            assert json.loads(request.body) == resq.get_request_data()
-            return (HTTPStatus.OK, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.PUT,
-            self.domain + self.base_url + url,
-            body=_verify_request,
+        resq = RequestParser({'threshold': threshold})
+        responses.put(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=action_response_json,
             content_type='application/json',
+            match=[matchers.json_params_matcher(resq.get_request_data())],
         )
         _, body = self.pool.update_tserep_threshold(threshold)
-        assert httpretty.last_request().method == httpretty.PUT
+        assert responses.calls[-1].request.method == responses.PUT
         assert body == action_response['server']
 
     def test_update_eserep_cap(self):
@@ -177,24 +169,22 @@ class TestPool(TestDS8KWithConnect):
                 assert value == getattr(item[1][j], item[1][j].id_field)
         pool._stop_updating()
 
-    @httpretty.activate
+    @responses.activate
     def test_lazy_loading_related_resources_collection(self):
         url = f'/pools/{self.pool_id}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
         for item in Pool.related_resources_collection:
             sub_route_url = f'{url}/{item}'
-            httpretty.register_uri(
-                httpretty.GET,
+            responses.get(
                 self.domain + self.base_url + sub_route_url,
                 body=get_response_list_json_by_type(item),
                 content_type='application/json',
-                status=HTTPStatus.OK,
+                status=HTTPStatus.OK.value,
             )
         pool = self.system.get_pool(self.pool_id)
 

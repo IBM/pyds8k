@@ -14,10 +14,12 @@
 # limitations under the License.
 ##############################################################################
 
-from datetime import datetime, timezone
+from datetime import datetime
 
-import httpretty
 import pytest
+import responses
+from responses import matchers
+from tzlocal import get_localzone
 
 from pyds8k.exceptions import InvalidArgumentError
 from pyds8k.resources.ds8k.v1.common.types import DS8K_EVENT
@@ -29,28 +31,25 @@ event_list_response = get_response_list_json_by_type(DS8K_EVENT)
 
 
 class TestHost(TestDS8KWithConnect):
-    @httpretty.activate
+    @responses.activate
     def test_get_events_by_filter_set_severity(self):
         url = '/events'
 
-        httpretty.register_uri(
-            httpretty.GET,
+        params = {'severity': 'warning,error'}
+
+        responses.get(
             self.domain + self.base_url + url,
             body=event_list_response,
             content_type='application/json',
+            match=[matchers.query_param_matcher(params)],
         )
         self.system.get_events_by_filter(warning=True, error=True)
-        req = httpretty.last_request()
-        assert req.querystring is not None
-        assert 'severity' in req.querystring
-        assert req.querystring.get('severity')[0] == 'warning,error'
 
-    @httpretty.activate
+    @responses.activate
     def test_get_events_by_filter_set_date_error(self):
         url = '/events'
 
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=event_list_response,
             content_type='application/json',
@@ -58,25 +57,20 @@ class TestHost(TestDS8KWithConnect):
         with pytest.raises(InvalidArgumentError):
             self.system.get_events_by_filter(before='test')
 
-    @httpretty.activate
+    @responses.activate
     def test_get_events_by_filter_set_date(self):
         url = '/events'
-        before = datetime(2015, 4, 1, tzinfo=timezone.utc)
-        after = datetime(2015, 1, 1, tzinfo=timezone.utc)
-
-        httpretty.register_uri(
-            httpretty.GET,
+        local_time = get_localzone()
+        before = datetime(2015, 4, 1, tzinfo=local_time)
+        after = datetime(2015, 1, 1, tzinfo=local_time)
+        params = {
+            'before': before.astimezone().strftime('%Y-%m-%dT%X%z'),
+            'after': after.astimezone().strftime('%Y-%m-%dT%X%z'),
+        }
+        responses.get(
             self.domain + self.base_url + url,
             body=event_list_response,
             content_type='application/json',
+            match=[matchers.query_param_matcher(params)],
         )
         self.system.get_events_by_filter(before=before, after=after)
-        req = httpretty.last_request()
-        assert req.querystring is not None
-        assert 'before' in req.querystring
-        assert 'after' in req.querystring
-
-        # httpretty unquote "+" and " " in a wrong way,
-        # so I can not verify time zone here.
-        assert req.querystring.get('before')[0][:-5] == '2015-04-01T00:00:00'
-        assert req.querystring.get('after')[0][:-5] == '2015-01-01T00:00:00'

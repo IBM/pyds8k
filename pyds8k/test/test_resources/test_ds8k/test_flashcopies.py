@@ -1,7 +1,23 @@
-import json
+##############################################################################
+# Copyright 2025 IBM Corp.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.dataParser.ds8k import RequestParser
 from pyds8k.resources.ds8k.v1.common.types import (
@@ -25,43 +41,37 @@ class TestFlashCopies(TestDS8KWithConnect):
         super().setUp()
         self.maxDiff = None
 
-    @httpretty.activate
+    @responses.activate
     def test_create_cs_flashcopy(self):
         url = '/cs/flashcopies'
+        uri = f'{self.domain}{self.base_url}{url}'
 
         source_volume = '0000'
         target_volume = '0001'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-
-            req = RequestParser(
-                {
-                    "volume_pairs": [
-                        {"source_volume": source_volume, "target_volume": target_volume}
-                    ],
-                    "options": [],
-                }
-            )
-            assert {
-                **json.loads(request.body).get('request').get('params'),
-                **req.get_request_data().get('request').get('params'),
-            } == json.loads(request.body).get('request').get('params')
-            return (HTTPStatus.CREATED, headers, create_flashcopy_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='application/json',
+        req = RequestParser(
+            {
+                "volume_pairs": [
+                    {"source_volume": source_volume, "target_volume": target_volume}
+                ],
+            }
         )
+
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=create_flashcopy_response_json,
+            content_type='application/json',
+            match=[matchers.json_params_matcher(req.get_request_data())],
+        )
+
         # Way 1
         resp1 = self.system.create_cs_flashcopy(
             volume_pairs=[
                 {'source_volume': source_volume, 'target_volume': target_volume}
             ]
         )
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(resp1[0], FlashCopies)
 
         # Way 2
@@ -75,7 +85,7 @@ class TestFlashCopies(TestDS8KWithConnect):
             ]
         )
         resp2, data2 = new_fc2.posta()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data2[0], FlashCopies)
         assert resp2.status_code == HTTPStatus.CREATED
 
@@ -90,11 +100,11 @@ class TestFlashCopies(TestDS8KWithConnect):
             ]
         )
         resp3, data3 = new_fc3.save()
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert isinstance(data3[0], FlashCopies)
         assert resp3.status_code == HTTPStatus.CREATED
 
-    @httpretty.activate
+    @responses.activate
     def test_delete_cs_flashcopy(self):
         response_a_json = get_response_json_by_type(DS8K_CS_FLASHCOPY)
         response_a = get_response_data_by_type(DS8K_CS_FLASHCOPY)
@@ -102,27 +112,26 @@ class TestFlashCopies(TestDS8KWithConnect):
             DS8K_FLASHCOPY, response_a, FlashCopy.id_field
         )
         url = f'/cs/flashcopies/{name}'
-        httpretty.register_uri(
-            httpretty.GET,
+        responses.get(
             self.domain + self.base_url + url,
             body=response_a_json,
             content_type='application/json',
-            status=HTTPStatus.OK,
+            status=HTTPStatus.OK.value,
         )
-        httpretty.register_uri(
-            httpretty.DELETE,
+        responses.delete(
             self.domain + self.base_url + url,
             body=action_response_json,
             content_type='application/json',
-            status=HTTPStatus.NO_CONTENT,
+            status=HTTPStatus.OK.value,
         )
+
         # Way 1
         _ = self.system.delete_cs_flashcopy(name)
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert responses.calls[-1].request.method == responses.DELETE
 
         # Way 2
         flashcopy = self.system.get_cs_flashcopies(name)
         assert isinstance(flashcopy, FlashCopies)
         resp2, _ = flashcopy.delete()
-        assert resp2.status_code == HTTPStatus.NO_CONTENT
-        assert httpretty.last_request().method == httpretty.DELETE
+        assert resp2.status_code == HTTPStatus.OK
+        assert responses.calls[-1].request.method == responses.DELETE

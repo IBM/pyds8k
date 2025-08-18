@@ -16,7 +16,8 @@
 
 from http import HTTPStatus
 
-import httpretty
+import responses
+from responses import matchers
 
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC, DS8K_HMC_CERTIFICATE
 
@@ -33,25 +34,22 @@ class TestHmcCertificate(TestDS8KWithConnect):
     def setUp(self):
         super().setUp()
 
-    @httpretty.activate
+    @responses.activate
     def test_upload_hmc_certificate(self):
         url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}'
+        uri = f'{self.domain}{self.base_url}{url}'
 
-        def _verify_request(request, uri, headers):
-            assert uri == f"{self.domain}{self.base_url}{url}"
-            assert upload_hmc_certificate_cert in request.body.decode('UTF-8')
-            return (HTTPStatus.CREATED, headers, action_response_json)
-
-        httpretty.register_uri(
-            httpretty.POST,
-            self.domain + self.base_url + url,
-            body=_verify_request,
-            content_type='multipart/form',
+        responses.post(
+            uri,
+            status=HTTPStatus.CREATED,
+            body=action_response_json,
+            content_type='application/json',
+            match=[matchers.multipart_matcher({"file": upload_hmc_certificate_cert})],
         )
         # Way 1
         resp1 = self.system.upload_hmc_signed_certificate(upload_hmc_certificate_cert)
 
-        assert httpretty.last_request().method == httpretty.POST
+        assert responses.calls[-1].request.method == responses.POST
         assert resp1[0].status_code == HTTPStatus.CREATED
         assert resp1[1] == action_response
 
@@ -62,6 +60,6 @@ class TestHmcCertificate(TestDS8KWithConnect):
         #     rebuild_url=True)
         # hmc_certificate2 = hmc_certificate.create(body=cert)
         # resp2, data2 = hmc_certificate_csr2.post()
-        # self.assertEqual(httpretty.POST, httpretty.last_request().method)
+        # self.assertEqual(responses.POST, responses.calls[-1].request.method)
         # # self.assertIsInstance(data2[0], HmcCertificate)
         # self.assertEqual(resp2.status_code, HTTPStatus.CREATED)
