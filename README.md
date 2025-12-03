@@ -1,6 +1,6 @@
 # DS8000 Python Client
 
-[![Build Status](https://github.com/IBM/pyds8k/actions/workflows/main.yaml/badge.svg?branch=develop)](https://github.com/IBM/pyds8k/actions)
+[![Build Status](https://github.com/IBM/pyds8k/actions/workflows/main.yml/badge.svg?branch=develop)](https://github.com/IBM/pyds8k/actions/workflows/main.yml)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5884/badge)](https://bestpractices.coreinfrastructure.org/projects/5884)
 [![Documentation Status](https://readthedocs.org/projects/pyds8k/badge/?version=latest)](https://pyds8k.readthedocs.io/en/latest/?badge=latest)
 
