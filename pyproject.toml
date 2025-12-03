@@ -24,7 +24,7 @@ classifiers = [
     'Programming Language :: Python :: 3.13',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
-dependencies = ["requests>=2.31.0"]
+dependencies = ["requests>=2.32.4"]
 [dependency-groups]
 dev = ["sphinx>=2.2.1", "ruff>=0.11.6"]
 test = [
