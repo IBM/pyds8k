@@ -15,6 +15,7 @@
 ##############################################################################
 
 import json
+import re
 from http import HTTPStatus
 
 import pytest
@@ -278,7 +279,7 @@ class TestResource(base.TestCaseWithConnect):
         def set_id(_id):
             self.resource.id = _id
 
-        with pytest.raises(Exception, match="The field id is read only."):
+        with pytest.raises(Exception, match=re.escape("The field id is read only.")):
             set_id('a')
 
     def test_modified_info_dict(self):
