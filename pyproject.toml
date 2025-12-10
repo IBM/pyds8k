@@ -50,7 +50,7 @@ Repository = "https://github.com/IBM/pyds8k.git"
 version = { attr = "pyds8k.version" } # Set in pyds8k/__init__.py
 
 [tool.setuptools.packages.find]
-exclude = ["cover", "images"]
+exclude = ["cover", "images", "docs"]
 
 [tool.ruff]
 # Same as Black.
