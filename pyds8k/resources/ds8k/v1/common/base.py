@@ -136,9 +136,7 @@ class BaseManager(Manager):
             if self.managed_object is not None:
                 self.url = self.managed_object.url
                 # use modified info here
-                put_body = (
-                    body if body else self.managed_object._get_modified_info_dict()
-                )
+                put_body = body or self.managed_object._get_modified_info_dict()
             else:
                 raise URLNotSpecifiedError
         else:

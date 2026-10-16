@@ -40,7 +40,7 @@ class TestHmcCertificateCsr(TestDS8KWithConnect):
         url = f'/{DS8K_HMC}/{DS8K_HMC_CERTIFICATE}/{DS8K_HMC_CERTIFICATE_CSR}'
         uri = f'{self.domain}{self.base_url}{url}'
 
-        O = "IBM"  # noqa: E741, N806
+        O = "IBM"  # noqa: N806
         OU = "DS8000"  # noqa: N806
         C = "US"  # noqa: N806
         ST = "NY"  # noqa: N806

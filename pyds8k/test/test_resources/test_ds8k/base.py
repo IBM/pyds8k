@@ -94,7 +94,7 @@ class TestUtils:
         url = f'/{route}'
         res_class = self._get_class_by_name(route)
         id_field = res_class.id_field
-        cmp_f = cmp_func if cmp_func else self._get_sort_func_by(id_field)
+        cmp_f = cmp_func or self._get_sort_func_by(id_field)
         responses.get(
             self.domain + self.base_url + url,
             body=get_response_list_json_by_type(route),
@@ -120,7 +120,7 @@ class TestUtils:
         route_id = self._get_resource_id_from_resopnse(route, res_resp, id_field)
         route_url = f'/{route}/{route_id}'
         sub_route_url = f'/{route}/{route_id}/{sub_route}'
-        cmp_f = cmp_func if cmp_func else self._sorted_by_id
+        cmp_f = cmp_func or self._sorted_by_id
         responses.get(
             self.domain + self.base_url + sub_route_url,
             body=get_response_list_json_by_type(sub_route),

@@ -90,7 +90,7 @@ class Volume(Base, metaclass=ResourceMeta):
         types.DS8K_PPRC,
     )
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         client,
         manager=None,
