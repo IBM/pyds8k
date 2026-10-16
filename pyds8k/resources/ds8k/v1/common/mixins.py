@@ -393,7 +393,7 @@ class RootResourceGroupMixin:
         )
         return res
 
-    def update_resource_group(
+    def update_resource_group(  # noqa: PLR0917
         self,
         resource_group_id,
         label='',
@@ -484,7 +484,7 @@ class RootVolumeMixin:
         _, res = self.one(types.DS8K_VOLUME, volume_id, rebuild_url=True).delete()
         return res
 
-    def create_volume(
+    def create_volume(  # noqa: PLR0917
         self,
         name,
         cap,
@@ -532,7 +532,7 @@ class RootVolumeMixin:
         )
         return res
 
-    def create_volumes(
+    def create_volumes(  # noqa: PLR0917
         self,
         name_col,
         cap,
@@ -575,7 +575,7 @@ class RootVolumeMixin:
         _, res = self.all(types.DS8K_VOLUME, rebuild_url=True).posta(
             {
                 'name': name,
-                'namecol': name_col if name_col else None,
+                'namecol': name_col or None,
                 'quantity': quantity,
                 'cap': cap,
                 'captype': captype,
@@ -624,7 +624,7 @@ class RootVolumeMixin:
         )
         return res
 
-    def create_volume_ckd(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002
+    def create_volume_ckd(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002, PLR0917
         """
         Create One CKD Volume
 
@@ -655,7 +655,7 @@ class RootVolumeMixin:
             id=id,
         )
 
-    def create_volume_fb(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002
+    def create_volume_fb(self, name, cap, pool, captype='', lss='', tp='', id=''):  # noqa: A002, PLR0917
         """
         Create One FB Volume
 
@@ -687,7 +687,7 @@ class RootVolumeMixin:
             id=id,
         )
 
-    def create_volumes_with_same_prefix(
+    def create_volumes_with_same_prefix(  # noqa: PLR0917
         self,
         name,
         cap,
@@ -736,7 +736,7 @@ class RootVolumeMixin:
             ids=ids,
         )
 
-    def create_volumes_without_same_prefix(
+    def create_volumes_without_same_prefix(  # noqa: PLR0917
         self,
         name_col,
         cap,
@@ -779,7 +779,7 @@ class RootVolumeMixin:
             ids=ids,
         )
 
-    def create_volumes_with_names(
+    def create_volumes_with_names(  # noqa: PLR0917
         self,
         names,
         cap,
@@ -1483,9 +1483,9 @@ class RootHMCMixin:
             f'{types.DS8K_HMC}.{types.DS8K_HMC_RESTART}', rebuild_url=True
         ).post(body=None)
 
-    def create_hmc_csr(
+    def create_hmc_csr(  # noqa: PLR0917
         self,
-        O=None,  # noqa: E741, N803
+        O=None,  # noqa: N803
         OU=None,  # noqa: N803
         C=None,  # noqa: N803
         ST=None,  # noqa: N803
@@ -1538,9 +1538,9 @@ class RootHMCMixin:
         # body result. Get it directly from the response.
         return res.text
 
-    def create_hmc_selfsigned_certificate(
+    def create_hmc_selfsigned_certificate(  # noqa: PLR0917
         self,
-        O=None,  # noqa: E741, N803
+        O=None,  # noqa: N803
         OU=None,  # noqa: N803
         C=None,  # noqa: N803
         ST=None,  # noqa: N803

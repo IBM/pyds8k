@@ -83,7 +83,7 @@ class HTTPClient:
         'Accept': 'application/json',
     }
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         service_address,
         user,

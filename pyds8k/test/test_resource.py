@@ -486,7 +486,8 @@ class TestResource(base.TestCaseWithConnect):
         assert re1 == re2
         assert re1 != re3
         assert re1 is not re2
-        assert re1 in [re2]
+        assert re1 in [re3, re2]
+        assert re1 not in [re3, re3]
 
     def test_update_list_field(self):
         re1 = Resource(self.client, resource_id='test')
