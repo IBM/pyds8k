@@ -59,7 +59,7 @@ class Client:
         object: DS8000 REST-API Client
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         service_address,
         user,

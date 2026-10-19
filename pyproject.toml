@@ -26,7 +26,7 @@ classifiers = [
 ]
 dependencies = ["requests>=2.32.4"]
 [dependency-groups]
-dev = ["sphinx>=2.2.1", "ruff>=0.11.6"]
+dev = ["sphinx>=2.2.1", "ruff>=0.16.0"]
 test = [
     "pytest>=7.0.0",
     "pytest-cov>=3.0.0",

@@ -60,7 +60,7 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
     related_resource = {}
     related_resources_collection = (DS8K_VOLUME,)
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         client,
         manager=None,

@@ -156,7 +156,7 @@ class Resource(UtilsMixin, BaseResource):
     related_resource = {}
     alias = {}
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         client,
         manager=None,
@@ -810,9 +810,7 @@ class Manager(UtilsMixin, BaseManager):
         if not url:
             if self.managed_object is not None:
                 self.url = self.managed_object.url
-                patch_body = (
-                    body if body else self.managed_object._get_modified_info_dict()
-                )
+                patch_body = body or self.managed_object._get_modified_info_dict()
             else:
                 raise URLNotSpecifiedError
         else:
