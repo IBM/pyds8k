@@ -4,7 +4,7 @@ description = "DS8000 Python Client"
 dynamic = ["version"]
 readme = "README.md"
 license-files = ["LICENSE"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [{ name = "Zhang Wu", email = "shwzhang@cn.ibm.com" }]
 maintainers = [
     { name = "Randy Blea", email = "blead@us.ibm.com" },
@@ -17,7 +17,6 @@ classifiers = [
     'Intended Audience :: System Administrators',
     'Environment :: Console',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
@@ -26,11 +25,11 @@ classifiers = [
     'Programming Language :: Python :: 3.15',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
-dependencies = ["requests>=2.32.4"]
+dependencies = ["requests>=2.33.0"]
 [dependency-groups]
 dev = ["sphinx>=2.2.1", "ruff>=0.16.0"]
 test = [
-    "pytest>=7.0.0",
+    "pytest>=9.0.3",
     "pytest-cov>=3.0.0",
     "responses>=0.24.0",
     "tox>=4.22.0",
@@ -59,8 +58,8 @@ exclude = ["cover", "images", "docs"]
 line-length = 88
 indent-width = 4
 
-# Assume Python 3.9
-target-version = "py39"
+# Assume Python 3.10
+target-version = "py310"
 
 [tool.ruff.lint]
 extend-select = [
