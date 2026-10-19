@@ -8,7 +8,7 @@ This repository contains the IBM RESTful API Python client, which establishes te
 
 ## Python Compatibility
 
-The content in this collection supports Python 3.9 and newer.
+The content in this collection supports Python 3.10 and newer.
 
 ## Getting started
 
