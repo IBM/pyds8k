@@ -1602,13 +1602,8 @@ class RootHMCMixin:
             tuple: tuple of HTTP Response and DS8000 server message.
         """
 
-        # CAVEAT: Packages and modules can't have the same name, so the
-        # resource is ds8k.v1.hmc.certificate.certificate
-        # not ds8k.v1.hmc.certificate because the design uses meta classes to
-        # build the urls. It didn't expect calls to object in /object/objects?
-        # Force to match object.object.
         return self.all(
-            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}.{types.DS8K_HMC_CERTIFICATE}',
+            f'{types.DS8K_HMC}.{types.DS8K_HMC_CERTIFICATE}',
             rebuild_url=True,
         ).post(body=certificate)
 

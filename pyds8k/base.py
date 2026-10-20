@@ -87,12 +87,27 @@ def get_resource_route_prefix_by_class(cls):
     return '.'.join(path.parts[path.parts.index("resources") + 1 :])
 
 
+def build_route(cls, resource_type):
+    # CAVEAT: Metaclasses build the route of resource and manager classes
+    # from the directory structure plus the resource type.
+    # When the DS8K REST API has both a command and subcommands under the
+    # same url, the model breaks because a package and a module can't have
+    # the same name. The class must then live in resource/resource.py, and
+    # its route would be ds8k.v1.resource.resource instead of
+    # ds8k.v1.resource.
+    # If the last part of the prefix equals the resource type, don't
+    # repeat it so the url is correct.
+    prefix = get_resource_route_prefix_by_class(cls)
+    if prefix.split('.')[-1] == resource_type:
+        return prefix
+    return f"{prefix}.{resource_type}"
+
+
 class ResourceMeta(type):
     def __new__(mcs, name, bases, dct):
         new_class = super().__new__(mcs, name, bases, dct)
         if "resource_type" in dct:
-            prefix = get_resource_route_prefix_by_class(new_class)
-            route = "{}.{}".format(prefix, dct["resource_type"])
+            route = build_route(new_class, dct["resource_type"])
             RESOURCES[route] = new_class
         return new_class
 
@@ -101,8 +116,7 @@ class ManagerMeta(type):
     def __new__(mcs, name, bases, dct):
         new_class = super().__new__(mcs, name, bases, dct)
         if "resource_type" in dct:
-            prefix = get_resource_route_prefix_by_class(new_class)
-            route = "{}.{}".format(prefix, dct["resource_type"])
+            route = build_route(new_class, dct["resource_type"])
             MANAGERS[route] = new_class
         return new_class
 
