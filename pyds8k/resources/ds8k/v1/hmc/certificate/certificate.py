@@ -45,13 +45,6 @@ class HmcCertificateManager(BaseManager):
     resource_class = HmcCertificate
     resource_type = DS8K_HMC_CERTIFICATE
 
-    # The default url is needed because this method calls the client
-    # directly, so it skips the managed object url lookup that
-    # Manager._post does when no url is given.
-    def post(self, url='/hmc/certificate', body=None):
+    def post(self, url='', body=None):
         files = {'file': body}
-        # CAVEAT: self._post() underlying code from _post in
-        # BaseManager -> Manager expects the body to be json.
-        # Call the client directly, which calls requests.
-        # Side effect is the REQ not being logged correctly.
-        return self.client.post(url=url, files=files)
+        return self._post(url=url, files=files)

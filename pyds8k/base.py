@@ -765,13 +765,15 @@ class Manager(UtilsMixin, BaseManager):
             if res
         ]
 
-    def _post(self, body, url=None):
+    def _post(self, body=None, url=None, **kwargs):
         if not url:
             if self.managed_object is not None:
                 url = self.managed_object.url
             else:
                 raise URLNotSpecifiedError
-        resp, res_body = self.client.post(url, body=self._get_request_data(body))
+        if body is not None:
+            kwargs['body'] = self._get_request_data(body)
+        resp, res_body = self.client.post(url, **kwargs)
         data = self._get_data(res_body, method=POST, response=resp)
 
         return resp, data

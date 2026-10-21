@@ -51,7 +51,7 @@ class TestHmcCertificate(TestDS8KWithConnect):
 
         assert responses.calls[-1].request.method == responses.POST
         assert resp1[0].status_code == HTTPStatus.CREATED
-        assert resp1[1] == action_response
+        assert resp1[1] == action_response['server']
 
         # ???: Doesn't work because HmcCertificate doesn't have a template?
         # # Way 2
