@@ -18,14 +18,12 @@
 ESE Rep interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import SingletonBase, SingletonBaseManager
 from .common.types import DS8K_ESEREP
 from .pools import Pool, PoolManager
 
 
-class ESERep(SingletonBase, metaclass=ResourceMeta):
+class ESERep(SingletonBase):
     resource_type = DS8K_ESEREP
     # id_field = 'id'
     _template = {
@@ -47,7 +45,7 @@ class ESERep(SingletonBase, metaclass=ResourceMeta):
         return super().__getattr__(key)
 
 
-class ESERepManager(SingletonBaseManager, metaclass=ManagerMeta):
+class ESERepManager(SingletonBaseManager):
     """
     Manage ESE Rep resources.
     """

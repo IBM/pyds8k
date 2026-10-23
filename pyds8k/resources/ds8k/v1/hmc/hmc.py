@@ -18,12 +18,11 @@
 Hardware Management Console interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
 from pyds8k.resources.ds8k.v1.common.base import Base, BaseManager
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC
 
 
-class HMC(Base, metaclass=ResourceMeta):
+class HMC(Base):
     resource_type = DS8K_HMC
 
     # id_field = ''
@@ -38,7 +37,7 @@ class HMC(Base, metaclass=ResourceMeta):
     #     return "<HMC: {0}>".format(self.id)
 
 
-class HMCManager(BaseManager, metaclass=ManagerMeta):
+class HMCManager(BaseManager):
     """
     Manage Hardware Management Console resources.
     """

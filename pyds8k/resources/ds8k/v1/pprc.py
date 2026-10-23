@@ -18,15 +18,13 @@
 PPRC interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_PPRC
 from .systems import System, SystemManager
 from .volumes import Volume, VolumeManager
 
 
-class PPRC(Base, metaclass=ResourceMeta):
+class PPRC(Base):
     resource_type = DS8K_PPRC
     # id_field = 'id'
     _template = {
@@ -56,7 +54,7 @@ class PPRC(Base, metaclass=ResourceMeta):
     #    return "<FlashCopy: {}>".format(self.id)
 
 
-class PPRCManager(ReadOnlyManager, metaclass=ManagerMeta):
+class PPRCManager(ReadOnlyManager):
     """
     Manage PPRC resources.
     """

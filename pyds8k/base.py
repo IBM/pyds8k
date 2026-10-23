@@ -90,7 +90,7 @@ def get_resource_route_prefix_by_class(cls):
 
 
 def build_route(cls, resource_type):
-    # CAVEAT: Metaclasses build the route of resource and manager classes
+    # CAVEAT: __init_subclass__ builds the route of resource and manager classes
     # from the directory structure plus the resource type.
     # When the DS8K REST API has both a command and subcommands under the
     # same url, the model breaks because a package and a module can't have
@@ -105,22 +105,12 @@ def build_route(cls, resource_type):
     return f"{prefix}.{resource_type}"
 
 
-class ResourceMeta(type):
-    def __new__(mcs, name, bases, dct):
-        new_class = super().__new__(mcs, name, bases, dct)
-        if "resource_type" in dct:
-            route = build_route(new_class, dct["resource_type"])
-            RESOURCES[route] = new_class
-        return new_class
-
-
-class ManagerMeta(type):
-    def __new__(mcs, name, bases, dct):
-        new_class = super().__new__(mcs, name, bases, dct)
-        if "resource_type" in dct:
-            route = build_route(new_class, dct["resource_type"])
-            MANAGERS[route] = new_class
-        return new_class
+def _register_class(cls, registry):
+    # Only register classes that define resource_type themselves,
+    # not ones that merely inherit it.
+    resource_type = cls.__dict__.get("resource_type")
+    if resource_type:
+        registry[build_route(cls, resource_type)] = cls
 
 
 def get_resource_class_by_route(route):
@@ -171,6 +161,10 @@ class Resource(UtilsMixin, BaseResource):
     _template = {}
     related_resource = {}
     alias = {}
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        _register_class(cls, RESOURCES)
 
     def __init__(  # noqa: PLR0917
         self,
@@ -625,6 +619,11 @@ class Manager(UtilsMixin, BaseManager):
     response_key = 'data'
     resource_type = ''
 
+    def __init_subclass__(cls, register=True, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if register:
+            _register_class(cls, MANAGERS)
+
     def __init__(self, client, managed_object=None, url=''):
         self.client = client
         self.managed_object = managed_object
@@ -851,7 +850,7 @@ class Manager(UtilsMixin, BaseManager):
         return resp, data
 
 
-class DefaultManager(Manager):
+class DefaultManager(Manager, register=False):
     """
     Default resource manager.
     """

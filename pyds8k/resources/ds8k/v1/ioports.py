@@ -18,14 +18,12 @@
 IO Ports interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_IOPORT
 from .io_enclosures import IOEnclosure, IOEnclosureManager
 
 
-class IOPort(Base, metaclass=ResourceMeta):
+class IOPort(Base):
     resource_type = DS8K_IOPORT
     # id_field = 'id'
     _template = {
@@ -47,7 +45,7 @@ class IOPort(Base, metaclass=ResourceMeta):
     #    return "<FCPort: {0}>".format(self.id)
 
 
-class IOPortManager(ReadOnlyManager, metaclass=ManagerMeta):
+class IOPortManager(ReadOnlyManager):
     """
     Manage IO Ports resources.
     """

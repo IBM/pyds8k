@@ -18,14 +18,13 @@
 advanced PPRC interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
 from pyds8k.resources.ds8k.v1.common.base import Base, ReadOnlyManager
 from pyds8k.resources.ds8k.v1.common.types import DS8K_CS_PPRC
 from pyds8k.resources.ds8k.v1.systems import System, SystemManager
 from pyds8k.resources.ds8k.v1.volumes import Volume, VolumeManager
 
 
-class PPRC(Base, metaclass=ResourceMeta):
+class PPRC(Base):
     resource_type = DS8K_CS_PPRC
 
     _template = {
@@ -61,7 +60,7 @@ class PPRC(Base, metaclass=ResourceMeta):
         super()._add_details(info, force=force)
 
 
-class PPRCManager(ReadOnlyManager, metaclass=ManagerMeta):
+class PPRCManager(ReadOnlyManager):
     """
     Manage advanced PPRC resources.
     """

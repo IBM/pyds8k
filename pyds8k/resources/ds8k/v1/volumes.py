@@ -18,8 +18,6 @@
 Storage volume interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common import types
 from .common.base import Base, BaseManager
 from .hosts import Host, HostManager
@@ -27,7 +25,7 @@ from .lss import LSS, LSSManager
 from .pools import Pool, PoolManager
 
 
-class Volume(Base, metaclass=ResourceMeta):
+class Volume(Base):
     resource_type = types.DS8K_VOLUME
     # id_field = 'id'
 
@@ -148,7 +146,7 @@ class Volume(Base, metaclass=ResourceMeta):
         self._stop_updating()
 
 
-class VolumeManager(BaseManager, metaclass=ManagerMeta):
+class VolumeManager(BaseManager):
     """
     Manage Storage Volume resources.
     """

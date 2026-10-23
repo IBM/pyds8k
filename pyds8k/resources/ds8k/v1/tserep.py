@@ -18,14 +18,12 @@
 TSE Rep interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import SingletonBase, SingletonBaseManager
 from .common.types import DS8K_TSEREP
 from .pools import Pool, PoolManager
 
 
-class TSERep(SingletonBase, metaclass=ResourceMeta):
+class TSERep(SingletonBase):
     resource_type = DS8K_TSEREP
     # id_field = 'id'
     _template = {
@@ -47,7 +45,7 @@ class TSERep(SingletonBase, metaclass=ResourceMeta):
         return super().__getattr__(key)
 
 
-class TSERepManager(SingletonBaseManager, metaclass=ManagerMeta):
+class TSERepManager(SingletonBaseManager):
     """
     Manage TSE Rep resources.
     """
