@@ -113,9 +113,37 @@ class BaseManager(Manager):
     response_key = 'data'
     resource_type = ''
 
-    def _post(self, url='', body=None):
+    def _post(self, url='', body=None, **kwargs):
+        """
+        POST to the server.
+
+        By default ``body`` is sent as JSON. To upload a file, do not pass
+        ``body``. Pass ``files`` and, optionally, ``data`` as keyword
+        arguments instead. They are forwarded to the HTTP client, which skips
+        JSON encoding and lets ``requests`` build a multipart/form-data
+        request.
+
+        - ``files``: dict of the file parts, e.g. ``{'file': <file object>}``.
+        - ``data``: dict of any other plain form fields sent with the file,
+          e.g. ``{'description': 'my cert'}``. Do not repeat the file here.
+
+        Example, from a manager's ``post()``::
+
+            def post(self, url='', body=None):
+                # body: {'file': <certificate>, 'description': <str>}
+                fields = dict(body)
+                file = fields.pop('file')
+                return self._post(url=url, data=fields, files={'file': file})
+
+        Returns:
+            tuple: HTTP response and parsed response data.
+        """
         post_body = None
-        if not body:
+        if 'files' in kwargs:
+            if body:
+                msg = "'body' and 'files' are mutually exclusive."
+                raise ValueError(msg)
+        elif not body:
             if self.managed_object is not None:
                 post_body = self.managed_object._get_modified_info_dict()
                 # repre = self.managed_object.representation
@@ -127,7 +155,7 @@ class BaseManager(Manager):
                 raise URLNotSpecifiedError
         else:
             post_body = body
-        return super()._post(url=url, body=post_body)
+        return super()._post(url=url, body=post_body, **kwargs)
 
     # DS8K will use PUT in PATCH way, and don't use PATCH.
     def _put(self, url='', body=None):

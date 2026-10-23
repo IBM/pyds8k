@@ -190,6 +190,13 @@ class HTTPClient:
                 kwargs['headers'] = {}
                 kwargs['headers'].update(self.defaultHeaders)
                 kwargs['headers'].update(headers)
+            # If standard JSON 'body' is used, force Content-Type to application/json.
+            # For multipart uploads where sending metadata and files together is needed:
+            # - Pass 'files' and 'data' for standard key-value form fields.
+            # - Pass explicit parts inside the 'files' dict for custom part content types,
+            #   such as sending a JSON metadata string as application/json alongside a file.
+            # Passing these directly in kwargs bypasses this block and lets requests format
+            # the multipart payload automatically.
             if 'body' in kwargs:
                 kwargs['headers']['Content-Type'] = 'application/json'
                 kwargs['data'] = json.dumps(kwargs['body'])
