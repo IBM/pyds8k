@@ -66,7 +66,7 @@ class Volume(Base, metaclass=ResourceMeta):
         types.DS8K_VOLUME_TYPE_FB: fb_template,
         types.DS8K_VOLUME_TYPE_CKD: ckd_template,
     }
-    readonly_fileds = (
+    readonly_fields = (
         'state',
         'stgtype',
         'VOLSER',

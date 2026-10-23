@@ -56,7 +56,7 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
     )
     template_dict = {DS8K_VOLUME_TYPE_CKD: ckd_template}
 
-    readonly_fileds = ()
+    readonly_fields = ()
     related_resource = {}
     related_resources_collection = (DS8K_VOLUME,)
 

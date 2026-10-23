@@ -36,7 +36,7 @@ class ESERep(SingletonBase, metaclass=ResourceMeta):
         'threshold': '',
         'pool': '',
     }
-    readonly_fileds = ('capalloc', 'capavail', 'overprovisioned', 'pool')
+    readonly_fields = ('capalloc', 'capavail', 'overprovisioned', 'pool')
     related_resource = {
         '_pool': (Pool, PoolManager),
     }

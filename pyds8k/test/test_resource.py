@@ -219,7 +219,7 @@ class TestResource(base.TestCaseWithConnect):
         assert 'name' not in de0.representation
         # 'unknown' is not in _template
         with pytest.raises(AttributeError):
-            de0.uknown  # noqa: B018 Testing only that exception raised
+            de0.unknown  # noqa: B018 Testing only that exception raised
 
         assert not de0.is_loaded()
         # loading details
