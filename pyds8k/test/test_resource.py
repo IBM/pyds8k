@@ -22,8 +22,14 @@ import pytest
 import responses
 
 from pyds8k import messages
-from pyds8k.base import DefaultManager, Resource
+from pyds8k.base import (
+    DefaultManager,
+    Resource,
+    get_resource_route_prefix_by_class,
+)
 from pyds8k.messages import DEFAULT_SUCCESS_BODY_DICT
+from pyds8k.resources.ds8k.v1.hmc.certificate.csr import HmcCertificateCsr
+from pyds8k.resources.ds8k.v1.volumes import Volume
 
 from . import base
 from .data import (
@@ -502,3 +508,19 @@ class TestResource(base.TestCaseWithConnect):
         assert re_not_in in re1.re_list
         re1._update_list_field('re_list', re_in, '-')
         assert re_in not in re1.re_list
+
+    def test_get_resource_route_prefix_by_class(self):
+        assert get_resource_route_prefix_by_class(Volume) == 'ds8k.v1'
+        assert (
+            get_resource_route_prefix_by_class(HmcCertificateCsr)
+            == 'ds8k.v1.hmc.certificate'
+        )
+
+        class DummyClass:
+            pass
+
+        DummyClass.__module__ = 'custom.resources.ds8k.v2.sub.module'
+        assert get_resource_route_prefix_by_class(DummyClass) == 'ds8k.v2.sub'
+
+        DummyClass.__module__ = 'other.pkg.module'
+        assert get_resource_route_prefix_by_class(DummyClass) == 'other.pkg'
