@@ -46,9 +46,9 @@ class HmcCertificateManager(BaseManager, metaclass=ManagerMeta):
     resource_class = HmcCertificate
     resource_type = DS8K_HMC_CERTIFICATE
 
-    # CAVEAT: Meta classes are built using the dir structure and the resulting
-    # url is /hmc/certificate/certificate.
-    # Force the default to be the correct url.
+    # The default url is needed because this method calls the client
+    # directly, so it skips the managed object url lookup that
+    # Manager._post does when no url is given.
     def post(self, url='/hmc/certificate', body=None):
         files = {'file': body}
         # CAVEAT: self._post() underlying code from _post in
