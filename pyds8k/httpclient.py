@@ -276,14 +276,14 @@ class HTTPClient:
         return link
 
     def _parse_url(self, url):
-        schma = f'{self.schema}:'
+        schema = f'{self.schema}:'
         if '//' in url:
-            schma, url1 = url.split('//')
+            schema, url1 = url.split('//')
         else:
             url1 = url
         domain, url2 = url1.split('/', 1)
         if not domain:
             return url
-        if schma + '//' + domain == self.domain:
+        if schema + '//' + domain == self.domain:
             return '/' + url2
         raise exceptions.URLParseError

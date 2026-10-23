@@ -42,7 +42,7 @@ class Host(
         types.DS8K_IOPORT: '',
         types.DS8K_HOST_PORT: '',
     }
-    readonly_fileds = (
+    readonly_fields = (
         'state',
         'addrmode',
         'addrdiscovery',

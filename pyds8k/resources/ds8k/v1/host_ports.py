@@ -44,7 +44,7 @@ class HostPort(Base, metaclass=ResourceMeta):
     related_resource = {
         '_host': (Host, HostManager),
     }
-    readonly_fileds = (
+    readonly_fields = (
         'state',
         'hosttype',
         'addrdiscovery',

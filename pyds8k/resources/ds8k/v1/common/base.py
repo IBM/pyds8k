@@ -38,9 +38,9 @@ class Base(RootResourceMixin, Resource):
     url_field = 'link'
     base_url = ''
     create_method = 'posta'
-    # Required only in writable resources, fileds are from _template
+    # Required only in writable resources, fields are from _template
     # Resource id is exclude.
-    readonly_fileds = ()
+    readonly_fields = ()
     # Not like related_resource, related_resources_list is not set during
     # loading, its keys use lazy-loading to get details.
     related_resources_collection = ()
@@ -70,7 +70,7 @@ class Base(RootResourceMixin, Resource):
                 setattr(self, key, res_list)
 
     def __setattr__(self, key, value):
-        if key in self.readonly_fileds and not self.is_updating():
+        if key in self.readonly_fields and not self.is_updating():
             raise FieldReadOnly(key)
         super().__setattr__(key, value)
         try:
@@ -121,7 +121,7 @@ class BaseManager(Manager):
                 # repre = self.managed_object.representation
                 # post_body = {key: value
                 #             for key, value in repre.iteritems()
-                #             if key not in self.managed_object.readonly_fileds
+                #             if key not in self.managed_object.readonly_fields
                 #             }
             else:
                 raise URLNotSpecifiedError

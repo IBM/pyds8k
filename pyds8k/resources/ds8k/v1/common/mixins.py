@@ -414,7 +414,7 @@ class RootResourceGroupMixin:
             cs_global (str): The resource group label to associate with the
                              Copy Services Global Resource Scope.
             pass_global (str): The resource group label to associate with the
-                               Pass-thru Global Copy Services Resource Scope.
+                               Pass-through Global Copy Services Resource Scope.
             gm_masters (list): An list of Global Mirror session IDs allowed
                                to be used as a master session for volumes
                                in this resource.
@@ -1048,7 +1048,7 @@ class RootHostMixin:
 
     def get_mappings_by_host(self, host_name):
         """
-        Get Volume Mappings by the name fo the Host.
+        Get Volume Mappings by the name of the Host.
 
         Args:
             host_name (str): Required. name of the host.
