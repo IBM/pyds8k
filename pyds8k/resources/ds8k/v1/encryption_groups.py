@@ -18,13 +18,11 @@
 Encryption Group interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_ENCRYPTION_GROUP
 
 
-class EncryptionGroup(Base, metaclass=ResourceMeta):
+class EncryptionGroup(Base):
     resource_type = DS8K_ENCRYPTION_GROUP
     # id_field = 'id'
     _template = {
@@ -33,7 +31,7 @@ class EncryptionGroup(Base, metaclass=ResourceMeta):
     }
 
 
-class EncryptionGroupManager(ReadOnlyManager, metaclass=ManagerMeta):
+class EncryptionGroupManager(ReadOnlyManager):
     """
     Manage Encryption Group resources.
     """

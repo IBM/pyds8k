@@ -18,14 +18,12 @@
 Marray interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import Base, ReadOnlyManager
 from .common.types import DS8K_MARRAY
 from .pools import Pool, PoolManager
 
 
-class Marray(Base, metaclass=ResourceMeta):
+class Marray(Base):
     resource_type = DS8K_MARRAY
     # id_field = 'id'
     _template = {
@@ -39,7 +37,7 @@ class Marray(Base, metaclass=ResourceMeta):
     }
 
 
-class MarrayManager(ReadOnlyManager, metaclass=ManagerMeta):
+class MarrayManager(ReadOnlyManager):
     """
     Manage Marray resources.
     """

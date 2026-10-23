@@ -18,12 +18,11 @@
 Hardware Management Console Certificate Signing Request interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
 from pyds8k.resources.ds8k.v1.common.base import Base, BaseManager
 from pyds8k.resources.ds8k.v1.common.types import DS8K_HMC_CERTIFICATE_CSR
 
 
-class HmcCertificateCsr(Base, metaclass=ResourceMeta):
+class HmcCertificateCsr(Base):
     resource_type = DS8K_HMC_CERTIFICATE_CSR
 
     # id_field = ''
@@ -38,7 +37,7 @@ class HmcCertificateCsr(Base, metaclass=ResourceMeta):
     #     return "<HMC CSR: {0}>".format(self.id)
 
 
-class HmcCertificateCsrManager(BaseManager, metaclass=ManagerMeta):
+class HmcCertificateCsrManager(BaseManager):
     """
     Manage Hardware Management Console Certificate Signing Request resources.
     """

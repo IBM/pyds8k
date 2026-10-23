@@ -18,8 +18,6 @@
 LSS interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import Base, BaseManager
 from .common.mixins import VolumeMixin
 from .common.types import (
@@ -32,7 +30,7 @@ from .common.types import (
 )
 
 
-class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
+class LSS(VolumeMixin, Base):
     resource_type = DS8K_LSS
     # id_field = 'id'
     _template = {
@@ -92,7 +90,7 @@ class LSS(VolumeMixin, Base, metaclass=ResourceMeta):
         return f"<Storage LSS: {self._get_id()}>"
 
 
-class LSSManager(BaseManager, metaclass=ManagerMeta):
+class LSSManager(BaseManager):
     """
     Manage LSS resources.
     """

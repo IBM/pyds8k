@@ -18,14 +18,12 @@
 Host Volume Mapping interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common.base import Base, BaseManager
 from .common.types import DS8K_VOLMAP
 from .volumes import Volume, VolumeManager
 
 
-class Volmap(Base, metaclass=ResourceMeta):
+class Volmap(Base):
     resource_type = DS8K_VOLMAP
     id_field = 'lunid'
     _template = {
@@ -40,7 +38,7 @@ class Volmap(Base, metaclass=ResourceMeta):
         return f"<Host Volume Mapping: {self._get_id()}>"
 
 
-class VolmapManager(BaseManager, metaclass=ManagerMeta):
+class VolmapManager(BaseManager):
     """
     Manage Host Volume Mapping resources.
     """

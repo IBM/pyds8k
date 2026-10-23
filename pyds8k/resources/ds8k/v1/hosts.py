@@ -18,16 +18,12 @@
 Host interface.
 """
 
-from pyds8k.base import ManagerMeta, ResourceMeta
-
 from .common import types
 from .common.base import Base, BaseManager
 from .common.mixins import FCPortMixin, HostPortMixin, VolmapMixin, VolumeMixin
 
 
-class Host(
-    FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin, Base, metaclass=ResourceMeta
-):
+class Host(FCPortMixin, HostPortMixin, VolumeMixin, VolmapMixin, Base):
     resource_type = types.DS8K_HOST
     id_field = 'name'
     alias = {'id': 'host_id'}
@@ -97,7 +93,7 @@ class Host(
         return [port.id for port in updated]
 
 
-class HostManager(BaseManager, metaclass=ManagerMeta):
+class HostManager(BaseManager):
     """
     Manage Host resources.
     """
