@@ -155,3 +155,54 @@ docstring-code-format = false
 # This only has an effect when the `docstring-code-format` setting is
 # enabled.
 docstring-code-line-length = "dynamic"
+
+[tool.coverage.run]
+omit = ["pyds8k/test/*"]
+
+[tool.tox]
+min_version = "4.67.1"
+env_list = [
+    "py311",
+    "py312",
+    "py313",
+    "py314",
+    "py315",
+    "docs",
+    "lint",
+    "format",
+]
+
+[tool.tox.env_run_base]
+set_env = { VIRTUAL_ENV = "{envdir}" }
+package = "editable"
+install_command = ["pip", "install", "{opts}", "{packages}"]
+dependency_groups = ["test"]
+commands = [["pytest", "--disable-warnings", "-v", "{posargs}"]]
+
+# Override of env_run_base: py315 also collects coverage
+[tool.tox.env.py315]
+commands = [
+    [
+        "pytest",
+        "--cov",
+        "pyds8k",
+        "--disable-warnings",
+        "-v",
+        "{posargs}",
+    ],
+]
+
+[tool.tox.env.docs]
+dependency_groups = ["docs"]
+allowlist_externals = ["sphinx-build"]
+commands = [["sphinx-build", "-b", "html", "docs", "docs/html"]]
+
+[tool.tox.env.lint]
+package = "skip"
+dependency_groups = ["dev"]
+commands = [["ruff", "check", "./pyds8k"]]
+
+[tool.tox.env.format]
+package = "skip"
+dependency_groups = ["dev"]
+commands = [["ruff", "format", "--check", "--diff", "./pyds8k"]]
