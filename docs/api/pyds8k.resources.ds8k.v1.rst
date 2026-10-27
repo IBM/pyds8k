@@ -14,6 +14,13 @@ Subpackages
 Submodules
 ----------
 
+pyds8k.resources.ds8k.v1.api\_info module
+-----------------------------------------
+
+.. automodule:: pyds8k.resources.ds8k.v1.api_info
+   :members:
+   :show-inheritance:
+
 pyds8k.resources.ds8k.v1.encryption\_groups module
 --------------------------------------------------
 

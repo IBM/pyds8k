@@ -15,6 +15,7 @@
 ##############################################################################
 
 from . import (
+    api_info,
     encryption_groups,
     eserep,
     events,
@@ -40,6 +41,7 @@ from .hmc import hmc, restart
 from .hmc.certificate import certificate, csr, selfsigned
 
 __all__ = (
+    'api_info',
     'certificate',
     'csr',
     'encryption_groups',

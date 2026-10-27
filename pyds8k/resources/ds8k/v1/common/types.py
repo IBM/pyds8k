@@ -15,6 +15,7 @@
 ##############################################################################
 
 DS8K_TOKEN = 'tokens'
+DS8K_API_INFO = 'api_info'
 DS8K_SYSTEM = 'systems'
 DS8K_HMC = 'hmc'
 DS8K_HMC_CERTIFICATE = 'certificate'

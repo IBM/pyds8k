@@ -50,6 +50,18 @@ class RootSystemMixin:
         return self.all(types.DS8K_SYSTEM, rebuild_url=True).list()
 
 
+class RootApiInfoMixin:
+    def get_api_info(self):
+        """
+        Get the DS8000 REST API information
+
+        Returns:
+            object: :py:class:`pyds8k.resources.ds8k.v1.api_info.ApiInfo`.
+
+        """
+        return self.all(types.DS8K_API_INFO, rebuild_url=True).list()[0]
+
+
 class RootNodeMixin:
     def get_nodes(self, node_id=None):
         """
@@ -1696,6 +1708,7 @@ class RootEventMixin:
 
 
 class RootResourceMixin(
+    RootApiInfoMixin,
     RootSystemMixin,
     RootHMCMixin,
     RootFlashCopyMixin,
