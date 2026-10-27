@@ -66,11 +66,12 @@ Use tox to run the test suite
 
 ```shell
 tox
+tox -e py314
 ```
 
 Use pytest to run tests or a specific test.
 
 ```shell
-pytest --cov-config=.coveragerc --cov pyds8k --disable-warnings -v
-pytest --cov-config=.coveragerc --cov pyds8k --disable-warnings -v pyds8k/test/test_resources/test_ds8k/test_host.py
+pytest --cov pyds8k --disable-warnings -v
+pytest --cov pyds8k --disable-warnings -v pyds8k/test/test_resources/test_ds8k/test_host.py
 ```
