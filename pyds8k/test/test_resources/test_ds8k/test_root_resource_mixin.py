@@ -20,6 +20,7 @@ import pytest
 import responses
 from responses import matchers
 
+from pyds8k.resources.ds8k.v1.api_info import ApiInfo
 from pyds8k.resources.ds8k.v1.common import types
 from pyds8k.resources.ds8k.v1.eserep import ESERep
 from pyds8k.resources.ds8k.v1.lss import LSS
@@ -59,6 +60,21 @@ resource_group_list_response_json = get_response_list_json_by_type(
 
 
 class TestRootResourceMixin(TestDS8KWithConnect):
+    @responses.activate
+    def test_get_api_info(self):
+        responses.get(
+            self.domain + self.base_url + '/',
+            body=get_response_json_by_type(types.DS8K_API_INFO),
+            content_type='application/json',
+            status=HTTPStatus.OK.value,
+        )
+        info = self.system.get_api_info()
+        assert isinstance(info, ApiInfo)
+        assert info.url == f'{self.domain}{self.base_url}/'
+        assert info.bundle_version == '5.10.20.1191'
+        assert repr(info) == '<ApiInfo: 5.10.20.1191>'
+        assert responses.calls[-1].request.method == 'GET'
+
     @responses.activate
     def test_get_system(self):
         url = '/systems'
