@@ -185,6 +185,19 @@ class RootIOEnclosureMixin:
         return self.one(types.DS8K_IOENCLOSURE, enclosure_id, rebuild_url=True).get()
 
 
+class RootFrameMixin:
+    def get_frames(self):
+        """
+        Get Frame Enclosures.
+
+        Returns:
+            list: A list of
+            :py:class:`pyds8k.resources.ds8k.v1.frames.Frame`.
+
+        """
+        return self.all(types.DS8K_FRAME, rebuild_url=True).list()
+
+
 class RootEncryptionGroupMixin:
     def get_encryption_groups(self, group_id=None):
         """
@@ -1717,6 +1730,7 @@ class RootResourceMixin(
     RootMarrayMixin,
     RootUserMixin,
     RootIOEnclosureMixin,
+    RootFrameMixin,
     RootEncryptionGroupMixin,
     RootEventMixin,
     RootPoolMixin,

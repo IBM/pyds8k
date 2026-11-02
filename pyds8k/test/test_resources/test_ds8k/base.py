@@ -59,8 +59,9 @@ class TestUtils:
                 not isinstance(value, (dict, list))
                 and key not in resource.related_resources_collection
             ):
-                assert value == getattr(resource, key)
-                assert value == resource.representation.get(key)
+                attr = resource.alias.get(key, key)
+                assert value == getattr(resource, attr)
+                assert value == resource.representation.get(attr)
 
     def _assert_equal_between_sorted_dict_and_resource_list(
         self, dict_list, resource_list

@@ -49,6 +49,13 @@ pyds8k.resources.ds8k.v1.flashcopy module
    :members:
    :show-inheritance:
 
+pyds8k.resources.ds8k.v1.frames module
+--------------------------------------
+
+.. automodule:: pyds8k.resources.ds8k.v1.frames
+   :members:
+   :show-inheritance:
+
 pyds8k.resources.ds8k.v1.host\_ports module
 -------------------------------------------
 
