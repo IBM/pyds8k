@@ -175,6 +175,9 @@ class TestRootResourceMixin(TestDS8KWithConnect):
     def test_get_io_enclosure(self):
         self._test_resource_by_route(types.DS8K_IOENCLOSURE)
 
+    def test_get_frames(self):
+        self._test_resource_list_by_route(types.DS8K_FRAME)
+
     def test_get_encryption_groups(self):
         self._test_resource_list_by_route(types.DS8K_ENCRYPTION_GROUP)
 
